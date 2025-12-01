@@ -1,0 +1,47 @@
+# 系统信息配置
+[server]
+name = "Fastslot-API"
+version = "v1.0.0"
+
+# Flask APP[默认配置，不建议更改]
+[app]
+# 中间件
+secret_key = "IbelivemeIcanfly-gaomingliang"
+allow_host = []  # 白名单IP列表 ["127.0.0.1"]，默认为空允许全部访问
+cors_origin = ["*"]
+ban_router = ["/ban1", "/ban2"]  # 禁止访问的路由列表
+session_max_age = 86400 # 24 * 60 * 60  # unit: minute, default 1 days
+request_method = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]  # 允许通过的请求方法列表[备注：大写]
+gzip_size = 1000
+gzip_level = 6
+# docs
+openapi_url = "/api/documentation/v1/openapi.json"
+docs_url = "/api/documentation/v1/docs"
+# 静态资源
+static = "static"  # 静态资源目录名称，并且固定在deploy目录下
+
+# 数据库
+[db]
+link = ""
+
+# Redis
+[redis]
+host = "110.40.141.32"
+port = 9777
+db = 7
+password = ""
+
+# JWT Token
+[jwt]
+secret_key = "Enjoy the good life every day！！!"
+algorithm = "HS256"
+expire = 240    # 单位：分，默认4小时 = 4 * 60
+
+# 日志
+[log]
+folder = "log"
+level = "debug"
+format = "%(asctime)s - %(pathname)s[line:%(lineno)d] - [%(levelname)s] - %(message)s"
+prefix = "fastslot-api-log"
+max_size = 1048576  # 1M = 1 * 1024KB * 1024KB
+count = 10

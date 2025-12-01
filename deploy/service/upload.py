@@ -1,0 +1,110 @@
+# -*- coding: utf-8 -*-
+
+"""
+------------------------------------------------
+
+describe: 
+    upload service
+
+base_info:
+    __author__ = PyGo
+    __time__ = 2025/11/30 14:08
+    __version__ = v.1.0.0
+    __mail__ = gaoming971366@163.com
+    __blog__ = www.pygo2.top
+    __project__ = fastslot-api
+    __file_name__ = upload.py
+
+usage:
+    
+design:
+
+reference urls:
+
+python version:
+    python3
+
+
+Enjoy the good life every day！！!
+Life is short, I use python.
+
+------------------------------------------------
+"""
+import os
+from datetime import datetime
+from fastapi import File, UploadFile
+from pathlib import Path as pathlib_path
+from deploy.utils.utils import get_root_folder, d2s
+from deploy.utils.printer import printer_die
+from deploy.utils.status import Status, SuccessStatus, FailureStatus
+from deploy.utils.status_value import (StatusCode as status_code,
+                                       StatusMsg as status_msg)
+
+
+# 定一个临时文件存储abs路径
+abs_store_folder = pathlib_path.joinpath(get_root_folder(), 'deploy/static')
+
+
+class UploadService:
+    """
+    upload service
+    """
+    # 定义文件读取默认大小
+    READ_SIZE = 1024 * 1024  # 1024 = 1KB
+
+    def __init__(self):
+        """
+        ApisService class initialize
+        """
+        super(UploadService, self).__init__()
+
+    def __str__(self):
+        print("UploadService class.")
+
+    def __repr__(self):
+        self.__str__()
+
+    def file_api(self, file: File) -> Status:
+        """
+        File单个小文件上传
+        :param file: [File]File文件对象
+        :return:
+        """
+        if not file:
+            return FailureStatus(
+                status_id=status_code.CODE_450_REQUEST_FILE_NO_UPLOAD.value
+            )
+
+        file_name = d2s(datetime.now())  # custom define upload file name
+        real_file = pathlib_path.joinpath(abs_store_folder, file_name)
+        if pathlib_path.exists(real_file):
+            printer_die(f'{real_file} is exist, remove...........')
+            os.remove(real_file)
+        # - - - - - - - - - - - - - write file - - - - - - - - - - - - -
+        with open(real_file, 'wb') as f:
+            f.write(file)
+        return SuccessStatus()
+
+    async def upload_file_api(self, file: UploadFile) -> Status:
+        """
+        UploadFile单个大文件上传
+        :param file: [UploadFile]UploadFile上传文件对象
+        :return: json
+        """
+        if not file:
+            return FailureStatus(
+                status_id=status_code.CODE_450_REQUEST_FILE_NO_UPLOAD.value
+            )
+
+        file_name = getattr(file, 'filename')  # use getattr method to get file name
+        if not file_name:
+            file_name = d2s(datetime.now())
+        real_file = pathlib_path.joinpath(abs_store_folder, file_name)
+        if pathlib_path.exists(real_file):
+            printer_die(f'{real_file} is exist, remove...........')
+            os.remove(real_file)
+        # - - - - - - - - - - - - - write file - - - - - - - - - - - - -
+        with open(real_file, "wb") as f:
+            while content := await file.read(self.READ_SIZE):
+                f.write(content)
+        return SuccessStatus()

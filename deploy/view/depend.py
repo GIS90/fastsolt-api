@@ -1,0 +1,225 @@
+# -*- coding: utf-8 -*-
+
+"""
+------------------------------------------------
+
+describe: 
+    depend view
+
+base_info:
+    __author__ = PyGo
+    __time__ = 2025/11/30 21:24
+    __version__ = v.1.0.0
+    __mail__ = gaoming971366@163.com
+    __blog__ = www.pygo2.top
+    __project__ = fastslot-api
+    __file_name__ = depend.py
+
+usage:
+    
+design:
+
+reference urls:
+
+python version:
+    python3
+
+
+Enjoy the good life every day！！!
+Life is short, I use python.
+
+------------------------------------------------
+"""
+from typing import Optional
+from fastapi import APIRouter, Depends, Header, status as fastapi_http_status
+from fastapi.exceptions import HTTPException as FASTAPI_HTTPException
+
+from deploy.schema.po.depend import BasePageBody
+from deploy.utils.status import Status, SuccessStatus
+
+
+# define view
+depend = APIRouter(prefix="/depend", tags=["Depend依赖注入"])
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+"""
+函数依赖
+"""
+# 页面数据通用参数
+async def page_common_parameters(parameter: BasePageBody) -> Status:
+    return parameter.model_dump()
+
+
+@depend.post('/function_depend',
+             summary="[函数依赖]同步请求依赖注入",
+             description="方法使用同步请求"
+             )
+def function_depend(page: dict = Depends(page_common_parameters)) -> Status:
+    """
+    :return: JSON
+    """
+    return SuccessStatus(
+        data={**page, **{"request": "同步请求", "type": "function"}}
+    )
+
+
+@depend.post('/function_async_depend',
+             summary="[函数依赖]异步请求依赖注入",
+             description="方法使用async异步请求"
+             )
+async def function_async_depend(page: dict = Depends(page_common_parameters)) -> Status:
+    """
+    :return: JSON
+    """
+    return SuccessStatus(
+        data={**page, **{"request": "异步请求", "type": "function"}}
+    )
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+"""
+类依赖
+"""
+class PageClass(object):
+    # default value
+    page = 1
+    limit = 100
+
+    def __init__(self, page: int, limit: int):
+        self.page = page
+        self.limit = limit
+
+
+@depend.post('/class_depend',
+             summary="[类依赖]同步请求依赖注入",
+             description="方法使用同步请求"
+             )
+def class_depend(page=Depends(PageClass)) -> Status:
+    """
+    :return: JSON
+    """
+    new_page = {
+        "page": page.page,
+        "limit": page.limit
+    }
+    return SuccessStatus(
+        data={**new_page, **{"request": "同步请求", "type": "class"}}
+    )
+
+
+@depend.post('/class_async_depend',
+             summary="[类依赖]异步请求依赖注入",
+             description="方法使用async异步请求"
+             )
+async def class_async_depend(page=Depends(PageClass)) -> Status:
+    """
+    :return: JSON
+    """
+    new_page = {
+        "page": page.page,
+        "limit": page.limit
+    }
+    return SuccessStatus(
+        data={**new_page, **{"request": "异步请求", "type": "class"}}
+    )
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+"""
+子依赖
+"""
+# 一级依赖
+async def one_depend(q1: str) -> str:
+    return q1
+
+
+# 二级依赖
+async def two_depend(q1: str = Depends(one_depend), q2: Optional[str] = None) -> Status:
+    return {"q1": q1, "q2": q2}
+
+
+@depend.post('/sub_depend',
+             summary="[子依赖]同步请求依赖注入",
+             description="方法使用同步请求"
+             )
+def sub_depend(page: dict = Depends(two_depend, use_cache=True)) -> Status:
+    """
+    :return: JSON
+    """
+    return SuccessStatus(
+        data={**page, **{"request": "同步请求", "type": "function"}}
+    )
+
+
+@depend.post('/sub_async_depend',
+             summary="[子依赖]异步请求依赖注入",
+             description="方法使用async异步请求"
+             )
+async def sub_async_depend(page: dict = Depends(two_depend, use_cache=True)) -> Status:
+    """
+    :return: JSON
+    """
+    return SuccessStatus(
+        data={**page, **{"request": "异步请求", "type": "function"}}
+    )
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+"""
+路径依赖
+"""
+# 页面数据通用参数
+async def verify_key(x_key: str = Header(...)) -> str:
+    if x_key == "a":
+        raise FASTAPI_HTTPException(
+            status_code=fastapi_http_status.HTTP_400_BAD_REQUEST,
+            detail="route depend: verify_key is error"
+        )
+    return x_key
+
+
+# 页面数据通用参数
+async def verify_token(x_token: str = Header(...)) -> str:
+    if x_token == "a":
+        raise FASTAPI_HTTPException(
+            status_code=fastapi_http_status.HTTP_400_BAD_REQUEST,
+            detail="route depend: verify_token is error"
+        )
+    return x_token
+
+
+@depend.post('/route_depend',
+             summary="[路径依赖]同步请求依赖注入",
+             description="方法使用同步请求，参数值为a返回异常处理",
+             dependencies=[Depends(verify_key), Depends(verify_token)]
+             )
+def route_depend() -> Status:
+    """
+    :return: JSON
+    """
+    return SuccessStatus(
+        data={"request": "同步请求", "type": "route"}
+    )
+
+
+@depend.post('/route_async_depend',
+             summary="[路径依赖]异步请求依赖注入",
+             description="方法使用async异步请求，参数值为a返回异常处理",
+             dependencies=[Depends(verify_key), Depends(verify_token)]
+             )
+async def route_async_depend() -> Status:
+    """
+    :return: JSON
+    """
+    return SuccessStatus(
+        data={"request": "异步请求", "type": "route"}
+    )
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+"""
+全局依赖
+depend = APIRouter(prefix="/depend", tags=["Depend依赖注入"], 
+    dependencies=[Depends(verify_key), Depends(verify_token)])
+"""
