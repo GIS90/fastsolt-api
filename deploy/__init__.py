@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    app class
+    App
 
 base_info:
     __author__ = PyGo
