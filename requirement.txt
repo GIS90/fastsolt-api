@@ -3,7 +3,10 @@ annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.11.0
 click==8.3.1
+colorama==0.4.6
+dnspython==2.8.0
 ecdsa==0.19.1
+email-validator==2.3.0
 fastapi==0.122.0
 greenlet==3.2.4
 h11==0.16.0
@@ -13,9 +16,11 @@ jose==1.0.0
 pyasn1==0.6.1
 pydantic==2.12.4
 pydantic-core==2.41.5
+pyfiglet==1.0.4
 pymysql==1.1.2
 python-dotenv==1.2.1
 python-jose==3.3.0
+python-multipart==0.0.20
 redis==7.1.0
 rsa==4.9.1
 six==1.17.0

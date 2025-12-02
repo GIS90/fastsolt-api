@@ -36,7 +36,7 @@ from fastapi.responses import JSONResponse
 from typing import Union, Dict, List
 
 from deploy.utils.status_value import StatusCode, StatusMsg
-from deploy.utils.enum import MediaType
+from deploy.utils.enumeration import MediaType
 
 
 class Status(JSONResponse):

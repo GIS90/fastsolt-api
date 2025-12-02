@@ -40,7 +40,7 @@ from deploy.utils.status_value import (StatusMsg as status_msg,
                                        StatusCode as status_code)
 from deploy.utils.status import FailureStatus
 from deploy.utils.exception import JwtCredentialsException, UserInValidateException
-from deploy.utils.enum import MediaType
+from deploy.utils.enumeration import MediaType
 from deploy.utils.logger import logger as LOG
 
 

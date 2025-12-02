@@ -31,7 +31,13 @@ Life is short, I use python.
 ------------------------------------------------
 """
 import pprint
+from colorama import init
+from deploy.utils.enumeration import (fontForeColor as ffc,
+                                      fontBackColor as fbgc)
+from deploy.utils.enumeration import fontPrinter as fp
 
+
+init(autoreset=True)    # 自动重置颜色，避免影响后续输出
 
 pp = pprint.PrettyPrinter(
     indent=4,           # 缩进空格数
@@ -42,17 +48,23 @@ pp = pprint.PrettyPrinter(
 )
 
 
-def __printer(data):
-    pp.pprint(data)
+def printer_json(content: dict):
+    pp.pprint(content)
 
 
-def printer_scan(data):
-    print("*" * 88)
-    __printer(data)
-    print("*" * 88)
+def printer_info(content: str, hr: bool = False):
+    if hr:print(ffc.green.value + "*" * 88)
+    print(fp.info.value + content)
+    if hr:print(ffc.green.value + "*" * 88)
 
 
-def printer_die(data):
-    print("> " * 55)
-    __printer(data)
-    print("< " * 55)
+def printer_warn(content: str, hr: bool = False):
+    if hr:print(ffc.yellow.value + "~" * 88)
+    print(fp.warn.value + content)
+    if hr:print(ffc.yellow.value + "~" * 88)
+
+
+def printer_error(content: str, hr: bool = False):
+    if hr:print(ffc.red.value + "> " * 45)
+    print(fp.error.value + content)
+    if hr:print(ffc.red.value + "< " * 45)

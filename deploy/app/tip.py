@@ -5,6 +5,7 @@
 
 describe:
     App startup and shutdown tip
+    Python Package：pyfiglet
 
 base_info:
     __author__ = PyGo
@@ -18,7 +19,7 @@ base_info:
 usage:
     
 design:
-    网站：https://patorjk.com/
+    第三方网站：https://patorjk.com/
     模块：Text to ASCII Art Generator
 
 reference urls:

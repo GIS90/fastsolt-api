@@ -35,7 +35,7 @@ import tomllib
 from pathlib import Path
 from dotenv import dotenv_values
 from typing import List
-from deploy.utils.printer import printer_die, printer_scan
+from deploy.utils.printer import printer_error, printer_info
 
 
 # 指定 .env 文件路径
@@ -48,10 +48,12 @@ env: str = "dev" if not env_file.exists() \
 # 配置文件
 etc_file = root_folder.joinpath("etc", f"{env}.toml")
 if not etc_file.exists() or not etc_file.is_file():
-    printer_die(f"配置文件[{env_file}]不存在，系统自动退出")
+    printer_error(content=f"配置文件[{env_file}]不存在，系统自动退出......", hr=True)
     sys.exit(1)
 
-printer_scan(f"当前环境：{env}，配置文件：{etc_file}")
+
+printer_info(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
+
 
 with open(etc_file, "rb") as f:
     data = tomllib.load(f)

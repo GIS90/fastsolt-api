@@ -41,7 +41,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from deploy.utils.status_value import StatusMsg as status_msg, \
     StatusCode as status_code
 from deploy.utils.status import FailureStatus
-from deploy.utils.enum import MediaType
+from deploy.utils.enumeration import MediaType
 from deploy.utils.logger import logger as LOG
 from deploy.config import (app_secret_key, app_allow_host, app_cors_origin, app_ban_router,
                            app_session_max_age, app_request_method, app_gzip_size, app_gzip_level)

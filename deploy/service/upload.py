@@ -35,7 +35,7 @@ from datetime import datetime
 from fastapi import File, UploadFile
 from pathlib import Path as pathlib_path
 from deploy.utils.utils import get_root_folder, d2s
-from deploy.utils.printer import printer_die
+from deploy.utils.printer import printer_warn
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
 from deploy.utils.status_value import (StatusCode as status_code,
                                        StatusMsg as status_msg)
@@ -78,7 +78,7 @@ class UploadService:
         file_name = d2s(datetime.now())  # custom define upload file name
         real_file = pathlib_path.joinpath(abs_store_folder, file_name)
         if pathlib_path.exists(real_file):
-            printer_die(f'{real_file} is exist, remove...........')
+            printer_warn(content=f'文件[{real_file}]已存在, 移除...........')
             os.remove(real_file)
         # - - - - - - - - - - - - - write file - - - - - - - - - - - - -
         with open(real_file, 'wb') as f:
@@ -101,7 +101,7 @@ class UploadService:
             file_name = d2s(datetime.now())
         real_file = pathlib_path.joinpath(abs_store_folder, file_name)
         if pathlib_path.exists(real_file):
-            printer_die(f'{real_file} is exist, remove...........')
+            printer_warn(content=f'文件[{real_file}]已存在, 移除...........')
             os.remove(real_file)
         # - - - - - - - - - - - - - write file - - - - - - - - - - - - -
         with open(real_file, "wb") as f:

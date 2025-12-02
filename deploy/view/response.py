@@ -70,7 +70,7 @@ from fastapi.responses import (Response,
                                PlainTextResponse, HTMLResponse, JSONResponse,
                                StreamingResponse, RedirectResponse)
 
-from deploy.utils.enum import MediaType
+from deploy.utils.enumeration import MediaType
 from deploy.utils.status import Status
 from deploy.schema.po.response import UserIn, UserOut
 
