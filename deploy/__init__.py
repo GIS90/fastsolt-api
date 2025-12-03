@@ -37,8 +37,8 @@ from starlette.staticfiles import StaticFiles
 
 from deploy.view import add_routers
 from deploy.app.exception import register_app_exception    # app exception handle
-from deploy.app.middleware import register_app_middleware    # app middleware
-from deploy.app import tip      # app startup and shutdown tip
+from deploy.app.middleware import register_app_middleware  # app middleware
+from deploy.app.tip import tip_color_startup, tip_color_shutdown    # app startup and shutdown tip
 
 from deploy.utils.base_class import WebBaseClass
 from deploy.utils.logger import logger as LOG
@@ -104,13 +104,13 @@ class FSWebAppClass(WebBaseClass):
 
         @app.on_event("startup")
         async def startup_event():
-            LOG.info(tip.STARTUP_ASCII_ENTITY)
             LOG.info('>>>>> Web app startup success......')
+            tip_color_startup()
 
         @app.on_event("shutdown")
         async def shutdown_event():
-            LOG.info(tip.SHUTDOWN_ASCII_ENTITY)
             LOG.info('>>>>> Web app shutdown success......')
+            tip_color_shutdown()
 
     def __str__(self):
         return "FSWebAppClass instance."

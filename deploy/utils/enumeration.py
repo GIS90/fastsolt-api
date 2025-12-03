@@ -36,6 +36,10 @@ from colorama import Fore, Back, Style
 
 __all__ = [
     'MediaType',
+    'fontForeColor',
+    'fontBackColor',
+    'fontStyle',
+    'fontPrinter',
 ]
 
 
@@ -69,25 +73,25 @@ class fontForeColor(Enum):
     """
     字体颜色
     """
-    black = Fore.BLACK
-    red = Fore.RED
-    green = Fore.GREEN
-    yellow = Fore.YELLOW
-    blue = Fore.BLUE
-    magenta = Fore.MAGENTA
-    cyan = Fore.CYAN
-    white = Fore.WHITE
+    BLACK = Fore.BLACK
+    RED = Fore.RED
+    GREEN = Fore.GREEN
+    YELLOW = Fore.YELLOW
+    BLUE = Fore.BLUE
+    MAGENTA = Fore.MAGENTA
+    CYAN = Fore.CYAN
+    WHITE = Fore.WHITE
 
-    light_black_ex = Fore.LIGHTBLACK_EX
-    light_red_ex = Fore.LIGHTRED_EX
-    light_green_ex = Fore.LIGHTGREEN_EX
-    light_yellow_ex = Back.LIGHTYELLOW_EX
-    light_blue_ex = Fore.LIGHTBLUE_EX
-    magenta_ex = Fore.LIGHTMAGENTA_EX
-    cyan_ex = Fore.LIGHTCYAN_EX
-    white_ex = Fore.LIGHTWHITE_EX
+    LIGHT_BLACK_EX = Fore.LIGHTBLACK_EX
+    LIGHT_RED_EX = Fore.LIGHTRED_EX
+    LIGHT_GREEN_EX = Fore.LIGHTGREEN_EX
+    LIGHT_YELLOW_EX = Back.LIGHTYELLOW_EX
+    LIGHT_BLUE_EX = Fore.LIGHTBLUE_EX
+    LIGHT_MAGENTA_EX = Fore.LIGHTMAGENTA_EX
+    LIGHT_CYAN_EX = Fore.LIGHTCYAN_EX
+    LIGHT_WHITE_EX = Fore.LIGHTWHITE_EX
 
-    reset = Fore.RESET
+    RESET = Fore.RESET
 
 
 @unique
@@ -95,25 +99,25 @@ class fontBackColor(Enum):
     """
     背景颜色
     """
-    black = Back.BLACK
-    red = Back.RED
-    green = Back.GREEN
-    yellow = Back.YELLOW
-    blue = Back.BLUE
-    magenta = Back.MAGENTA
-    cyan = Back.CYAN
-    white = Back.WHITE
+    BLACK = Back.BLACK
+    RED = Back.RED
+    GREEN = Back.GREEN
+    YELLOW = Back.YELLOW
+    BLUE = Back.BLUE
+    MAGENTA = Back.MAGENTA
+    CYAN = Back.CYAN
+    WHITE = Back.WHITE
 
-    light_black_ex = Back.LIGHTBLACK_EX
-    light_red_ex = Back.LIGHTRED_EX
-    light_green_ex = Back.LIGHTGREEN_EX
-    light_yellow_ex = Back.LIGHTYELLOW_EX
-    light_blue_ex = Back.LIGHTBLUE_EX
-    magenta_ex = Back.LIGHTMAGENTA_EX
-    cyan_ex = Back.LIGHTCYAN_EX
-    white_ex = Back.LIGHTWHITE_EX
+    LIGHT_BLACK_EX = Back.LIGHTBLACK_EX
+    LIGHT_RED_EX = Back.LIGHTRED_EX
+    LIGHT_GREEN_EX = Back.LIGHTGREEN_EX
+    LIGHT_YELLOW_EX = Back.LIGHTYELLOW_EX
+    LIGHT_BLUE_EX = Back.LIGHTBLUE_EX
+    LIGHT_MAGENTA_EX = Back.LIGHTMAGENTA_EX
+    LIGHT_CYAN_EX = Back.LIGHTCYAN_EX
+    LIGHT_WHITE_EX = Back.LIGHTWHITE_EX
 
-    reset = Back.RESET
+    RESET = Back.RESET
 
 
 @unique
@@ -121,9 +125,9 @@ class fontStyle(Enum):
     """
     字体样式
     """
-    normal = Style.NORMAL
-    bright = Style.BRIGHT
-    dim = Style.DIM
+    NORMAL = Style.NORMAL
+    BRIGHT = Style.BRIGHT
+    DIM = Style.DIM
 
 
 @unique
@@ -131,6 +135,6 @@ class fontPrinter(Enum):
     """
     字体样式
     """
-    info = fontForeColor.blue.value + fontStyle.normal.value
-    warn = fontForeColor.yellow.value + fontBackColor.cyan.value + fontStyle.bright.value
-    error = fontForeColor.red.value + fontBackColor.white.value + fontStyle.bright.value
+    info = fontForeColor.BLUE.value + fontStyle.NORMAL.value
+    warn = fontForeColor.LIGHT_YELLOW_EX.value + fontBackColor.BLUE.value
+    error = fontForeColor.LIGHT_RED_EX.value + fontBackColor.WHITE.value

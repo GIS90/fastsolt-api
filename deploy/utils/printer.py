@@ -33,7 +33,7 @@ Life is short, I use python.
 import pprint
 from colorama import init
 from deploy.utils.enumeration import (fontForeColor as ffc,
-                                      fontBackColor as fbgc)
+                                      fontBackColor as fbc)
 from deploy.utils.enumeration import fontPrinter as fp
 
 
@@ -53,18 +53,18 @@ def printer_json(content: dict):
 
 
 def printer_info(content: str, hr: bool = False):
-    if hr:print(ffc.green.value + "*" * 88)
+    if hr:print(ffc.GREEN.value + "*" * 88)
     print(fp.info.value + content)
-    if hr:print(ffc.green.value + "*" * 88)
+    if hr:print(ffc.GREEN.value + "*" * 88)
 
 
 def printer_warn(content: str, hr: bool = False):
-    if hr:print(ffc.yellow.value + "~" * 88)
+    if hr:print(ffc.YELLOW.value + "~" * 88)
     print(fp.warn.value + content)
-    if hr:print(ffc.yellow.value + "~" * 88)
+    if hr:print(ffc.YELLOW.value + "~" * 88)
 
 
 def printer_error(content: str, hr: bool = False):
-    if hr:print(ffc.red.value + "> " * 45)
+    if hr:print(ffc.RED.value + "> " * 45)
     print(fp.error.value + content)
-    if hr:print(ffc.red.value + "< " * 45)
+    if hr:print(ffc.RED.value + "< " * 45)

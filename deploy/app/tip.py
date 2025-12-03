@@ -33,50 +33,46 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+import pyfiglet
+from deploy.utils.enumeration import (fontForeColor as ffc,
+                                      fontBackColor as fbc)
+from colorama import init
+init(autoreset=True)
+
 
 __all__ = [
-    "STARTUP_ASCII",
-    "STARTUP_ASCII_ENTITY",
-    "SHUTDOWN_ASCII",
-    "SHUTDOWN_ASCII_ENTITY"
+    "tip_color_startup",
+    "tip_color_shutdown"
 ]
 
 
-STARTUP_ASCII: str = """
-         _____                           ______            
-        /  ___|                          | ___ \           
-        \ `--.  ___ _ ____   _____ _ __  | |_/ /   _ _ __  
-         `--. \/ _ \ '__\ \ / / _ \ '__| |    / | | | '_ \ 
-        /\__/ /  __/ |   \ V /  __/ |    | |\ \ |_| | | | |
-        \____/ \___|_|    \_/ \___|_|    \_| \_\__^_|_| |_|
-"""
+# 显示的字符
+__STARTUP_ASCII : str= """Server Run"""
+__SHUTDOWN_ASCII : str= """Shutdown"""
 
-STARTUP_ASCII_ENTITY: str = """
 
-  ░██████                                                         ░█████████                        
- ░██   ░██                                                        ░██     ░██                       
-░██          ░███████  ░██░████ ░██    ░██  ░███████  ░██░████    ░██     ░██ ░██    ░██ ░████████  
- ░████████  ░██    ░██ ░███     ░██    ░██ ░██    ░██ ░███        ░█████████  ░██    ░██ ░██    ░██ 
-        ░██ ░█████████ ░██       ░██  ░██  ░█████████ ░██         ░██   ░██   ░██    ░██ ░██    ░██ 
- ░██   ░██  ░██        ░██        ░██░██   ░██        ░██         ░██    ░██  ░██   ░███ ░██    ░██ 
-  ░██████    ░███████  ░██         ░███     ░███████  ░██         ░██     ░██  ░█████░██ ░██    ░██ 
-"""
+# 字体配置
+__FONT = "Slant"        # 字体
+__JUSTIFY = "center"    # 对齐方式：auto left center right
+___DIRECTION = "auto"   # 方向：auto left-to-right right-to-left
 
-SHUTDOWN_ASCII: str = """
-           _____                             _____ _           _      _                     
-          / ____|                           / ____| |         | |    | |                    
-         | (___   ___ _ ____   _____ _ __  | (___ | |__  _   _| |_ __| | _____      ___ __  
-          \___ \ / _ \ '__\ \ / / _ \ '__|  \___ \| '_ \| | | | __/ _` |/ _ \ \ /\ / / '_ \ 
-          ____) |  __/ |   \ V /  __/ |     ____) | | | | |_| | || (_| | (_) \ V  V /| | | |
-         |_____/ \___|_|    \_/ \___|_|    |_____/|_| |_|\__._|\__\__._|\___/ \_/\_/ |_| |_|
-"""
 
-SHUTDOWN_ASCII_ENTITY: str = """
+def tip_color_startup():
+    startup_ascii_art = pyfiglet.figlet_format(
+        __STARTUP_ASCII,
+        font=__FONT,
+        direction=___DIRECTION,
+        justify=__JUSTIFY
+    )
+    print(ffc.LIGHT_CYAN_EX.value + startup_ascii_art)
 
-███████╗███████╗██████╗ ██╗   ██╗███████╗██████╗     ███████╗██╗  ██╗██╗   ██╗████████╗██████╗  ██████╗ ██╗    ██╗███╗   ██╗
-██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗    ██╔════╝██║  ██║██║   ██║╚══██╔══╝██╔══██╗██╔═══██╗██║    ██║████╗  ██║
-███████╗█████╗  ██████╔╝██║   ██║█████╗  ██████╔╝    ███████╗███████║██║   ██║   ██║   ██║  ██║██║   ██║██║ █╗ ██║██╔██╗ ██║
-╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██╔══╝  ██╔══██╗    ╚════██║██╔══██║██║   ██║   ██║   ██║  ██║██║   ██║██║███╗██║██║╚██╗██║
-███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║    ███████║██║  ██║╚██████╔╝   ██║   ██████╔╝╚██████╔╝╚███╔███╔╝██║ ╚████║
-╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═════╝  ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═══╝
-"""
+
+def tip_color_shutdown():
+    shutdown_ascii_art = pyfiglet.figlet_format(
+        __SHUTDOWN_ASCII,
+        font=__FONT,
+        direction=___DIRECTION,
+        justify=__JUSTIFY
+    )
+    print(ffc.LIGHT_RED_EX.value + shutdown_ascii_art)
+

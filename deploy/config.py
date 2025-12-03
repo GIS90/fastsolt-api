@@ -35,7 +35,7 @@ import tomllib
 from pathlib import Path
 from dotenv import dotenv_values
 from typing import List
-from deploy.utils.printer import printer_error, printer_info
+from deploy.utils.printer import printer_error, printer_info, printer_warn
 
 
 # 指定 .env 文件路径
