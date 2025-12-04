@@ -34,8 +34,9 @@ import sys
 import tomllib
 from pathlib import Path
 from dotenv import dotenv_values
-from typing import List
-from deploy.utils.printer import printer_error, printer_info, printer_warn
+from typing import List, Dict
+from dataclasses import dataclass, field
+from deploy.utils.printer import printer_error, printer_info
 
 
 # 指定 .env 文件路径
@@ -113,8 +114,17 @@ log_count: int = data["log"].get("count")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 自定义docs页面用户信息
-_author_contact: dict = {
+# APP简介
+@dataclass(frozen=True, order=True)
+class APPProfile:
+    title: str = server_name
+    version: str = server_name
+    summary: str = "作者：高明亮"
+    description: str = "基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架。"     # 支持Markdown语法
+
+
+# 作者
+_author_contact: Dict[str, str] = {
     "name": "Pygo2",
     "url": "http://www.pygo2.top",
     "email": "gaoming971366@163.com"

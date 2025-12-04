@@ -32,7 +32,7 @@ Life is short, I use python.
 """
 import sys
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from starlette.staticfiles import StaticFiles
 
 from deploy.view import add_routers
@@ -45,7 +45,7 @@ from deploy.utils.logger import logger as LOG
 from deploy.config import (server_name, server_version,
                            app_openapi_url, app_docs_url,
                            app_static_url, app_static_folder,
-                           _author_contact)
+                           APPProfile, _author_contact)
 
 
 # FastAPI App instance
@@ -76,12 +76,12 @@ class FSWebAppClass(WebBaseClass):
 
         # APP object configuration
         # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ -
-        # 基础信息
-        self.app.title = server_name
-        self.app.summary = "作者：高明亮"
-        self.app.description = "基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架。"     # 支持Markdown语法
-        self.app.version = server_version
-        # 联系信息
+        # APP简介
+        self.app.title = APPProfile.title
+        self.app.version = APPProfile.version
+        self.app.summary = APPProfile.summary
+        self.app.description = APPProfile.description
+        # 作者
         if _author_contact:
             self.app.contact = _author_contact
 
@@ -115,7 +115,7 @@ class FSWebAppClass(WebBaseClass):
     def __str__(self):
         return "FSWebAppClass instance."
 
-    def register_blueprint(self, router):
+    def register_blueprint(self, router: APIRouter):
         """
         register router
         :param router: route object
