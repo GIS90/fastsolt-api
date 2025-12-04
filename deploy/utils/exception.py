@@ -33,30 +33,31 @@ Life is short, I use python.
 
 __all__ = [
     "JwtCredentialsException",
-    "UserInValidateException"
+    "UserInvalidException"
 ]
 
 
 class JwtCredentialsException(Exception):
     """
-    jwt验证异常类
+    Jwt验证异常类
     """
     def __init__(self, detail):
+        super().__init__(detail)  # 调用父类构造函数
         self.detail = detail
 
     def __str__(self):
-        return "JwtCredentialsException Class."
+        return self.report()
 
     def __repr__(self):
-        return self.__str__()
+        return self.report()
 
     def report(self):
         return f"JwtCredentialsException: {self.detail}"
 
 
-class UserInValidateException(Exception):
+class UserInvalidException(Exception):
     """
-    user不可用异常类
+    User不可用异常类
     - 不存在
     - 已注销
     """
@@ -64,10 +65,10 @@ class UserInValidateException(Exception):
         self.detail = detail
 
     def __str__(self):
-        return "UserInValidateException Class."
+        return self.report()
 
     def __repr__(self):
-        return self.__str__()
+        return self.report()
 
     def report(self):
-        return f"UserInValidateException: {self.detail}"
+        return f"UserInvalidException: {self.detail}"

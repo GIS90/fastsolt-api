@@ -40,6 +40,18 @@ from deploy.utils.enumeration import MediaType
 
 
 class Status(JSONResponse):
+    """
+    状态响应类，用于构建统一格式的JSON响应，继承FastAPI的JSONResponse
+
+    Args:
+        status_id (int): 状态码ID
+        message (str): 响应消息，如果为空则根据状态码ID获取默认消息
+        data (Union[List, Dict], optional): 响应数据，默认为None
+
+    Returns:
+        Status: 状态响应对象
+    """
+
     def __init__(self, status_id: int, message: str, data: Union[List, Dict] = None):
         if data is None:
             data = {}

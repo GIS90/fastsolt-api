@@ -62,20 +62,35 @@ __APP_GZIP_LEVEL: int = app_gzip_level
 
 def register_app_middleware(app: FastAPI, app_headers: dict):
     """
-    App中间件
+    注册应用中间件，包括自定义访问控制中间件、CORS跨域支持、Session会话管理以及GZip压缩等。
+
+    参数:
+        app (FastAPI): FastAPI 应用实例。
+        app_headers (dict): 全局响应头信息字典，在每次响应时附加到 HTTP 响应头中。
+
+    返回值:
+        无返回值。该函数用于向 FastAPI 实例注册多个中间件组件。
     """
 
     # app middleware
     # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    """
-    自定义中间件C-Middleware:
-        - 访问IP检查
-        - 资源请求地址检查
-        - 请求方法检查
-        - Jwt Token验证
-    """
     @app.middleware("http")
     async def cmAccess(request: Request, call_next):
+        """
+        自定义中间件C-Middleware:：
+        对每个进入的HTTP请求进行安全性和合规性校验，并记录请求耗时。
+            - 访问IP检查
+            - 资源请求地址检查
+            - 请求方法检查
+            - Jwt Token验证
+
+        参数:
+            request (Request): 当前HTTP请求对象。
+            call_next (Callable): 下一个中间件或路由处理器的调用函数。
+
+        返回值:
+            Response: 处理后的HTTP响应对象。
+        """
         LOG.debug(">>>>> App middleware C-Middleware request")
         __is_verify_token = True  # 是否验证Jwt Token有效性[默认验证]，设置False跳过jwt token验证
         __token_rtx_id = None     # 用户token-rtx-id

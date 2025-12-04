@@ -31,7 +31,7 @@ Life is short, I use python.
 ------------------------------------------------
 """
 from datetime import timedelta
-from typing import Optional
+from typing import Optional, Dict
 from jose import JWTError, jwt, ExpiredSignatureError
 
 from deploy.utils.utils import d2s, get_now_time, d2ts, ts2d
@@ -87,7 +87,7 @@ def encode_access_token(
     if not rtx_id:
         return encoded_jwt_token
 
-    to_encode_data = {"rtx_id": rtx_id}
+    to_encode_data: Dict = {"rtx_id": rtx_id}
     # 申请时间
     token_apply_time = get_now_time()
     to_encode_data['apply_time'] = d2s(token_apply_time, fmt="%Y-%m-%d %H:%M:%S")
@@ -178,8 +178,8 @@ def verify_access_token(
     :param x_rtx_id: [str]用户X-Rtx-Id
     :return: [bool]
     """
-    if not token or \
-            not x_rtx_id:
+    if (not token or
+            not x_rtx_id):
         return False
 
     try:
@@ -235,6 +235,10 @@ def __verify_access_token_expire_jwt(
 
         rtx_id = claims.get("rtx_id")
         exp = claims.get("exp")
+        if (not rtx_id
+                or not exp):
+            return None
+
         exp_datetime = ts2d(st=exp)
         now_datetime = get_now_time()
         return None if now_datetime < exp_datetime else rtx_id
@@ -256,12 +260,19 @@ def verify_access_token_expire(
     if not x_token:
         return True, None
 
-    if redis_cli.connection:
-        token_rtx_id = redis_cli.get_key(key=x_token)
+    try:
+        if redis_cli.connection:
+            token_rtx_id = redis_cli.get_key(key=x_token)
+    except Exception as e:
+        pass
 
     if not token_rtx_id:
-        token_rtx_id = __verify_access_token_expire_jwt(x_token)
-    return True if not token_rtx_id else False, token_rtx_id
+        try:
+            token_rtx_id = __verify_access_token_expire_jwt(x_token)
+        except Exception as e:
+            return True, None
 
+    # 如果token_rtx_id存在，说明token有效未过期，返回False；否则返回True表示已过期
+    return False if token_rtx_id else True, token_rtx_id
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

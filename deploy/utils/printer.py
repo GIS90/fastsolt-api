@@ -47,24 +47,36 @@ pp = pprint.PrettyPrinter(
     sort_dicts=True     # 是否对字典键排序
 )
 
-
 def printer_json(content: dict) -> None:
+    """
+    格式化打印JSON内容
+    """
     pp.pprint(content)
 
 
 def printer_info(content: str, hr: bool = False) -> None:
+    """
+    信息级别内容
+    """
     if hr:print(ffc.GREEN.value + "*" * 88)
     print(fp.info.value + content)
     if hr:print(ffc.GREEN.value + "*" * 88)
 
 
 def printer_warn(content: str, hr: bool = False) -> None:
+    """
+    警告级别内容
+    """
     if hr:print(ffc.YELLOW.value + "~" * 88)
     print(fp.warn.value + content)
     if hr:print(ffc.YELLOW.value + "~" * 88)
 
 
 def printer_error(content: str, hr: bool = False) -> None:
+    """
+    错误级别内容
+    """
     if hr:print(ffc.RED.value + "> " * 45)
     print(fp.error.value + content)
     if hr:print(ffc.RED.value + "< " * 45)
+

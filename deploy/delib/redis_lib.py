@@ -36,6 +36,21 @@ from contextlib import contextmanager
 
 
 class RedisClientLib:
+    """
+    Redis客户端库类
+
+    用于创建和管理Redis数据库连接的客户端库
+
+    Args:
+        host (str): Redis服务器主机地址
+        port (int): Redis服务器端口号
+        db (int): 要连接的数据库编号
+        password (Optional[str]): Redis服务器密码，如果不需要密码则传入None
+        decode_responses (bool): 是否自动解码响应数据，默认为True
+
+    Returns:
+        None
+    """
     def __init__(self, host: str, port: int, db: int, password: Optional[str], decode_responses=True):
         self.HOST: str = host
         self.PORT: int = port

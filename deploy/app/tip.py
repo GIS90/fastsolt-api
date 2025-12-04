@@ -56,23 +56,33 @@ __FONT = "Slant"        # 字体
 __JUSTIFY = "center"    # 对齐方式：auto left center right
 ___DIRECTION = "auto"   # 方向：auto left-to-right right-to-left
 
+def __print_colored_ascii_art(text: str, color: str) -> None:
+    """
+    打印彩色ASCII艺术字
+
+    参数:
+        text (str): 要转换为ASCII艺术字的文本内容
+        color (str): 应用于ASCII艺术字的颜色代码
+
+    返回值:
+        None: 该函数不返回任何值，仅执行打印操作
+    """
+    try:
+        ascii_art = pyfiglet.figlet_format(
+            text,
+            font=__FONT,
+            direction=___DIRECTION,
+            justify=__JUSTIFY
+        )
+        print(color + ascii_art)
+    except:
+        pass
+
 
 def tip_color_startup() -> None:
-    startup_ascii_art = pyfiglet.figlet_format(
-        __STARTUP_ASCII,
-        font=__FONT,
-        direction=___DIRECTION,
-        justify=__JUSTIFY
-    )
-    print(ffc.LIGHT_CYAN_EX.value + startup_ascii_art)
+    __print_colored_ascii_art(__STARTUP_ASCII, ffc.LIGHT_CYAN_EX.value)
 
 
 def tip_color_shutdown() -> None:
-    shutdown_ascii_art = pyfiglet.figlet_format(
-        __SHUTDOWN_ASCII,
-        font=__FONT,
-        direction=___DIRECTION,
-        justify=__JUSTIFY
-    )
-    print(ffc.LIGHT_RED_EX.value + shutdown_ascii_art)
+    __print_colored_ascii_art(__SHUTDOWN_ASCII, ffc.LIGHT_RED_EX.value)
 

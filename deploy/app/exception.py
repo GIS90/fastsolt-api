@@ -39,14 +39,17 @@ from fastapi.encoders import jsonable_encoder
 from deploy.utils.status_value import (StatusMsg as status_msg,
                                        StatusCode as status_code)
 from deploy.utils.status import FailureStatus
-from deploy.utils.exception import JwtCredentialsException, UserInValidateException
+from deploy.utils.exception import JwtCredentialsException, UserInvalidException
 from deploy.utils.enumeration import MediaType
 from deploy.utils.logger import logger as LOG
 
 
 def register_app_exception(app: FastAPI, app_headers: dict):
     """
-    App异常捕捉
+    注册应用程序中的全局异常处理器，用于捕获并统一处理不同类型的异常。
+
+    :param app: FastAPI 应用实例，用于注册异常处理器。
+    :param app_headers: 字典类型，包含需要在响应中附加的公共头部信息。
     """
 
     # RequestValidationError[请求验证错误]
@@ -99,12 +102,12 @@ def register_app_exception(app: FastAPI, app_headers: dict):
             media_type=MediaType.APPJson.value
         )
 
-    # UserInValidateException[用户不可用验证异常]
-    @app.exception_handler(UserInValidateException)
-    async def user_invalid_exception_handler(request: Request, exec: UserInValidateException):
+    # UserInvalidException[用户不可用验证异常]
+    @app.exception_handler(UserInvalidException)
+    async def user_invalid_exception_handler(request: Request, exec: UserInvalidException):
         """
         :param request: Request
-        :param exec: UserInValidateException
+        :param exec: UserInvalidException
         :return: JSONResponse
         """
         LOG.error(f"请求地址{request.url.__str__()}，[user_invalid_exception_handler]: {exec.__str__()}")
@@ -115,7 +118,7 @@ def register_app_exception(app: FastAPI, app_headers: dict):
             message=status_msg.get(207),
             data={"error": exec.detail}
         ).status_body
-        headers = {"app-cm-exception-webhook": "UserInValidateException"}
+        headers = {"app-cm-exception-webhook": "UserInvalidException"}
         headers.update(app_headers)
         return JSONResponse(
             content=content,

@@ -47,12 +47,12 @@ from pathlib import Path, PurePath
 """ - - - - - - - - - - - - - - - - - 加密类 - - - - - - - - - - - - - - - - -"""
 
 
-def md5(v):
+def md5(v: str) -> str:
     """
     字符串md5加密
 
-    :param v: value
-    :return: md5 value
+    :param v: string value
+    :return: md5 string value
     """
     if isinstance(v, str):
         v = v.encode('utf-8')
