@@ -7,7 +7,7 @@ colorama==0.4.6
 dnspython==2.8.0
 ecdsa==0.19.1
 email-validator==2.3.0
-fastapi==0.122.0
+fastapi==0.123.7
 greenlet==3.2.4
 h11==0.16.0
 idna==3.11
@@ -19,7 +19,7 @@ pydantic-core==2.41.5
 pyfiglet==1.0.4
 pymysql==1.1.2
 python-dotenv==1.2.1
-python-jose==3.3.0
+python-jose==3.5.0
 python-multipart==0.0.20
 redis==7.1.0
 rsa==4.9.1

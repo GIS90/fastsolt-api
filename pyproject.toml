@@ -1,12 +1,13 @@
 [project]
-name = "fastslot-api"
+name = "Fastslot-api"
 version = "1.0.1"
 description = "基于FastAPI Web框架、Pydantic、异步的快速开发API脚手架"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "aiomysql>=0.3.2",
-    "fastapi>=0.122.0",
+    "fastapi==0.123.7",
+    "python-jose==3.5.0",
     "sqlalchemy[asyncio]>=2.0.44",
     "uvicorn>=0.38.0",
 ]
