@@ -4,6 +4,7 @@
 ------------------------------------------------
 
 describe: 
+    app exception handler
 
 base_info:
     __author__ = PyGo

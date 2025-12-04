@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    middleware
+    app middleware
 
 base_info:
     __author__ = PyGo
