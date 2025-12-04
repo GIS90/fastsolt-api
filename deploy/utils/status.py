@@ -31,7 +31,7 @@ Life is short, I use python.
 ------------------------------------------------
 """
 import json
-from fastapi import status as http_status
+from fastapi import status as fastapi_http_status
 from fastapi.responses import JSONResponse
 from typing import Union, Dict, List
 
@@ -50,7 +50,7 @@ class Status(JSONResponse):
         }
         super().__init__(
             content=self.status_body,
-            status_code=http_status.HTTP_200_OK,
+            status_code=fastapi_http_status.HTTP_200_OK,
             media_type=MediaType.APPJson.value
         )
 

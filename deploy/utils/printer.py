@@ -48,23 +48,23 @@ pp = pprint.PrettyPrinter(
 )
 
 
-def printer_json(content: dict):
+def printer_json(content: dict) -> None:
     pp.pprint(content)
 
 
-def printer_info(content: str, hr: bool = False):
+def printer_info(content: str, hr: bool = False) -> None:
     if hr:print(ffc.GREEN.value + "*" * 88)
     print(fp.info.value + content)
     if hr:print(ffc.GREEN.value + "*" * 88)
 
 
-def printer_warn(content: str, hr: bool = False):
+def printer_warn(content: str, hr: bool = False) -> None:
     if hr:print(ffc.YELLOW.value + "~" * 88)
     print(fp.warn.value + content)
     if hr:print(ffc.YELLOW.value + "~" * 88)
 
 
-def printer_error(content: str, hr: bool = False):
+def printer_error(content: str, hr: bool = False) -> None:
     if hr:print(ffc.RED.value + "> " * 45)
     print(fp.error.value + content)
     if hr:print(ffc.RED.value + "< " * 45)
