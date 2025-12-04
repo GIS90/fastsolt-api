@@ -46,7 +46,7 @@ from deploy.utils.exception import JwtCredentialsException
 
 
 # view
-access = APIRouter(prefix="/access", tags=["JWT Token系统验证"])
+access: APIRouter = APIRouter(prefix="/access", tags=["JWT Token系统验证"])
 
 
 # ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ *

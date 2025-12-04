@@ -46,7 +46,7 @@ from deploy.utils.status_value import (StatusEnum as status_enum,
 
 
 # define view
-base = APIRouter(prefix="/base", tags=["基础API：Path Query Body Form Cookie Header"])
+base: APIRouter = APIRouter(prefix="/base", tags=["基础API：Path Query Body Form Cookie Header"])
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

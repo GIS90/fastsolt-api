@@ -36,7 +36,7 @@ from deploy.config import app_docs_url, server_name, server_version
 
 
 # define view
-root = APIRouter(prefix="", tags=["首页"])
+root: APIRouter = APIRouter(prefix="", tags=["首页"])
 
 
 @root.get('/',

@@ -65,6 +65,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from typing import Dict
 from fastapi import APIRouter, status as fastapi_http_status
 from fastapi.responses import (Response,
                                PlainTextResponse, HTMLResponse, JSONResponse,
@@ -76,9 +77,9 @@ from deploy.schema.po.response import UserIn, UserOut
 
 
 # define view
-response = APIRouter(prefix="/response", tags=["Response对象类返回测试示例"])
+response: APIRouter = APIRouter(prefix="/response", tags=["Response对象类返回测试示例"])
 
-headers = {"Hello": "World"}
+headers: Dict = {"Hello": "World"}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - [Response返回类] - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

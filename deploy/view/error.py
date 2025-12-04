@@ -39,7 +39,7 @@ from deploy.utils.status import Status, FailureStatus, SuccessStatus
 
 
 # define view
-error = APIRouter(prefix="/error", tags=["ERROR错误"])
+error: APIRouter = APIRouter(prefix="/error", tags=["ERROR错误"])
 
 
 @error.get('/http_exception/404',

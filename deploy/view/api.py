@@ -37,8 +37,8 @@ from deploy.utils.decorator import watch_except
 
 
 # define view
-api = APIRouter(prefix="/api", tags=["APIs集合"])
-api_service = ApiService()
+api: APIRouter = APIRouter(prefix="/api", tags=["APIs集合"])
+api_service: ApiService = ApiService()
 
 
 @api.get('/m1/case',

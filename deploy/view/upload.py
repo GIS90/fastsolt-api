@@ -38,11 +38,11 @@ from deploy.utils.status import Status, SuccessStatus
 
 
 # define view
-upload = APIRouter(prefix='/upload', tags=["文件上传"])
+upload: APIRouter = APIRouter(prefix='/upload', tags=["文件上传"])
 
 
 # define service
-upload_service = UploadService()
+upload_service: UploadService = UploadService()
 
 
 @upload.post('/file',

@@ -35,7 +35,7 @@ from deploy.utils.status import Status, SuccessStatus
 
 
 # define view
-method = APIRouter(prefix="/method", tags=["METHOD请求方法"])
+method: APIRouter = APIRouter(prefix="/method", tags=["METHOD请求方法"])
 
 
 @method.get('/get',

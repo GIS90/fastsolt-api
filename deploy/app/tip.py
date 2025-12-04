@@ -57,7 +57,7 @@ __JUSTIFY = "center"    # 对齐方式：auto left center right
 ___DIRECTION = "auto"   # 方向：auto left-to-right right-to-left
 
 
-def tip_color_startup():
+def tip_color_startup() -> None:
     startup_ascii_art = pyfiglet.figlet_format(
         __STARTUP_ASCII,
         font=__FONT,
@@ -67,7 +67,7 @@ def tip_color_startup():
     print(ffc.LIGHT_CYAN_EX.value + startup_ascii_art)
 
 
-def tip_color_shutdown():
+def tip_color_shutdown() -> None:
     shutdown_ascii_art = pyfiglet.figlet_format(
         __SHUTDOWN_ASCII,
         font=__FONT,

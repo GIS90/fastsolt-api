@@ -39,7 +39,7 @@ from deploy.utils.status import Status, SuccessStatus
 
 
 # define view
-depend = APIRouter(prefix="/depend", tags=["Depend依赖注入"])
+depend: APIRouter = APIRouter(prefix="/depend", tags=["Depend依赖注入"])
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
