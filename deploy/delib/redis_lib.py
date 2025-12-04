@@ -37,11 +37,11 @@ from contextlib import contextmanager
 
 class RedisClientLib:
     def __init__(self, host: str, port: int, db: int, password: Optional[str], decode_responses=True):
-        self.HOST = host
-        self.PORT = port
-        self.DB = db
-        self.PASSWORD = password
-        self.decode_responses = decode_responses
+        self.HOST: str = host
+        self.PORT: int = port
+        self.DB: int = db
+        self.PASSWORD: Optional[str] = password
+        self.decode_responses: bool = decode_responses
         self._connection = None
 
     def __str__(self):
