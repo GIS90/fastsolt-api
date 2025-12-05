@@ -36,7 +36,7 @@ from pathlib import Path
 from dotenv import dotenv_values
 from typing import List, Dict
 from dataclasses import dataclass, field
-from deploy.utils.printer import printer_error, printer_info
+from deploy.utils.printer import printer_error, printer_info, printer_warn
 
 
 # 指定 .env 文件路径
@@ -54,6 +54,8 @@ if not etc_file.exists() or not etc_file.is_file():
 
 
 printer_info(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
+printer_warn(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
+printer_error(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
 
 
 with open(etc_file, "rb") as f:

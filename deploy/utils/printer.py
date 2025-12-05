@@ -54,29 +54,47 @@ def printer_json(content: dict) -> None:
     pp.pprint(content)
 
 
+def __printer(content: str,
+              content_color: str,
+              hr: bool,
+              hr_symbol: str,
+              hr_color: str,
+              hr_length: int) -> None:
+    """
+    打印带有颜色和分隔线的内容
+
+    参数:
+        content (str): 要打印的主要内容
+        content_color (str): 内容的颜色代码
+        hr (bool): 是否显示分隔线
+        hr_symbol (str): 分隔线使用的符号
+        hr_color (str): 分隔线的颜色代码
+        hr_length (int): 分隔线的长度
+
+    返回值:
+        None
+    """
+    __hr = hr_symbol * hr_length
+    if hr: print(f"{hr_color}{__hr}")
+    print(f"{content_color}{content}")
+    if hr: print(f"{hr_color}{__hr}")
+
 def printer_info(content: str, hr: bool = False) -> None:
     """
     信息级别内容
     """
-    if hr:print(ffc.GREEN.value + "*" * 88)
-    print(fp.info.value + content)
-    if hr:print(ffc.GREEN.value + "*" * 88)
+    __printer(content=content, content_color=fp.info.value, hr=hr, hr_symbol="* ", hr_color=ffc.GREEN.value, hr_length=55)
 
 
 def printer_warn(content: str, hr: bool = False) -> None:
     """
     警告级别内容
     """
-    if hr:print(ffc.YELLOW.value + "~" * 88)
-    print(fp.warn.value + content)
-    if hr:print(ffc.YELLOW.value + "~" * 88)
+    __printer(content=content, content_color=fp.warn.value, hr=hr, hr_symbol="~ ", hr_color=ffc.YELLOW.value, hr_length=55)
 
 
 def printer_error(content: str, hr: bool = False) -> None:
     """
     错误级别内容
     """
-    if hr:print(ffc.RED.value + "> " * 45)
-    print(fp.error.value + content)
-    if hr:print(ffc.RED.value + "< " * 45)
-
+    __printer(content=content, content_color=fp.error.value, hr=hr, hr_symbol="✘ ", hr_color=ffc.RED.value, hr_length=55)
