@@ -39,13 +39,12 @@ import hashlib
 import time
 import subprocess
 import platform
-from typing import List, Set, Dict, Union, Optional, Any, Literal
+from typing import List, Tuple, Set, Dict, Union, Optional, Any, Literal
 from datetime import datetime, timedelta
 from pathlib import Path, PurePath
 
 
 """ - - - - - - - - - - - - - - - - - 加密类 - - - - - - - - - - - - - - - - -"""
-
 
 def md5(v: str) -> str:
     """
@@ -61,15 +60,15 @@ def md5(v: str) -> str:
 
 def filename2md5(rtx_id: str = None, file_name: str = None, _type: str = 'file'):
     """
-    get local store file name by md5 value
+    根据文件名生成MD5值，用于本地存储文件命名
 
-    :param rtx_id: rtx id
+    :param rtx_id: rtx-id
     :param file_name: file name
     :param _type: file type, is file,image, and so on.
     :return:
-    result is tuple
-    param1: md5 value no suffix
-    param2: md5 value have suffix
+        result is tuple
+        param1: md5 value no suffix
+        param2: md5 value have suffix
     """
     file_names = os.path.splitext(file_name)
     suffix = (file_names[1]).lower() if len(file_names) > 1 else ''
@@ -138,7 +137,7 @@ def ts2d(st):
 
 def dura_date(d1, d2, need_d=False):
     """
-    get datetime1 and datetime2 difference
+    计算两个日期时间之间的差值
 
     :param d1: datetime parameter 1
     :param d2: datetime parameter 2
@@ -188,19 +187,19 @@ def get_now(format="%Y-%m-%d %H:%M:%S"):
 
 def get_week_day(date):
     """
-    today week
+    查询日期的星期
 
     :param date: date
     :return: week
     """
-    weekday_list = ('星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期天')
+    weekday_list: Tuple = ('星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期天')
     weekday = weekday_list[date.weekday()]
     return weekday
 
 
 def get_month_list():
     """
-    获取月份list
+    获取月份列表
 
     :return: list data
     """
@@ -210,14 +209,13 @@ def get_month_list():
 
 def get_day_week_date(query_date):
     """
-    get query day current week
-    :param query_date: query day, is str
+    获取指定日期所在周的日期信息
 
-    return dict
-    format:
-        - start_time
-        - end_time
-        - [星期一date, 星期二date, 星期三date, 星期四date, 星期五date, 星期六date, 星期日date]
+    :param query_date: 查询日期
+    :return: 包含本周起始日期、结束日期和每日日期的字典
+        - start_week_date: 本周开始日期 (周一)
+        - end_week_date: 本周结束日期 (周日)
+        - week_date: 包含周一到周日日期的列表
     """
     if not query_date:
         query_date = get_now_date()
@@ -243,9 +241,12 @@ def get_day_week_date(query_date):
 
 def get_real_ip(request):
     """
-    get request real ip
+    获取请求的真实IP地址
+    优先从HTTP头部的X-Forwarded-For字段获取客户端IP，
+    如果不存在该字段则使用remote_addr获取
 
-    :param request: flask api request object
+    :param request: Flask API请求对象
+    :return: 客户端IP地址字符串
     """
     if not request.headers.getlist("X-Forwarded-For"):
         ip = request.remote_addr
@@ -256,9 +257,11 @@ def get_real_ip(request):
 
 def get_rtx_id(request):
     """
-    get request user rtx-id
+    获取请求用户的RTX-ID
+    从HTTP头部的X-Rtx-Id字段获取用户标识信息
 
-    :param request: flask api request object
+    :param request: Flask API请求对象
+    :return: 用户RTX-ID字符串，如果不存在则返回空字符串
     """
     return request.headers.get("X-Rtx-Id") \
         if request.headers.get("X-Rtx-Id") else ''
@@ -269,20 +272,21 @@ def get_rtx_id(request):
 
 def mk_dirs(path):
     """
-    make folder（递归方式）
+    递归创建文件夹
 
-    :param path: to make folder path
+    :param path: to make folder
     :return: path
     """
-    os.makedirs(path)
+    os.makedirs(path, exist_ok=True)
     return path
 
 
-def get_cur_folder():
+def __get_cur_folder():
     """
-    get current folder, solve is or not frozen of the script
+    获取当前脚本所在的文件夹路径，解决脚本是否被冻结的问题
 
-    :return: the file current folder
+    :return: 当前脚本所在的文件夹路径
+    :rtype: Path
     """
     # config file absolute path
     current_abspath_file = Path(__file__).resolve()
@@ -299,11 +303,11 @@ def get_deploy_folder():
 
     :return: abs deploy path
     """
-    if not get_cur_folder().is_absolute() \
-            or not get_cur_folder().exists():
+    if not __get_cur_folder().is_absolute() \
+            or not __get_cur_folder().exists():
         return None
 
-    return get_cur_folder().parent
+    return __get_cur_folder().parent
 
 
 def get_root_folder():
@@ -321,25 +325,26 @@ def get_root_folder():
 
 """ - - - - - - - - - - - - - - - - - 参数校验类 - - - - - - - - - - - - - - - - -"""
 
-
 def v2decimal(x, y):
     """
-    保留小数
+    将字符串数值转换为指定小数位数的数值
 
-    :param x: value
-    :param y: point decimal
-    :return:
+    :param x: 字符串类型的数值
+    :param y: 保留的小数位数
+    :return: 转换后的数值，如果输入为空则返回None
     """
     if not x:
         return None
-    if x.find('.') > 0:
-        return round(x, y)
-    return int(x)
+
+    try:
+        return round(float(x), y)
+    except ValueError:
+        return None
 
 
 def check_length(data, limit=10):
     """
-    check data length
+    检查数据长度是否符合限制要求
 
     :param data: check data
     :param limit: length limit, default value is 10
@@ -355,7 +360,7 @@ def check_length(data, limit=10):
 
 def ping(ip: str, **kwargs):
     """
-    insect to ping the ip connection
+    Ping
 
     :param ip: the target ip or 域名
     :param kwargs: the ping other parameters
@@ -411,7 +416,7 @@ def ping(ip: str, **kwargs):
 
 def host_os():
     """
-    current run pc or server information
+    获取当前运行的操作系统类型和架构信息，并返回对应的编码和详细信息字典。
     Windows: 1
     Linux: 2
     MacOS: 3
@@ -439,35 +444,6 @@ def host_os():
 
 """ - - - - - - - - - - - - - - - - - 权限类 - - - - - - - - - - - - - - - - -"""
 
-#
-# def auth_rtx_join(rtx_list=None) -> list:
-#     """
-#     管理员特殊数据权限
-#     > 与config中的ADMIN_AUTH_LIST关联
-#     > 追加ADMIN
-#     > 追加传入的特殊用户列表
-#
-#     参数只允许是list或者str
-#     """
-#     if rtx_list is None:
-#         rtx_list = []
-#     if not isinstance(rtx_list, list) \
-#             and not isinstance(rtx_list, str):
-#         rtx_list = []
-#
-#     _new_list = list()
-#     # 特殊权限
-#     _new_list = SERVER_ADMIN_AUTH_LIST.copy()  # 多层在用copy.deepcopy
-#     # 管理员
-#     _new_list.append(SERVER_ADMIN_RTX)
-#     # 传入的权限操作账户RTX列表
-#     if rtx_list and isinstance(rtx_list, list):
-#         _new_list.extend(rtx_list)
-#     if rtx_list and isinstance(rtx_list, str):
-#         _new_list.append(rtx_list)
-#     return _new_list
-
-
 def api_inspect_rtx() -> dict:
     """
     检查请求的API是否包含RTX-ID参数，不包含则中止请求
@@ -484,7 +460,7 @@ def api_inspect_rtx() -> dict:
 """ - - - - - - - - - - - - - - - - - 数据类 - - - - - - - - - - - - - - - - -"""
 
 
-def get_file_size(path, unit: str = 'KB'):
+def get_file_size(path: str, unit: str = 'KB'):
     """
     获取传入的文件大小，以默认KB大小返回
     """
@@ -516,7 +492,7 @@ def get_file_size(path, unit: str = 'KB'):
         return size
 
 
-def generate_string(length: int = 16) -> str:
+def random_string(length: int = 16) -> str:
     """
     生成随机字符串
     :param length: 字符串长度

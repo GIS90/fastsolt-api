@@ -129,7 +129,7 @@ def run_command(cmd, check_exit_code=True, shell=True, cwd=None):
     return _run_cmd(cmd, shell=shell, check_exit_code=check_exit_code, cwd=cwd)
 
 
-def run_command_no_output(cmd, check_exit_code=True, shell=True, cwd=None):
+def run_command_no_output(cmd, check_exit_code: bool = True, shell: bool = True, cwd=None):
     """
     run command no return command output
 
@@ -142,7 +142,7 @@ def run_command_no_output(cmd, check_exit_code=True, shell=True, cwd=None):
     return _run_cmd(cmd, shell=shell, check_exit_code=check_exit_code, cwd=cwd)[0]
 
 
-def check_command_by_which(cmd):
+def check_command_by_which(cmd: str) -> bool:
     """
     which the server is or not have command
 
