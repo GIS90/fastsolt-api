@@ -19,10 +19,6 @@ base_info:
     __file_name__ = dingtalk_lib.py
 
 usage:
-    json_message = {
-        "title": "Hello World",
-        "text": "Enjoy the good life every day！！!"
-    }
     user = 'manager2730'
     dapi = DingApi()
     res = dapi.robot2send(message=json_message, to_id=user)
@@ -131,7 +127,7 @@ class DingtalkLib:
         config.region_id = 'central'
         return dingtalkrobot_1_0Client(config)
 
-    def robot2send(self, message: json, to_id: str) -> Status:
+    def robot2send(self, message: dict, to_id: str) -> Status:
         """
         Use dingtalk openApi to send message
         :param message: DingDing消息体，为MarkDown语法
@@ -140,11 +136,17 @@ class DingtalkLib:
             status_id: 状态码,
             msg: 消息体
             data: 数据体
+
+        message格式：
+        {
+            "title": "Hello World",
+            "text": "Enjoy the good life every day！！!"
+        }
         """
         if not self.access_token:
             return FailureStatus(
                 status_id=status_code.CODE_903_OTHER_THREE_API_TOKEN_FAILURE.value,
-                message="[DingTalk]TOKEN初始化失败")
+                message="[DingTalk]Token初始化失败")
 
         batch_send_otoheaders = dingtalkrobot__1__0_models.BatchSendOTOHeaders()
         batch_send_otoheaders.x_acs_dingtalk_access_token = self.access_token
