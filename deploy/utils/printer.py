@@ -32,6 +32,7 @@ Life is short, I use python.
 """
 import pprint
 from colorama import init
+from typing import Dict
 from deploy.utils.enumeration import (fontForeColor as ffc,
                                       fontBackColor as fbc)
 from deploy.utils.enumeration import fontPrinter as fp
@@ -47,7 +48,7 @@ pp = pprint.PrettyPrinter(
     sort_dicts=True     # 是否对字典键排序
 )
 
-def printer_json(content: dict) -> None:
+def printer_json(content: Dict) -> None:
     """
     格式化打印JSON内容
     """

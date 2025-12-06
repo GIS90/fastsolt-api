@@ -197,7 +197,7 @@ def read_token_header(
     :param token: [str]token
     :return: [dict]header
     """
-    header = dict()
+    header: Dict = dict()
     if not token:
         return header
 

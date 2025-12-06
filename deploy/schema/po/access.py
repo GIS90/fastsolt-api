@@ -35,9 +35,6 @@ from pydantic import Field, field_validator
 
 
 class O2LUserLogin(baseModel):
-    """
-    url: /2l/login
-    """
     username: str = Field(..., min_length=1, max_length=25, description="用户名称")
     password: str = Field(..., min_length=1, max_length=30, description="用户密码")
 
@@ -51,11 +48,11 @@ class O2LUserLogin(baseModel):
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """
-    username字段特殊验证：字母+数字
+    字段特殊验证：字母+数字
     """
     @field_validator("username")
     def name_is_alnum(cls, value: str):
-        assert str(value).isalnum(), "username field is isalnum."
+        assert str(value).isalnum(), "Field username field is isalnum."
         return value
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

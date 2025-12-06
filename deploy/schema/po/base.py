@@ -82,11 +82,11 @@ class BaseUserBody(baseModel):
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """
-    name字段特殊验证
+    字段特殊验证：字母+数字
     """
     @field_validator("name")
-    def name_is_alpha(cls, value: str):
-        assert str(value).isalpha(), "name field is alpha."
+    def name_is_alnum(cls, value: str):
+        assert str(value).isalnum(), "Field name field is isalnum."
         return value
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -113,4 +113,14 @@ class UserBody(BaseUserBody):
             }
         }
 
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    """
+    字段特殊验证：字母+数字
+    """
+    @field_validator("name")
+    def name_is_alnum(cls, value: str):
+        assert str(value).isalnum(), "Field name field is isalnum."
+        return value
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

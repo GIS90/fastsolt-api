@@ -446,7 +446,7 @@ def host_os():
 """ - - - - - - - - - - - - - - - - - 权限类 - - - - - - - - - - - - - - - - -"""
 
 
-def api_inspect_rtx() -> dict:
+def api_inspect_rtx() -> Dict:
     """
     检查请求的API是否包含RTX-ID参数，不包含则中止请求
     POST请求：
@@ -502,7 +502,7 @@ def random_string(length: int = 16) -> str:
     return ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
 
 
-def list_dict_find(options: List[dict], key: str, value: any) -> Union[dict, None]:
+def list_dict_find(options: List[Dict], key: str, value: any) -> Union[Dict, None]:
     """
     字典列表查找
     """
@@ -624,7 +624,7 @@ def get_all_parent_ids_iterative(
     :param parent_key: [str]父节点ID字段名
     :return: [list]
     """
-    menu_dict = {item[id_key]: item for item in flat_menus}
+    menu_dict: Dict = {item[id_key]: item for item in flat_menus}
     all_ids = set(permission_ids)
 
     # 使用队列进行广度优先搜索
