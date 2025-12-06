@@ -43,8 +43,8 @@ from typing import List, Tuple, Set, Dict, Union, Optional, Any, Literal
 from datetime import datetime, timedelta
 from pathlib import Path, PurePath
 
-
 """ - - - - - - - - - - - - - - - - - 加密类 - - - - - - - - - - - - - - - - -"""
+
 
 def md5(v: str) -> str:
     """
@@ -53,13 +53,14 @@ def md5(v: str) -> str:
     :param v: string value
     :return: md5 string value
     """
+    if not v: v = random_string(16)
     if isinstance(v, str):
         v = v.encode('utf-8')
     return hashlib.md5(v).hexdigest()
 
 
-def filename2md5(rtx_id: str = None, file_name: str = None, _type: str = 'file'):
-    """
+def filename2md5(rtx_id: str = None, file_name: str = None, _type: str = 'file') -> Tuple[str, str]:
+    """[buildin method]
     根据文件名生成MD5值，用于本地存储文件命名
 
     :param rtx_id: rtx-id
@@ -81,7 +82,7 @@ def filename2md5(rtx_id: str = None, file_name: str = None, _type: str = 'file')
 """ - - - - - - - - - - - - - - - - - 时间、日期 - - - - - - - - - - - - - - - - -"""
 
 
-def s2d(s, fmt="%Y-%m-%d %H:%M:%S"):
+def s2d(s, fmt="%Y-%m-%d %H:%M:%S") -> datetime:
     """
     字符串转日期
 
@@ -92,7 +93,7 @@ def s2d(s, fmt="%Y-%m-%d %H:%M:%S"):
     return datetime.strptime(s, fmt)
 
 
-def d2s(d, fmt="%Y-%m-%d %H:%M:%S"):
+def d2s(d, fmt="%Y-%m-%d %H:%M:%S") -> str:
     """
     日期转字符串
 
@@ -103,17 +104,17 @@ def d2s(d, fmt="%Y-%m-%d %H:%M:%S"):
     return d.strftime(fmt)
 
 
-def d2ts(d):
+def d2ts(d) -> float:
     """
     日期转ts
 
     :param d: datetime type parameter
-    :return: time.time type
+    :return: timestamp type
     """
     return time.mktime(d.timetuple())
 
 
-def s2ts(s, fmt="%Y-%m-%d %H:%M:%S"):
+def s2ts(s, fmt="%Y-%m-%d %H:%M:%S") -> float:
     """
     字符串转ts
 
@@ -125,7 +126,7 @@ def s2ts(s, fmt="%Y-%m-%d %H:%M:%S"):
     return d2ts(d)
 
 
-def ts2d(st):
+def ts2d(st) -> datetime:
     """
     时间戳转日期
 
@@ -135,7 +136,7 @@ def ts2d(st):
     return datetime.fromtimestamp(st)
 
 
-def dura_date(d1, d2, need_d=False):
+def dura_date(d1: Union[str, datetime], d2: Union[str, datetime], need_d: bool = False):
     """
     计算两个日期时间之间的差值
 
@@ -158,7 +159,7 @@ def dura_date(d1, d2, need_d=False):
     return d
 
 
-def get_now_time():
+def get_now_time() -> datetime:
     """
     获取当前时间
 
@@ -176,7 +177,7 @@ def get_now_date():
     return datetime.now().date()
 
 
-def get_now(format="%Y-%m-%d %H:%M:%S"):
+def get_now(format="%Y-%m-%d %H:%M:%S") -> str:
     """
     获取当前时间，字符串类型
 
@@ -185,7 +186,7 @@ def get_now(format="%Y-%m-%d %H:%M:%S"):
     return d2s(datetime.now(), format)
 
 
-def get_week_day(date):
+def get_week_day(date) -> str:
     """
     查询日期的星期
 
@@ -197,7 +198,7 @@ def get_week_day(date):
     return weekday
 
 
-def get_month_list():
+def get_month_list() -> List[str]:
     """
     获取月份列表
 
@@ -207,7 +208,7 @@ def get_month_list():
             '7月', '8月', '9月', '10月', '11月', '12月']
 
 
-def get_day_week_date(query_date):
+def get_day_week_date(query_date) -> Dict:
     """
     获取指定日期所在周的日期信息
 
@@ -239,7 +240,7 @@ def get_day_week_date(query_date):
 """ - - - - - - - - - - - - - - - - - 用户类 - - - - - - - - - - - - - - - - -"""
 
 
-def get_real_ip(request):
+def get_real_ip(request) -> str:
     """
     获取请求的真实IP地址
     优先从HTTP头部的X-Forwarded-For字段获取客户端IP，
@@ -255,7 +256,7 @@ def get_real_ip(request):
     return ip
 
 
-def get_rtx_id(request):
+def get_rtx_id(request) -> str:
     """
     获取请求用户的RTX-ID
     从HTTP头部的X-Rtx-Id字段获取用户标识信息
@@ -270,7 +271,7 @@ def get_rtx_id(request):
 """ - - - - - - - - - - - - - - - - - 文件、目录 - - - - - - - - - - - - - - - - -"""
 
 
-def mk_dirs(path):
+def mk_dirs(path: str) -> str:
     """
     递归创建文件夹
 
@@ -281,7 +282,7 @@ def mk_dirs(path):
     return path
 
 
-def __get_cur_folder():
+def __get_cur_folder() -> Path:
     """
     获取当前脚本所在的文件夹路径，解决脚本是否被冻结的问题
 
@@ -297,7 +298,7 @@ def __get_cur_folder():
     return current_abspath_file.parent
 
 
-def get_deploy_folder():
+def get_deploy_folder() -> Optional[Path]:
     """
     获取项目deploy目录
 
@@ -310,7 +311,7 @@ def get_deploy_folder():
     return __get_cur_folder().parent
 
 
-def get_root_folder():
+def get_root_folder() -> Optional[Path]:
     """
     获取项目root目录
 
@@ -325,7 +326,8 @@ def get_root_folder():
 
 """ - - - - - - - - - - - - - - - - - 参数校验类 - - - - - - - - - - - - - - - - -"""
 
-def v2decimal(x, y):
+
+def v2decimal(x: str, y: int) -> Optional[float]:
     """
     将字符串数值转换为指定小数位数的数值
 
@@ -333,8 +335,7 @@ def v2decimal(x, y):
     :param y: 保留的小数位数
     :return: 转换后的数值，如果输入为空则返回None
     """
-    if not x:
-        return None
+    if not x: return None
 
     try:
         return round(float(x), y)
@@ -342,7 +343,7 @@ def v2decimal(x, y):
         return None
 
 
-def check_length(data, limit=10):
+def check_length(data: str, limit: int = 10) -> bool:
     """
     检查数据长度是否符合限制要求
 
@@ -419,7 +420,7 @@ def host_os():
     获取当前运行的操作系统类型和架构信息，并返回对应的编码和详细信息字典。
     Windows: 1
     Linux: 2
-    MacOS: 3
+    Darwin: 3
 
     :return: int, detail information
     """
@@ -444,6 +445,7 @@ def host_os():
 
 """ - - - - - - - - - - - - - - - - - 权限类 - - - - - - - - - - - - - - - - -"""
 
+
 def api_inspect_rtx() -> dict:
     """
     检查请求的API是否包含RTX-ID参数，不包含则中止请求
@@ -460,7 +462,7 @@ def api_inspect_rtx() -> dict:
 """ - - - - - - - - - - - - - - - - - 数据类 - - - - - - - - - - - - - - - - -"""
 
 
-def get_file_size(path: str, unit: str = 'KB'):
+def get_file_size(path: str, unit: str = 'KB') -> float:
     """
     获取传入的文件大小，以默认KB大小返回
     """
@@ -483,11 +485,11 @@ def get_file_size(path: str, unit: str = 'KB'):
     elif __unit == 'KB':
         return size / b
     elif __unit == 'MB':
-        return size / b**2
+        return size / b ** 2
     elif __unit == 'GB':
-        return size / b**3
+        return size / b ** 3
     elif __unit == 'TB':
-        return size / b**4
+        return size / b ** 4
     else:
         return size
 
@@ -497,7 +499,7 @@ def random_string(length: int = 16) -> str:
     生成随机字符串
     :param length: 字符串长度
     """
-    return ''.join(random.sample(string.ascii_letters + string.digits, length))
+    return ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
 
 
 def list_dict_find(options: List[dict], key: str, value: any) -> Union[dict, None]:
@@ -507,9 +509,9 @@ def list_dict_find(options: List[dict], key: str, value: any) -> Union[dict, Non
     return next((item for item in options if item.get(key) == value), None)
 
 
-def cut_string(content: str, length: Optional[int]):
-    _max_len = 55 if not length else length
+def cut_string(content: str, length: Optional[int]) -> str:
     if not content: return content
+    _max_len = 55 if not length else length
     return content[:_max_len] + "......详情" if len(content) >= length else content
 
 
