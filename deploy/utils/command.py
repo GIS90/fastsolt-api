@@ -51,28 +51,13 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-import sys
-import os
-import inspect
 from subprocess import PIPE, Popen
 
-from deploy.utils.logger import logger as LOG
 from deploy.utils.printer import printer_warn
+from deploy.utils.utils import get_root_folder
 
 
-def get_cur_folder():
-    """
-    get current folder
-    :return: abs path
-    """
-    if getattr(sys, "frozen", False):
-        return os.path.dirname(os.path.abspath(__file__))
-    else:
-        cur_folder = os.path.dirname(inspect.getfile(inspect.currentframe()))
-        return os.path.abspath(cur_folder)
-
-
-def _run_cmd(cmd, shell=True, check_exit_code=True, cwd=None):
+def __run_cmd(cmd, shell=True, check_exit_code=True, cwd=None):
     """
     execute command at local shell, build in method,
     not allow other file to use
@@ -93,7 +78,7 @@ def _run_cmd(cmd, shell=True, check_exit_code=True, cwd=None):
         return -1, 'Command type is error'
 
     if not cwd:
-        cwd = get_cur_folder()
+        cwd = get_root_folder()
 
     # 统一转成string命令格式
     if not shell:
@@ -116,7 +101,7 @@ def _run_cmd(cmd, shell=True, check_exit_code=True, cwd=None):
     return return_code, output
 
 
-def run_command(cmd, check_exit_code=True, shell=True, cwd=None):
+def run_command(cmd, check_exit_code: bool = True, shell: bool = True, cwd=None):
     """
     run command return command code, output
 
@@ -126,7 +111,7 @@ def run_command(cmd, check_exit_code=True, shell=True, cwd=None):
     :param cwd: current work dir
     :return: command code
     """
-    return _run_cmd(cmd, shell=shell, check_exit_code=check_exit_code, cwd=cwd)
+    return __run_cmd(cmd, shell=shell, check_exit_code=check_exit_code, cwd=cwd)
 
 
 def run_command_no_output(cmd, check_exit_code: bool = True, shell: bool = True, cwd=None):
@@ -139,7 +124,7 @@ def run_command_no_output(cmd, check_exit_code: bool = True, shell: bool = True,
     :param cwd: current work dir
     :return: command code
     """
-    return _run_cmd(cmd, shell=shell, check_exit_code=check_exit_code, cwd=cwd)[0]
+    return __run_cmd(cmd, shell=shell, check_exit_code=check_exit_code, cwd=cwd)[0]
 
 
 def check_command_by_which(cmd: str) -> bool:
