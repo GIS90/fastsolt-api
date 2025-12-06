@@ -58,9 +58,6 @@ __app: FastAPI = FastAPI(
 
 
 class FSWebAppClass(WebBaseClass):
-    """
-    QRweb app class
-    """
     app = None
 
     def __init__(self, app):
@@ -69,9 +66,9 @@ class FSWebAppClass(WebBaseClass):
         :param app: FastAPI App instance
         """
         self.app = app
-        self.headers = {"app": "FSWebAppClass"}
+        self.headers = {"app": "FSWebAppClass"}     # 初始化Headers
         if not self.app:
-            LOG.critical('Web app server initialize is failure, exit......')
+            LOG.critical('Web App server initialize is failure, exit......')
             sys.exit(1)
 
         # APP object configuration

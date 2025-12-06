@@ -80,6 +80,7 @@ def __printer(content: str,
     print(f"{content_color}{content}")
     if hr: print(f"{hr_color}{__hr}")
 
+
 def printer_info(content: str, hr: bool = False) -> None:
     """
     信息级别内容

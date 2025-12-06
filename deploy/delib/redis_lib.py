@@ -4,7 +4,8 @@
 ------------------------------------------------
 
 describe:
-    redis lib
+    Redis客户端库类
+    用于创建和管理Redis数据库连接的客户端库
 
 base_info:
     __author__ = PyGo
@@ -37,10 +38,6 @@ from contextlib import contextmanager
 
 class RedisClientLib:
     """
-    Redis客户端库类
-
-    用于创建和管理Redis数据库连接的客户端库
-
     Args:
         host (str): Redis服务器主机地址
         port (int): Redis服务器端口号
@@ -51,7 +48,7 @@ class RedisClientLib:
     Returns:
         None
     """
-    def __init__(self, host: str, port: int, db: int, password: Optional[str], decode_responses=True):
+    def __init__(self, host: str, port: int, db: int, password: Optional[str], decode_responses=True) -> None:
         self.HOST: str = host
         self.PORT: int = port
         self.DB: int = db
@@ -59,10 +56,10 @@ class RedisClientLib:
         self.decode_responses: bool = decode_responses
         self._connection = None
 
-    def __str__(self):
-        return "RedisClientLib Class "
+    def __str__(self) -> str:
+        return f"RedisClientLib Class: [host: {self.HOST}] [port: {self.PORT}] [db: {self.DB}]] "
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     @property

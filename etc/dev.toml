@@ -45,3 +45,8 @@ format = "%(asctime)s - %(pathname)s[line:%(lineno)d] - [%(levelname)s] - %(mess
 prefix = "fastslot-api-log"
 max_size = 1048576  # 1M = 1 * 1024KB * 1024KB
 count = 10
+
+# 钉钉
+[dingtalk]
+base = "https://oapi.dingtalk.com/"
+token_api = "gettoken"

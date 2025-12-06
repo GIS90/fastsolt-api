@@ -36,7 +36,7 @@ from pathlib import Path
 from dotenv import dotenv_values
 from typing import List, Dict
 from dataclasses import dataclass, field
-from deploy.utils.printer import printer_error, printer_info
+from deploy.utils.printer import printer_error, printer_info, printer_warn
 
 
 # 指定 .env 文件路径
@@ -48,7 +48,8 @@ env: str = "dev" if not env_file.exists() \
 
 # 配置文件
 etc_file = root_folder.joinpath("etc", f"{env}.toml")
-if not etc_file.exists() or not etc_file.is_file():
+if (not etc_file.exists()
+        or not etc_file.is_file()):
     printer_error(content=f"配置文件[{env_file}]不存在，系统自动退出......", hr=True)
     sys.exit(1)
 
@@ -63,7 +64,6 @@ with open(etc_file, "rb") as f:
 # server
 server_name: str = data["server"].get("name") or "Fastslot-API"
 server_version: str = data["server"].get("version")
-
 
 # app
 # ---------- middleware ------------
@@ -85,11 +85,10 @@ app_static_folder = deploy_folder.joinpath(__app_static_folder)
 if not app_static_folder.exists():
     # if not exist, create it
     app_static_folder.mkdir(parents=True)
-
+    printer_warn(content=f"静态资源目录[{app_static_folder}]不存在，系统自动创建", hr=True)
 
 # db
 db_link: str = data["db"].get("link")
-
 
 # redis
 redis_host: str = data["redis"].get("host")
@@ -97,12 +96,10 @@ redis_port: int = data["redis"].get("port")
 redis_db: int = data["redis"].get("db")
 redis_password: str = data["redis"].get("password")
 
-
 # jwt
 jwt_secret_key: str = data["jwt"].get("secret_key")
 jwt_algorithm: str = data["jwt"].get("algorithm")
 jwt_expire: int = data["jwt"].get("expire")
-
 
 # log
 log_folder: str = data["log"].get("folder")
@@ -111,6 +108,10 @@ log_format: str = data["log"].get("format")
 log_prefix: str = data["log"].get("prefix")
 log_max_size: int = data["log"].get("max_size")
 log_count: int = data["log"].get("count")
+
+# dingtalk
+ding_base: str = data["dingtalk"].get("base")
+ding_token_api: str = data["dingtalk"].get("token_api")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
