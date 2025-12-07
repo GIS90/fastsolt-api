@@ -50,3 +50,12 @@ count = 10
 [dingtalk]
 base = "https://oapi.dingtalk.com/"
 token_api = "gettoken"
+
+# 存储
+[store]
+cache = "/Users/gaomingliang/Downloads/_CACHE"      # 缓存路径【绝对路径】 WIN：E:\_CACHE     MacOS：/Users/gaomingliang/Downloads/_CACHE
+# 7牛云存储
+yun_access = "mRF0cKGUJcfv7ry_Wyvc24cDNWEQz9DAKo_UOn0G"
+yun_secret = "xabmlB9zZ_MRwtgofQJzUxINnmcO_VUfkXYILx_Q"
+yun_base = "https://2lstore.pygo2.top"
+yun_space = "open2lstore"

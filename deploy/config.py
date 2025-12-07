@@ -113,6 +113,14 @@ log_count: int = data["log"].get("count")
 ding_base: str = data["dingtalk"].get("base")
 ding_token_api: str = data["dingtalk"].get("token_api")
 
+# store
+store_cache: str = data["store"].get("cache")
+store_yun_access: str = data["store"].get("yun_access")
+store_yun_secret: str = data["store"].get("yun_secret")
+store_yun_base: str = data["store"].get("yun_base")
+store_yun_space: str = data["store"].get("yun_space")
+
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # APP简介
