@@ -113,12 +113,21 @@ log_count: int = data["log"].get("count")
 ding_base: str = data["dingtalk"].get("base")
 ding_token_api: str = data["dingtalk"].get("token_api")
 
+# qywx
+qywx_base: str = data["qywx"].get("base")
+qywx_token_api: str = data["qywx"].get("token_api")
+qywx_send_api: str = data["qywx"].get("send_api")
+qywx_recall_api: str = data["qywx"].get("recall_api")
+qywx_upload_api: str = data["qywx"].get("upload_api")
+qywx_temp_api: str = data["qywx"].get("temp_api")
+
 # store
 store_cache: str = data["store"].get("cache")
 store_yun_access: str = data["store"].get("yun_access")
 store_yun_secret: str = data["store"].get("yun_secret")
 store_yun_base: str = data["store"].get("yun_base")
 store_yun_space: str = data["store"].get("yun_space")
+
 
 
 

@@ -138,3 +138,21 @@ class fontPrinter(Enum):
     info = fontForeColor.BLUE.value + fontStyle.NORMAL.value
     warn = fontForeColor.LIGHT_YELLOW_EX.value + fontBackColor.BLUE.value
     error = fontForeColor.LIGHT_RED_EX.value + fontBackColor.WHITE.value
+
+
+@unique
+class FileTypeEnum(Enum):
+    """
+    文件类型
+    """
+    EXCEL_MERGE = 1
+    EXCEL_SPLIT = 2
+    WORD = 3
+    PPT = 4
+    TEXT = 5
+    PDF = 6
+    DINGTALK = 7
+    AVATAR = 8
+    AVATAR_CROP = 9
+    OTHER = 99
+

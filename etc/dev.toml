@@ -51,6 +51,15 @@ count = 10
 base = "https://oapi.dingtalk.com/"
 token_api = "gettoken"
 
+# 企业微信
+[qywx]
+base = "https://qyapi.weixin.qq.com"
+token_api = "/cgi-bin/gettoken"
+send_api = "/cgi-bin/message/send"
+recall_api = "/cgi-bin/message/recall"
+upload_api = "/cgi-bin/media/upload"
+temp_api = "/cgi-bin/media/get"
+
 # 存储
 [store]
 cache = "/Users/gaomingliang/Downloads/_CACHE"      # 缓存路径【绝对路径】 WIN：E:\_CACHE     MacOS：/Users/gaomingliang/Downloads/_CACHE

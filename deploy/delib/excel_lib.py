@@ -42,7 +42,7 @@ import xlrd
 import openpyxl
 import zipfile
 from openpyxl.styles import colors
-from typing import Union, List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional
 
 from deploy.utils.utils import mk_dirs
 from deploy.utils.utils import get_now
@@ -84,7 +84,7 @@ class ExcelLib:
         return self.__str__()
 
     @staticmethod
-    def format_res(status_id: int, message: str, data: Union[List, Dict]) -> Dict:
+    def format_res(status_id: int, message: str, data: Optional[List, Dict]) -> Dict:
         """
         方法请求结果格式化
         """
