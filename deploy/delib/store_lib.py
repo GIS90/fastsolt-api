@@ -79,13 +79,17 @@ Life is short, I use python.
 import os
 import hashlib
 import requests
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from qiniu import Auth, put_file, BucketManager
-from deploy.config import (store_cache,
-                           store_yun_access, store_yun_secret, store_yun_base, store_yun_space)
+from deploy.config import store_yun_access, store_yun_secret, store_yun_base, store_yun_space
 from datetime import datetime
-from deploy.utils.status_value import StatusMsg as status_msg
-from deploy.utils.logger import logger as LOG
+from deploy.utils.status_value import StatusMsg as status_msg, StatusEnum as status_enum
+
+
+_YUN_ACCESS_KEY = store_yun_access
+_YUN_SECRET_KEY = store_yun_secret
+_YUN_BASE = store_yun_base      # 配置默认值
+_YUN_SPACE = store_yun_space
 
 
 class StoreLib:
@@ -93,22 +97,22 @@ class StoreLib:
     单密钥
     多空间
     """
-    def __init__(self, space_url, space_name):
-        self.access_key: str = store_yun_access
-        self.secret_key: str = store_yun_secret
-        self.space_url: str = space_url or store_yun_base
-        self.space_name: str = space_name or store_yun_space
+    def __init__(self, space_url: Optional[str], space_name: Optional[str]):
+        self.access_key: str = _YUN_ACCESS_KEY
+        self.secret_key: str = _YUN_SECRET_KEY
+        self.space_url: str = space_url or _YUN_BASE
+        self.space_name: str = space_name or _YUN_SPACE
         self.conn = self.__init_auth() or False
         self.manager = self.__init_bucket_manager() or False
 
     def __str__(self):
-        return f"StoreLib Class: [Space-name: {self.space_name}]"
+        return f"StoreLib Class: [Space-url: {self.space_url}] [Space-name: {self.space_name}]"
 
     def __repr__(self):
         return self.__str__()
 
     @staticmethod
-    def format_res(status_id: int, message: str, data: Dict) -> Dict:
+    def format_result(status_id: int, message: str, data: Optional[Dict, List]) -> Dict:
         """
         请求方法请求结果格式化
 
@@ -150,13 +154,12 @@ class StoreLib:
         :params store_name: store name, allow null
         :params timeout: time out, second unit, default is 7200（2h）
         """
-        if not self.check():
-            return None
-        if not space_name:
+        if (not self.check()
+                or not space_name):
             return None
         # new store name(key)
         # if not store_name:
-        #     store_name = self.new_now_store_name(v=self.get_now())
+        #     store_name = self.generate_new_store_name(v=self.get_now())
         try:
             return self.conn.upload_token(bucket=space_name, key=store_name, expires=timeout)
         except:
@@ -169,14 +172,14 @@ class StoreLib:
         return BucketManager(self.conn) if self.conn else None
 
     @staticmethod
-    def get_now(fmt: str="%Y-%m-%d %H:%M:%S") -> str:
+    def get_now(v: str="%Y-%m-%d %H:%M:%S") -> str:
         """
         字符串类型的当前时间
         """
-        return datetime.now().strftime(fmt)
+        return datetime.now().strftime(v)
 
     @classmethod
-    def new_now_store_name(cls, v) -> str:
+    def generate_new_store_name(cls, v) -> str:
         """
         用当前时间生成一个md5存储名称
         """
@@ -197,33 +200,38 @@ class StoreLib:
         存储对象名称：带上目录/，qiniu存储的对象会自动创建对应目录
         """
         if not store_name:
-            store_name = self.new_now_store_name(v=self.get_now())
+            store_name = self.generate_new_store_name(v=self.get_now())
         if not local_file:
-            return self.format_res(
+            return self.format_result(
                 450, '缺少上传文件', {})
         if not os.path.exists(local_file) or \
                 not os.path.isfile(local_file):
-            return self.format_res(
+            return self.format_result(
                 451, '上传文件不存在', {})
 
         try:
             bucket_name = space_name if space_name \
                 else self.space_name
-            token = self.__new_token(space_name=bucket_name, store_name=store_name, timeout=timeout)
+            token = self.__new_token(
+                space_name=bucket_name,
+                store_name=store_name,
+                timeout=timeout
+            )
             if not token:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]Token创建失败，请检查网络或者对象存储配置', {})
 
             ret, response = put_file(up_token=token, key=store_name, file_path=local_file, version=version)
             if response and response.status_code == 200:
                 ret['url'] = '%s/%s' % (self.space_url, store_name)
-                return self.format_res(
-                    100, 'success', ret)
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, ret)
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]上传文件失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]上传文件异常：%s' % str(error), {})
+            return self.format_result(
+                902, '[七牛云存储]上传文件异常：%s' % str(error), {})
 
     def scrapy(self, space_name: str = None, store_name: str = None, remote_url: str = None) -> Dict:
         """
@@ -234,16 +242,16 @@ class StoreLib:
 
         存储对象名称上带上目录/，存储的对象会自动创建对应目录
         """
-        if not store_name:
-            store_name = self.new_now_store_name(v=self.get_now())
         if not remote_url:
-            return self.format_res(
+            return self.format_result(
                 400, '缺少网络上传remote_url文件参数', {})
+        if not store_name:
+            store_name = self.generate_new_store_name(v=self.get_now())
 
         try:
             remote_response = requests.get(url=remote_url)
             if remote_response.status_code != 200:
-                return self.format_res(
+                return self.format_result(
                     451, '上传网络文件不存在', {})
 
             bucket_name = space_name if space_name \
@@ -251,13 +259,14 @@ class StoreLib:
             ret, response = self.manager.fetch(remote_url, bucket_name, store_name)
             if response and response.status_code == 200:
                 ret['url'] = '%s/%s' % (self.space_url, store_name)
-                return self.format_res(
-                    100, 'success', {'key': store_name})
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, {'key': store_name})
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]上传网络文件失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]上传网络文件异常：%s' % error, {})
+            return self.format_result(
+                902, '[七牛云存储]上传网络文件异常：%s' % error, {})
 
     def open_download_url(self, space_url: str = None, store_name: str = None) -> Optional[str]:
         bucket_url = space_url if space_url \
@@ -271,7 +280,7 @@ class StoreLib:
         store_name：存储对象的文件名称（包含目录）
         """
         if not store_name:
-            return self.format_res(
+            return self.format_result(
                 400, '缺少store_name文件参数', {})
 
         try:
@@ -280,16 +289,17 @@ class StoreLib:
             dl_url = '%s/%s' % (bucket_url, store_name)
             response = requests.get(dl_url)
             if response and response.status_code == 200:
-                return self.format_res(
-                    100, 'success', {'key': store_name, 'url': dl_url})
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, {'key': store_name, 'url': dl_url})
             if response and response.status_code == 404:
-                return self.format_res(
+                return self.format_result(
                     451, '文件对象不存在', {})
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]公开空间下载文件失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]公开空间下载文件异常：%s' % str(error), {})
+            return self.format_result(
+                902, '[七牛云存储]公开空间下载文件异常：%s' % str(error), {})
 
     def private_download(self, space_url: str = None, store_name: str = None, timeout: int = 120) -> Dict:
         """
@@ -299,9 +309,9 @@ class StoreLib:
         timeout：超时时间，以秒为单位
         """
         if not self.check():
-            return self.format_res(902, '[七牛云存储]Auth鉴权失败，请检查网络或者对象存储配置', {})
+            return self.format_result(902, '[七牛云存储]Auth鉴权失败，请检查网络或者对象存储配置', {})
         if not store_name:
-            return self.format_res(400, '缺少store_name文件参数', {})
+            return self.format_result(400, '缺少store_name文件参数', {})
 
         try:
             bucket_url = space_url if space_url \
@@ -310,16 +320,17 @@ class StoreLib:
             private_url = self.conn.private_download_url(dl_url, expires=timeout)
             response = requests.get(private_url)
             if response and response.status_code == 200:
-                return self.format_res(
-                    100, 'success', {'key': store_name, 'url': private_url})
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, {'key': store_name, 'url': private_url})
             if response and response.status_code == 404:
-                return self.format_res(
+                return self.format_result(
                     451, '文件对象不存在', {})
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]私有空间下载文件失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]私有空间下载文件异常：%s' % error, {})
+            return self.format_result(
+                902, '[七牛云存储]私有空间下载文件异常：%s' % error, {})
 
     def delete(self, space_name: str = None, store_name: str = None) -> Dict:
         """
@@ -330,20 +341,22 @@ class StoreLib:
         如果目录无存储对象文件，目录会自动删除
         """
         if not self.manager:
-            return self.format_res(902, '[七牛云存储]BucketManager初始化失败', {})
+            return self.format_result(902, '[七牛云存储]BucketManager初始化失败', {})
         if not store_name:
-            return self.format_res(400, '缺少store_name文件参数', {})
+            return self.format_result(400, '缺少store_name文件参数', {})
         bucket_name = space_name if space_name \
             else self.space_name
         try:
             ret, response = self.manager.delete(bucket_name, store_name)
             if response and response.status_code == 200:
-                return self.format_res(100, 'success', {'key': store_name})
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, {'key': store_name})
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]删除文件失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]删除文件异常：%s' % str(error), {})
+            return self.format_result(
+                902, '[七牛云存储]删除文件异常：%s' % str(error), {})
 
     def get_file_info(self, space_name: str = None, store_name: str = None) -> Dict:
         """
@@ -352,10 +365,10 @@ class StoreLib:
         store_name：存储对象的文件名称（包含目录）
         """
         if not self.manager:
-            return self.format_res(
+            return self.format_result(
                 902, '[七牛云存储]BucketManager初始化失败', {})
         if not store_name:
-            return self.format_res(
+            return self.format_result(
                 400, '缺少store_name文件参数', {})
 
         try:
@@ -363,13 +376,14 @@ class StoreLib:
                 else self.space_name
             ret, response = self.manager.stat(bucket_name, store_name)
             if response and response.status_code == 200:
-                return self.format_res(
-                    100, 'success', ret)
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, ret)
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]获取文件信息失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]获取文件信息异常：%s' % str(error), {})
+            return self.format_result(
+                902, '[七牛云存储]获取文件信息异常：%s' % str(error), {})
 
     def move(self, src_space_name: str = None, src_store_name: str = None,
              tar_space_name: str = None, tar_store_name: str = None,
@@ -384,15 +398,15 @@ class StoreLib:
         如果为False，目标存储对象文件存在的话不覆盖，移动失败
         """
         if not self.manager:
-            return self.format_res(902, '[七牛云存储]BucketManager初始化失败', {})
+            return self.format_result(902, '[七牛云存储]BucketManager初始化失败', {})
         if not src_space_name:
-            return self.format_res(400, '缺少src_space_name原存储对象空间名称参数', {})
+            return self.format_result(400, '缺少src_space_name原存储对象空间名称参数', {})
         if not src_store_name:
-            return self.format_res(400, '缺少src_store_name原存储对象名称参数', {})
+            return self.format_result(400, '缺少src_store_name原存储对象名称参数', {})
         if not tar_space_name:
-            return self.format_res(400, '缺少tar_space_name目标存储对象空间名称参数', {})
+            return self.format_result(400, '缺少tar_space_name目标存储对象空间名称参数', {})
         if not tar_store_name:
-            return self.format_res(400, '缺少tar_store_name目标存储对象名称参数', {})
+            return self.format_result(400, '缺少tar_store_name目标存储对象名称参数', {})
 
         try:
             # TODO 源文件、目标文件的存在验证
@@ -401,13 +415,14 @@ class StoreLib:
                                               tar_space_name,
                                               tar_store_name)
             if response and response.status_code == 200:
-                return self.format_res(
-                    100, 'success', {'tarkey': tar_store_name, 'srckey': src_store_name})
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, {'tarkey': tar_store_name, 'srckey': src_store_name})
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]对象移动失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]对象移动异常：%s' % str(error), {})
+            return self.format_result(
+                902, '[七牛云存储]对象移动异常：%s' % str(error), {})
 
     def copy(self, src_space_name: str = None, src_store_name: str = None,
              tar_space_name: str = None, tar_store_name: str = None) -> Dict:
@@ -421,15 +436,15 @@ class StoreLib:
         如果为False，目标存储对象文件存在的话不覆盖，移动失败
         """
         if not self.manager:
-            return self.format_res(902, '[七牛云存储]BucketManager初始化失败', {})
+            return self.format_result(902, '[七牛云存储]BucketManager初始化失败', {})
         if not src_space_name:
-            return self.format_res(400, '缺少src_space_name原存储对象空间名称参数', {})
+            return self.format_result(400, '缺少src_space_name原存储对象空间名称参数', {})
         if not src_store_name:
-            return self.format_res(400, '缺少src_store_name原存储对象名称参数', {})
+            return self.format_result(400, '缺少src_store_name原存储对象名称参数', {})
         if not tar_space_name:
-            return self.format_res(400, '缺少tar_space_name目标存储对象空间名称参数', {})
+            return self.format_result(400, '缺少tar_space_name目标存储对象空间名称参数', {})
         if not tar_store_name:
-            return self.format_res(400, '缺少tar_store_name目标存储对象名称参数', {})
+            return self.format_result(400, '缺少tar_store_name目标存储对象名称参数', {})
 
         try:
             # TODO 源文件、目标文件的存在验证
@@ -438,11 +453,12 @@ class StoreLib:
                                               tar_space_name,
                                               tar_store_name)
             if response and response.status_code == 200:
-                return self.format_res(
-                    100, 'success', {'tarkey': tar_store_name, 'srckey': src_store_name})
+                return self.format_result(
+                    100, status_enum.SUCCESS.value, {'tarkey': tar_store_name, 'srckey': src_store_name})
             else:
-                return self.format_res(
+                return self.format_result(
                     902, '[七牛云存储]对象复制失败：%s' % str(response.error), {})
         except Exception as error:
-            return self.format_res(902, '[七牛云存储]对象复制异常：%s' % str(error), {})
+            return self.format_result(
+                902, '[七牛云存储]对象复制异常：%s' % str(error), {})
 

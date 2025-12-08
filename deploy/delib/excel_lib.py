@@ -51,7 +51,7 @@ from deploy.config import store_cache
 from deploy.utils.status_value import StatusMsg as status_msg
 
 
-STORE_CACHE = store_cache
+_STORE_CACHE = store_cache
 # Excel拆分枚举
 EXCEL_SPLIT_STORE = ['1', '2']
 # 行列
@@ -174,7 +174,7 @@ class ExcelLib:
                 or _type not in [1, 2]):    # 默认xls
             _type = 1
         now_date: str = get_now(format="%Y%m%d")     # 按date存储
-        real_store_dir: str = os.path.join(STORE_CACHE, now_date)    # 文件存储目录
+        real_store_dir: str = os.path.join(_STORE_CACHE, now_date)    # 文件存储目录
         if not os.path.exists(real_store_dir):  # not exist to create
             mk_dirs(real_store_dir)
         _real_file: str = os.path.join(real_store_dir, file_name)
@@ -200,10 +200,10 @@ class ExcelLib:
         """
         now_date_str: str = get_now(format="%Y%m%d")
         split_dir: str = '%s/%s' % (now_date_str, dir_name)
-        real_store_dir: str = os.path.join(STORE_CACHE, split_dir)
+        real_store_dir: str = os.path.join(_STORE_CACHE, split_dir)
         if os.path.exists(real_store_dir):
             split_dir: str = '%s/%s_%s' % (now_date_str, dir_name, get_now(format="%Y-%m-%d-%H-%M-%S"))
-            real_store_dir: str = os.path.join(STORE_CACHE, split_dir)
+            real_store_dir: str = os.path.join(_STORE_CACHE, split_dir)
             if not os.path.exists(real_store_dir):
                 mk_dirs(real_store_dir)
         else:
