@@ -58,7 +58,8 @@ class XtbUserBo:
         result = await db.execute(select(XtbUserModel).where(XtbUserModel.email == email))
         return result.scalar_one_or_none()
 
-    async def get_all(self, db: AsyncSession, offset: int = 0, limit: int = 100) -> List:
+    @classmethod
+    async def get_all(cls, db: AsyncSession, offset: int = 0, limit: int = 15) -> List:
         result = await db.execute(select(XtbUserModel).offset(offset).limit(limit))
         return result.scalars().all()
 
