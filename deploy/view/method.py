@@ -34,7 +34,7 @@ from fastapi import APIRouter
 from deploy.utils.status import Status, SuccessStatus
 
 
-# define view
+# route
 method: APIRouter = APIRouter(prefix="/method", tags=["METHOD请求方法"])
 
 

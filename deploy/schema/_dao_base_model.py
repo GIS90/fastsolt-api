@@ -4,16 +4,16 @@
 ------------------------------------------------
 
 describe: 
-    sysuser model
+    dao base model
 
 base_info:
     __author__ = PyGo
-    __time__ = 2025/12/8 22:23
+    __time__ = 2025/12/10 21:36
     __version__ = v.1.0.0
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo2.top
     __project__ = fastslot-api
-    __file_name__ = sysuser.py
+    __file_name__ = _base_model.py
 
 usage:
     
@@ -30,6 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from sqlalchemy.orm import declarative_base
 
-if __name__ == '__main__':
-    pass
+
+baseModel = declarative_base()

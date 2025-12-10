@@ -36,8 +36,9 @@ from deploy.service.api import ApiService
 from deploy.utils.decorator import watch_except
 
 
-# define view
+# route
 api: APIRouter = APIRouter(prefix="/api", tags=["APIs集合"])
+# service
 api_service: ApiService = ApiService()
 
 

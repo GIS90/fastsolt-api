@@ -38,7 +38,7 @@ from deploy.schema.po.depend import BasePageBody
 from deploy.utils.status import Status, SuccessStatus
 
 
-# define view
+# route
 depend: APIRouter = APIRouter(prefix="/depend", tags=["Depend依赖注入"])
 
 

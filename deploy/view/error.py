@@ -38,7 +38,7 @@ from fastapi.exceptions import RequestValidationError
 from deploy.utils.status import Status, FailureStatus, SuccessStatus
 
 
-# define view
+# route
 error: APIRouter = APIRouter(prefix="/error", tags=["ERROR错误"])
 
 

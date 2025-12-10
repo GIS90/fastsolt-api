@@ -35,7 +35,7 @@ from fastapi.responses import HTMLResponse
 from deploy.config import app_docs_url, server_name, server_version
 
 
-# define view
+# route
 root: APIRouter = APIRouter(prefix="", tags=["首页"])
 
 

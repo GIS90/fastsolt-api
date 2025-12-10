@@ -30,7 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from deploy.schema._base import baseModel
+from deploy.schema._po_base_model import baseModel
 from pydantic import Field
 from typing import Optional, Text
 

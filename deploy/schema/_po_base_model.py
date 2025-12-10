@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    base model
+    po base model
 
 base_info:
     __author__ = PyGo

@@ -37,11 +37,9 @@ from deploy.service.upload import UploadService
 from deploy.utils.status import Status, SuccessStatus
 
 
-# define view
+# route
 upload: APIRouter = APIRouter(prefix='/upload', tags=["文件上传"])
-
-
-# define service
+# service
 upload_service: UploadService = UploadService()
 
 

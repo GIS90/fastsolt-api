@@ -45,7 +45,7 @@ from deploy.utils.status_value import (StatusEnum as status_enum,
                                        StatusCode as status_code)
 
 
-# define view
+# route
 base: APIRouter = APIRouter(prefix="/base", tags=["基础API：Path Query Body Form Cookie Header"])
 
 

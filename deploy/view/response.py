@@ -76,7 +76,7 @@ from deploy.utils.status import Status
 from deploy.schema.po.response import UserIn, UserOut
 
 
-# define view
+# route
 response: APIRouter = APIRouter(prefix="/response", tags=["Response对象类返回测试示例"])
 
 headers: Dict = {"Hello": "World"}

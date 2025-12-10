@@ -45,7 +45,7 @@ from deploy.config import redis_host, redis_port, redis_db, redis_password
 from deploy.utils.exception import JwtCredentialsException
 
 
-# view
+# route
 access: APIRouter = APIRouter(prefix="/access", tags=["JWT Token系统验证"])
 
 

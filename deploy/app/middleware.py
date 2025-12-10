@@ -92,7 +92,7 @@ def register_app_middleware(app: FastAPI, app_headers: dict):
             Response: 处理后的HTTP响应对象。
         """
         LOG.debug(">>>>> App middleware C-Middleware request")
-        __is_verify_token = True  # 是否验证Jwt Token有效性[默认验证]，设置False跳过jwt token验证
+        __is_verify_token = False  # 是否验证Jwt Token有效性[默认验证]，设置False跳过jwt token验证
         __token_rtx_id = None     # 用户token-rtx-id
 
         # - - - - - - - - - - - - - - - - 请求代码块 - - - - - - - - - - - - - - - -
