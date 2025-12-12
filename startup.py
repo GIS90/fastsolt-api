@@ -5,7 +5,10 @@
 
 describe: 
     App manual entry
-        dev: python app.py
+        dev:
+            - python app.py
+            or
+            - uvicorn deploy:app --reload --host 127.0.0.1 --port 8000
         prod: supervisor>uvicorn startup(PROD)
 
 base_info:
