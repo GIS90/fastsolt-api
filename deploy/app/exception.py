@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    app exception handler
+    App exception handler
 
 base_info:
     __author__ = PyGo
@@ -30,6 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from typing import Dict
 from fastapi import (FastAPI, Request,
                      status as fastapi_http_status,
                      HTTPException as FastAPI_HTTPException)
@@ -45,7 +46,7 @@ from deploy.utils.enumeration import MediaType
 from deploy.utils.logger import logger as LOG
 
 
-def register_app_exception(app: FastAPI, app_headers: dict):
+def register_app_exception(app: FastAPI, app_headers: Dict):
     """
     注册应用程序中的全局异常处理器，用于捕获并统一处理不同类型的异常。
 

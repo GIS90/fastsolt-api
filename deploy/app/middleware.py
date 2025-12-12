@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    app middleware
+    App middleware
 
 base_info:
     __author__ = PyGo
@@ -31,7 +31,7 @@ Life is short, I use python.
 ------------------------------------------------
 """
 import time
-from typing import List
+from typing import List, Dict
 from fastapi import FastAPI, Request, status as fastapi_http_status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,7 +44,8 @@ from deploy.utils.status import FailureStatus
 from deploy.utils.enumeration import MediaType
 from deploy.utils.logger import logger as LOG
 from deploy.config import (app_secret_key, app_allow_host, app_cors_origin, app_ban_router,
-                           app_session_max_age, app_request_method, app_gzip_size, app_gzip_level)
+                           app_session_max_age, app_request_method, app_gzip_size, app_gzip_level,
+                           jwt_token_verify)
 from deploy.utils.token import verify_access_token_expire
 
 
@@ -57,10 +58,16 @@ __APP_SESSION_MAX_AGE: int = app_session_max_age or 24 * 60 * 60    # 单位：�
 __APP_REQUEST_METHOD: List[str] = app_request_method
 __APP_GZIP_SIZE: int = app_gzip_size
 __APP_GZIP_LEVEL: int = app_gzip_level
+
+""" 
+是否开启cmAccess Token验证，设置False跳过jwt token验证
+[Dev：False Prod：True]
+"""
+__JWT_TOKEN_VERIFY: bool = jwt_token_verify
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-def register_app_middleware(app: FastAPI, app_headers: dict):
+def register_app_middleware(app: FastAPI, app_headers: Dict):
     """
     注册应用中间件，包括自定义访问控制中间件、CORS跨域支持、Session会话管理以及GZip压缩等。
 
@@ -92,7 +99,7 @@ def register_app_middleware(app: FastAPI, app_headers: dict):
             Response: 处理后的HTTP响应对象。
         """
         LOG.debug(">>>>> App middleware C-Middleware request")
-        __is_verify_token = False  # 是否验证Jwt Token有效性[默认验证]，设置False跳过jwt token验证
+        __is_verify_token = __JWT_TOKEN_VERIFY  # 是否验证Jwt Token有效性
         __token_rtx_id = None     # 用户token-rtx-id
 
         # - - - - - - - - - - - - - - - - 请求代码块 - - - - - - - - - - - - - - - -

@@ -31,7 +31,7 @@ Life is short, I use python.
 ------------------------------------------------
 """
 import sys
-
+from typing import Any
 from fastapi import FastAPI, APIRouter
 from starlette.staticfiles import StaticFiles
 
@@ -58,9 +58,8 @@ __app: FastAPI = FastAPI(
 
 
 class FSWebAppClass(WebBaseClass):
-    app = None
 
-    def __init__(self, app):
+    def __init__(self, app: Any):
         """
         class initialize
         :param app: FastAPI App instance
