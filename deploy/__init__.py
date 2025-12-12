@@ -71,7 +71,7 @@ class FSWebAppClass(WebBaseClass):
             LOG.critical('Web App server initialize is failure, exit......')
             sys.exit(1)
 
-        # APP object configuration
+        # APP configuration
         # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ -
         # APP简介
         self.app.title = APPProfile.title
@@ -131,7 +131,7 @@ class FSWebAppClass(WebBaseClass):
 
     def entry_point(self):
         """
-        web app initialize
+        Web app initialize, parent class method
         :return: None
         """
         LOG.info('Web app server start initialize......')
