@@ -62,7 +62,8 @@ temp_api = "/cgi-bin/media/get"
 
 # 存储
 [store]
-cache = "/Users/gaomingliang/Downloads/_CACHE"      # 缓存路径【绝对路径】 WIN：E:\_CACHE MacOS：/Users/gaomingliang/Downloads/_CACHE
+# 本地缓存路径【绝对路径】 WIN：E:\_CACHE MacOS：/Users/gaomingliang/Downloads/_CACHE
+cache = "/Users/gaomingliang/Downloads/_CACHE"
 # 7牛云存储
 yun_access = "mRF0cKGUJcfv7ry_Wyvc24cDNWEQz9DAKo_UOn0G"
 yun_secret = "xabmlB9zZ_MRwtgofQJzUxINnmcO_VUfkXYILx_Q"
