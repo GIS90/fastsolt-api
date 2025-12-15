@@ -33,7 +33,7 @@ password = ""
 
 # JWT Token
 [jwt]
-verify = False
+verify = false
 secret_key = "Enjoy the good life every day！！!"
 algorithm = "HS256"
 expire = 240    # 单位：分，默认4小时 = 4 * 60
