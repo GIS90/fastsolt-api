@@ -5,8 +5,8 @@
 
 describe: 
     数据格式定义：
-        po[API Route请求参数对象]：Parameter Object
-        dao[Modal数据访问对象]：Data Access Object
+        po[API Route请求参数对象]：Parameter Object，base class：_po_base_model.py
+        dao[Modal数据访问对象]：Data Access Object，base class：_dao_base_model.py
         dto[Modal数据传输API Route对象]：Data Transfer Object
 
         po -> dao -> dto

@@ -61,12 +61,16 @@ _DINGTALK_TOKEN_API_URL = ding_token_api
 
 class DingtalkLib:
     def __init__(self, app_key: str, app_secret: str) -> None:
-        self.RC: int = 0
+        """
+        初始化DingtalkLib工具，需要外部传入app-key、app-secret
+        :param app_key: [str]
+        :param app_secret:  [str]
+        """
         self.app_key: str = app_key
         self.app_secret: str = app_secret
         self.base_api_url: str = _DINGTALK_BASE_URL
         self.token_api_url: str = _DINGTALK_TOKEN_API_URL
-        self.msg_type: str = 'sampleMarkdown'
+        self.msg_type: str = 'sampleMarkdown'   # 默认Markdown类型
         self.access_token = self.get_token()
         self.client = self.__create_client()
 
@@ -109,7 +113,6 @@ class DingtalkLib:
                     return json_res.get("access_token")
         except Exception as e:
             LOG.error('[DingTalk] access token occur Exception: %s' % e)
-            return ''
         finally:
             LOG.error('[DingTalk]access token failure, please try again later.')
             return ''

@@ -502,7 +502,7 @@ def random_string(length: int = 16) -> str:
     return ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
 
 
-def list_dict_find(options: List[Dict], key: str, value: any) -> Union[Dict, None]:
+def list_dict_find(options: List[Dict], key: str, value: Any) -> Union[Dict, None]:
     """
     字典列表查找
     """
