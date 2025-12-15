@@ -34,6 +34,7 @@ import sys
 from typing import Any
 from fastapi import FastAPI, APIRouter
 from starlette.staticfiles import StaticFiles
+from fastapi.openapi.docs import get_swagger_ui_html
 
 from deploy.view import add_routers
 from deploy.app.exception import register_app_exception    # app exception handle
@@ -50,9 +51,9 @@ from deploy.config import (server_name, server_version,
 
 # FastAPI App instance
 __app: FastAPI = FastAPI(
-    # Docs配置[str类型，设置None为禁用状态]
     openapi_url=app_openapi_url,
-    docs_url=app_docs_url,
+    # Docs配置[str类型，设置None为禁用状态]
+    docs_url=None,  # 重定向
     redoc_url=None  # 禁用redoc_url
 )
 
@@ -82,7 +83,19 @@ class FSWebAppClass(WebBaseClass):
             self.app.contact = _author_contact
 
         # 静态资源
+        # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ -
         self.app.mount(path=app_static_url, app=StaticFiles(directory=app_static_folder), name="static")
+
+        # 配置本地Swagger UI资源
+        @app.get(app_docs_url, include_in_schema=False)
+        async def __swagger_ui_html():
+            return get_swagger_ui_html(
+                openapi_url=app_openapi_url,
+                title=f"{server_name}-{server_version}-接口说明手册",
+                swagger_js_url=f"{app_static_url}/swagger-ui-bundle.js",
+                swagger_css_url=f"{app_static_url}/swagger-ui.css",
+                swagger_favicon_url=f"{app_static_url}/favicon.ico"
+            )
         # ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ -
 
         # app middleware
