@@ -52,13 +52,16 @@ if (not etc_file.exists()
         or not etc_file.is_file()):
     printer_error(content=f"配置文件[{env_file}]不存在，系统自动退出......", hr=True)
     sys.exit(1)
+else:
+    printer_info(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
 
 
-printer_info(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
-
-
-with open(etc_file, "rb") as f:
-    data = tomllib.load(f)
+try:
+    with open(etc_file, "rb") as f:
+        data = tomllib.load(f)
+except:
+    printer_info(content=f"配置文件解析失败，请检查配置：{env_file}", hr=True)
+    sys.exit(1)
 
 
 # server
