@@ -59,8 +59,11 @@ Token-Rtx-ID依赖
 def __get_token_rtx(token: str) -> str:
     token_rtx_id = None
     # >>>>> 优先redis
-    if redis_cli.connection:
-        token_rtx_id = redis_cli.get_key(key=token)
+    try:
+        if redis_cli.connection:
+            token_rtx_id = redis_cli.get_key(key=token)
+    except:
+        ...
 
     # >>>>> jwt解码token
     if not token_rtx_id:

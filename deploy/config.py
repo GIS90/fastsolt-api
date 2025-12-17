@@ -59,8 +59,8 @@ try:
 except:
     printer_error(content=f"配置文件解析失败，请检查配置：{env_file}", hr=True)
     sys.exit(1)
-finally:
-    printer_info(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
+
+printer_info(content=f"当前环境：{env}，配置文件：{etc_file}", hr=True)
 
 
 # server

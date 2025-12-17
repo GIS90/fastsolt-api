@@ -48,9 +48,8 @@ xtb_user_service: XtbUserService = XtbUserService()
 
 @xtb_user.get("/", summary="列表")
 async def user_list(
-        # token_rtx_id: str = Depends(depend_token_rtx),
+        token_rtx_id: str = Depends(depend_token_rtx),
         params: dict = Depends(pageable_params),
         db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_user_service.user_list(db=db, rtx_id="123", params=params)
     return await xtb_user_service.user_list(db=db, rtx_id=token_rtx_id, params=params)

@@ -28,7 +28,7 @@ link = "mysql+asyncmy://fastapi-q:3d829dd6151b80e9351261164abae1e3@110.40.141.32
 [redis]
 host = "110.40.141.32"
 port = 9777
-db = 7
+db = 10
 password = ""
 
 # JWT Token

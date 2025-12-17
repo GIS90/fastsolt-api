@@ -34,22 +34,11 @@ from typing import Dict, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from deploy.curd.xtb_user import XtbUserBo
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
+from deploy.utils.converter import converter
+from deploy.schema.dto.xtb_user import xtb_user_list_fields
 
 
 class XtbUserService:
-
-    user_fields: Dict = [
-        "id",
-        "rtx_id",
-        "md5_id",
-        "fullname",
-        "password",
-        "sex",
-        "email",
-        "phone",
-        "avatar",
-        "introduction"
-    ]
 
     def __init__(self):
         """
@@ -63,34 +52,19 @@ class XtbUserService:
     def __repr__(self):
         self.__str__()
 
-    async def __format_user_model(self, model) -> Dict:
-        """
-        format user model to dict
-        :param model: db model
-        :return: dict
-        """
-        _data: Dict = dict()
-        if not model:
-            return _data
-
-        for field in self.user_fields:
-            if not field: continue
-            _data[field] = getattr(model, field)
-        else:
-            return _data
-
     async def user_list(self, db: AsyncSession, rtx_id: str, params: Dict) -> Status:
         users = await self.xtb_user_bo.get_all(db=db, offset=params.get("offset"), limit=params.get("limit"))
         data: List = list()
         data.extend(
             filter(
-                lambda x: x is not None,
-                [await self.__format_user_model(u) for u in users if u]
+                lambda x: x is not None and x is not {},
+                [await converter(model=u, fields=xtb_user_list_fields) for u in users if u]
             )
         )
         result: Dict = {
+            "rtxId": rtx_id,
             "list": data,
             "total": len(users)
         }
-        return SuccessStatus(data=data)
+        return SuccessStatus(data=result)
 

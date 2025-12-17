@@ -58,7 +58,7 @@ View根据系统设计的api进行模块划分，其中有3个比较特殊（不
                                     JSONResponse, StreamingResponse, RedirectResponse]
 - depend：依赖注入，包含依赖方法与依赖类
 - upload：文件上传模块 [File UploadFile]
-- error：自定义FASTAPI-HTTPException异常处理
+- error：自定义FastAPI-HTTPException异常处理
 
 
 实例模块
@@ -69,12 +69,12 @@ __all__ = ["add_routers"]
 
 add_routers = [
     root,
-    # base,
-    # method,
-    # response,
-    # upload,
-    # error,
-    # api,
-    # access,
+    base,
+    method,
+    response,
+    upload,
+    error,
+    api,
+    access,
     xtb_user
 ]
