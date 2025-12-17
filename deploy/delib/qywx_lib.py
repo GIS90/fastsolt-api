@@ -189,23 +189,23 @@ class QYWXLib:
         }
     }
 
-    def __init__(self, corp_id, secret, agent_id):
+    def __init__(self, corp_id: str, secret: str, agent_id: str) -> None:
         """
         Initialize parameter
         :param corp_id: 企业号标识
         :param secret: 管理组凭证密钥
         :param agent_id: 机器人应用ID
         """
-        self.CORP_ID = corp_id
-        self.SECRET = secret
-        self.AGENT_ID = agent_id
+        self.CORP_ID: str = corp_id
+        self.SECRET: str = secret
+        self.AGENT_ID: str = agent_id
         self.http = HttpLibApi(QYWX_BASE_URL)
-        self.token = self.__init_token()   # 每次实例化调用初始化access token
+        self.token: str = self.__init_token()   # 每次实例化调用初始化access token
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"QYWXLib Class: [corp_id: {self.CORP_ID}, agent_id: {self.AGENT_ID}]"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     def __init_token(self) -> str:
@@ -234,11 +234,11 @@ class QYWXLib:
         TODO
         7200秒（2小时）后续优化为缓存机制，避免在有效期内频繁调用
         """
-        data = {
+        params: Dict = {
             "corpid": self.CORP_ID,
             "corpsecret": self.SECRET
         }
-        status, response = self.http.get_json(url=QYWX_ACCESS_TOKEN, params=data)
+        status, response = self.http.get_json(url=QYWX_ACCESS_TOKEN, params=params)
         if not status:
             return None
         return response.get("access_token") \
@@ -249,7 +249,8 @@ class QYWXLib:
         check access token is or not available
         :return: bool
         """
-        return True if self.token else False
+        return True if self.token \
+            else False
 
     def format_content(self, ftype: str = 'text', content: Dict = None) -> Dict:
         """
@@ -259,7 +260,7 @@ class QYWXLib:
 
         :return: json
         """
-        new_content = dict()
+        new_content: Dict = dict()
         if not content:
             return new_content
         if ftype not in self.types:

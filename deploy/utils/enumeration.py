@@ -40,6 +40,7 @@ __all__ = [
     'fontBackColor',
     'fontStyle',
     'fontPrinter',
+    'FileTypeEnum',
 ]
 
 

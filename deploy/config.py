@@ -91,6 +91,9 @@ if not app_static_folder.exists():
 
 # db
 db_link: str = data["db"].get("link")
+if not db_link:
+    printer_error(content="配置文件[db->link]数据库连接地址空，系统退出！", hr=True)
+    sys.exit(1)
 
 # redis
 redis_host: str = data["redis"].get("host")
@@ -131,6 +134,9 @@ store_yun_secret: str = data["store"].get("yun_secret")
 store_yun_base: str = data["store"].get("yun_base")
 store_yun_space: str = data["store"].get("yun_space")
 
+# image
+image_quality: int = data["image"].get("quality")
+image_width: int = data["image"].get("width")
 
 
 

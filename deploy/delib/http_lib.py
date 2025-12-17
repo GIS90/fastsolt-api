@@ -30,10 +30,10 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-
 import requests
 import json
 from requests.auth import HTTPBasicAuth
+from typing import List, Dict, Optional, Union
 from deploy.utils.logger import logger as LOG
 import urllib3
 
@@ -44,38 +44,49 @@ class HttpLibApi:
     """
     http-lib-api class
     """
-    def __init__(self, root, username='', password='', headers=None,
-                 is_try=3, timeout=120):
-        self.root = root
+    def __init__(self, root: str,
+                 username: Optional[str]=None,
+                 password: Optional[str]=None,
+                 headers: Optional[Dict]=None,
+                 is_try: int=3,
+                 timeout: int=120) -> None:
+        self.root: str = root
         self.auth = HTTPBasicAuth(username, password)
-        self.content_type_form = {
+        self.content_type_form: Dict = {
             'Content-type': 'application/x-www-form-urlencoded'}
-        self.content_type_json = {
+        self.content_type_json: Dict = {
             'Content-type': 'application/json'}
-        self.headers = headers
-        self.is_try = is_try
-        self.timeout = timeout
+        self.headers: Dict = headers
+        self.is_try: int = is_try
+        self.timeout: int = timeout
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "HttpLibApi Class."
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def _wrap_headers(self, headers, ctype='form'):
+    def _wrap_headers(self, headers: Dict, ctype: str='form') -> Dict:
         _headers = {}
         # http lib headers
         if self.headers:
-            _headers.update(self.headers)
+            _headers |= self.headers
         # request headers
-        _headers.update(headers or {})
+        if headers:
+            _headers |= headers
         # end check headers >>>>> Content-type
         if not _headers.get('Content-type'):
             _headers.update(self.content_type_form) if ctype == 'form' \
                 else _headers.update(self.content_type_json)
         return _headers
 
-    def _get(self, url, params=None, headers=None, ctype='form', resptype='json', **kwargs):
+    def _get(self,
+             url: str,
+             params: Dict=None,
+             headers: Dict=None,
+             ctype: str='form',
+             resptype: str='json',
+             **kwargs):
         """ buildin get """
         headers = self._wrap_headers(headers, ctype=ctype)
         url = '%s%s' % (self.root, url)
@@ -84,11 +95,11 @@ class HttpLibApi:
             response = requests.get(
                 url, headers=headers, params=params, timeout=self.timeout, **kwargs)
         except Exception as e:
-            LOG.error('HTTPLIB %s api_get error: %s' % (url, e))
+            LOG.error('HTTPLIB %s get error: %s' % (url, e))
             return False, []
         respcode = response.status_code
         if respcode != 200:
-            return False, 'api_get response status code is: %s' % respcode
+            return False, 'HTTPLIB %s get response status code is: %s' % (url, respcode)
         elif respcode == 200 and resptype == 'raw':
             return True, response.raw
         elif respcode == 200 and resptype == 'content':
@@ -98,8 +109,14 @@ class HttpLibApi:
         else:
             return True, response.text
 
-    def _post(self, url, headers=None, data=None, params=None, resptype='json',
-              ctype='form', **kwargs):
+    def _post(self,
+              url: str,
+              headers: Dict=None,
+              data: Dict=None,
+              params: Dict=None,
+              ctype: str = 'form',
+              resptype: str='json',
+              **kwargs):
         """ buildin post """
         url = '%s%s' % (self.root, url)
         headers = self._wrap_headers(headers, ctype=ctype)
@@ -112,11 +129,11 @@ class HttpLibApi:
                 url, headers=headers, params=params, data=data, timeout=self.timeout,
                 verify=False, **kwargs)
         except Exception as e:
-            LOG.error('HTTPLIB %s api_post error: %s' % (url, e))
+            LOG.error('HTTPLIB %s post error: %s' % (url, e))
             return False, []
         respcode = response.status_code
         if respcode != 200:
-            return False, 'api_post response status code is: %s' % respcode
+            return False, 'HTTPLIB %s post response status code is: %s' % (url, respcode)
         elif respcode == 200 and resptype == 'raw':
             return True, response.raw
         elif respcode == 200 and resptype == 'content':
@@ -126,8 +143,14 @@ class HttpLibApi:
         else:
             return True, response.text
 
-    def _put(self, url, headers=None, data=None, params=None, resptype='json',
-              ctype='form', **kwargs):
+    def _put(self,
+             url: str,
+             headers: Dict=None,
+             data: Dict=None,
+             params: Dict=None,
+             ctype: str='form',
+             resptype: str='json',
+             **kwargs):
         """ buildin put """
         url = '%s%s' % (self.root, url)
         headers = self._wrap_headers(headers, ctype=ctype)
@@ -140,11 +163,11 @@ class HttpLibApi:
                 url, headers=headers, params=params, data=data, timeout=self.timeout,
                 verify=False, **kwargs)
         except Exception as e:
-            LOG.error('HTTPLIB %s api_put error: %s' % (url, e))
+            LOG.error('HTTPLIB %s put error: %s' % (url, e))
             return False, []
         respcode = response.status_code
         if respcode != 200:
-            return False, 'api_put response status code is: %s' % respcode
+            return False, 'HTTPLIB %s put response status code is: %s' % (url, respcode)
         elif respcode == 200 and resptype == 'raw':
             return True, response.raw
         elif respcode == 200 and resptype == 'content':
@@ -154,20 +177,20 @@ class HttpLibApi:
         else:
             return True, response.text
 
-    def get_form(self, url, *args, **kwargs):
+    def get_form(self, url: str, *args: List, **kwargs: Dict):
         return self._get(url, *args, **dict(kwargs, **{'ctype': 'form'}))
 
-    def get_json(self, url, *args, **kwargs):
+    def get_json(self, url: str, *args: List, **kwargs: Dict):
         return self._get(url, *args, **dict(kwargs, **{'ctype': 'json'}))
 
-    def post_form(self, url, *args, **kwargs):
+    def post_form(self, url: str, *args: List, **kwargs: Dict):
         return self._post(url, *args, **dict(kwargs, **{'ctype': 'form'}))
 
-    def post_json(self, url, *args, **kwargs):
+    def post_json(self, url: str, *args: List, **kwargs: Dict):
         return self._post(url, *args, **dict(kwargs, **{'ctype': 'json'}))
 
-    def put_form(self, url, *args, **kwargs):
+    def put_form(self, url: str, *args: List, **kwargs: Dict):
         return self._put(url, *args, **dict(kwargs, **{'ctype': 'form'}))
 
-    def put_json(self, url, *args, **kwargs):
+    def put_json(self, url: str, *args: List, **kwargs: Dict):
         return self._put(url, *args, **dict(kwargs, **{'ctype': 'json'}))

@@ -121,8 +121,11 @@ class FSWebAppClass(WebBaseClass):
             LOG.info('>>>>> Web app shutdown success......')
             tip_color_shutdown()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "FSWebAppClass instance."
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def register_blueprint(self, router: APIRouter):
         """

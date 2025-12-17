@@ -48,7 +48,13 @@ class RedisClientLib:
     Returns:
         None
     """
-    def __init__(self, host: str, port: int, db: int, password: Optional[str], decode_responses=True) -> None:
+    def __init__(self,
+                 host: str,
+                 port: int,
+                 db: int,
+                 password: Optional[str],
+                 decode_responses=True
+                 ) -> None:
         self.HOST: str = host
         self.PORT: int = port
         self.DB: int = db

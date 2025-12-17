@@ -32,7 +32,6 @@ Life is short, I use python.
 ------------------------------------------------
 """
 import os
-import json
 import multiprocessing
 from multiprocessing import cpu_count
 from pdf2docx import Converter
@@ -41,7 +40,7 @@ from typing import Dict, List, Optional
 from deploy.utils.utils import filename2md5, \
     get_now, mk_dirs, md5
 from deploy.config import store_cache
-from deploy.utils.status_value import StatusMsg as status_msg
+from deploy.utils.status_value import StatusMsg as status_msg, StatusEnum as status_enum
 from deploy.utils.enumeration import FileTypeEnum
 
 
@@ -51,19 +50,6 @@ _STORE_CACHE = store_cache
 class FileLib:
     # file extension format
     # currently, only to support Windows system file
-    ALLOWED_EXTENSIONS = [
-        '.doc',
-        '.docx',
-        '.xls',
-        '.xlsx',
-        '.ppt',
-        '.pptx',
-        '.pdf',
-        '.txt',
-        '.jpg',
-        '.jpeg',
-        '.png',
-    ]
 
     WORD_EXTENSIONS = [
         '.doc',
@@ -94,55 +80,56 @@ class FileLib:
         '.png'
     ]
 
-    @staticmethod
-    def _get_cpu_count():
-        return cpu_count() - 1 or 1
+    ALLOWED_EXTENSIONS = [
+        *WORD_EXTENSIONS,
+        *EXCEL_EXTENSIONS,
+        *PPT_EXTENSIONS,
+        *PDF_EXTENSIONS,
+        *TEXT_EXTENSIONS,
+        *AVATAR_EXTENSIONS
+    ]
 
-    def __init__(self):
+    @staticmethod
+    def _get_cpu_count() -> int:
+        __cpu_count = cpu_count()
+        return 1 if __cpu_count - 1 <= 1 else __cpu_count - 1
+
+    def __init__(self) -> None:
         """
         initialize parameters
         """
         self.default_doc_prefix: str = '.docx'
         self.cpu_count: int = self._get_cpu_count()
+        self.default_store_cache = _STORE_CACHE
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "FileLib Class."
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     @staticmethod
-    def format_res(status_id: int, message: str, data: Optional[List, Dict]) -> Dict:
+    def visual_value(status_id: int, message: str, data: Optional[List, Dict]) -> Dict:
         """
         方法请求结果格式化
         """
+        if data is None: data = []
         return {
             'status_id': status_id,
             'message': message if message else status_msg.get(status_id),
             'data': data
         }
 
-    def allow_format_fmt(self, filename: str, filetype=None) -> bool:
+    def allow_format_fmt(self, filename: str, filetype: int) -> bool:
         """
         build in function to check is or not file formatter
         :param filename: check file name
         :param filetype: check file type
         :return: bool, True or False
-
-        文件类型：
-            EXCEL_MERGE = 1
-            EXCEL_SPLIT = 2
-            WORD = 3
-            PPT = 4
-            TEXT = 5
-            PDF = 6
-            DTALK = 7
-            AVATAR = 8
-            OTHER = 99
         """
         # 默认为全部
         allow_suffix = self.ALLOWED_EXTENSIONS
-        filetype = int(filetype)
+
         if filetype in [FileTypeEnum.EXCEL_MERGE.value,
                         FileTypeEnum.EXCEL_SPLIT.value,
                         FileTypeEnum.DTALK.value]:
@@ -155,18 +142,19 @@ class FileLib:
             allow_suffix = self.TEXT_EXTENSIONS
         elif filetype in [FileTypeEnum.PDF.value]:
             allow_suffix = self.PDF_EXTENSIONS
-        elif filetype in [FileTypeEnum.AVATAR.value, FileTypeEnum.AVATAR_CROP.value]:
+        elif filetype in [FileTypeEnum.AVATAR.value, 
+                          FileTypeEnum.AVATAR_CROP.value]:
             allow_suffix = self.AVATAR_EXTENSIONS
 
         return True if (os.path.splitext(filename)[1]).lower() in allow_suffix else False
 
-    def store_file(self, file, compress: bool = False, is_md5_store_name: bool = False):
+    def store_file(self, file, is_md5_store_name: bool = False, compress: bool = False):
         """
         file lib class main function, to store file at local
 
         :param file: file object
-        :param compress: file is or not to use compress mode
         :param is_md5_store_name: store name is or not by md5 encryption
+        :param compress: file is or not to use compress mode
         :return: False or True, json object
 
         result is tuple
@@ -182,12 +170,12 @@ class FileLib:
             }
         """
         if not file:
-            return False, {'message': '缺少上传文件'}
+            return self.visual_value(status_id=450, message='缺少上传文件')
 
         # 文件存储初始化
         now_date = get_now(format="%Y%m%d")
-        real_store_dir = os.path.join(_STORE_CACHE, now_date)
-        if not os.path.exists(real_store_dir):  # dir is not exist, to make dir
+        real_store_dir = os.path.join(self.default_store_cache, now_date)
+        if not os.path.exists(real_store_dir):
             mk_dirs(real_store_dir)
 
         """ 加入try，防止存储失败 """
@@ -205,14 +193,20 @@ class FileLib:
                 new_file_name = '%s-%s%s' % (file_names[0], get_now(format="%Y-%m-%d-%H-%M-%S"), suffix)
                 _real_file = os.path.join(real_store_dir, new_file_name)
                 file_name = new_file_name
-            file.save(_real_file)       # save
-            return True, {'name': file_name,
-                          'md5': md5(file_name + get_now()),
-                          'store_name': '%s/%s' % (now_date, file_name),
-                          'path': os.path.join(real_store_dir, file_name),
-                          'message': 'success'}
+            file.save(_real_file)
+            _data = {
+                'name': file_name,
+                'md5': md5(file_name + get_now()),
+                'store': '%s/%s' % (now_date, file_name),
+                'path': os.path.join(real_store_dir, file_name)
+            }
+            return self.visual_value(
+                status_id=100,
+                message=status_enum.SUCCESS.value,
+                data = _data
+            )
         except Exception as error:
-            return False, {'message': '文件存储发生异常：%s' % error}
+            return self.visual_value(status_id=456, message=f"文件本地存储失败：{error}")
 
     def _pdf2word(self, cmd5: str,
                   pdf_file: str, word_name: str,
@@ -245,17 +239,17 @@ class FileLib:
         """
         # check pdf file
         if not pdf_file or not os.path.exists(pdf_file):
-            return self.format_res(451, 'PDF文件不存在', {'md5': cmd5})
+            return self.visual_value(451, 'PDF文件不存在', {'md5': cmd5})
         if not os.path.isfile(pdf_file):
-            return self.format_res(455, 'PDF文件内容不支持', {'md5': cmd5})
+            return self.visual_value(455, 'PDF文件内容不支持', {'md5': cmd5})
         pdf_path, pdf_name = os.path.split(pdf_file)
         pdf_names = os.path.splitext(pdf_name)
         if len(pdf_names) < 2 or pdf_names[1] not in self.PDF_EXTENSIONS:
-            return self.format_res(454, 'PDF文件格式不正确', {'md5': cmd5})
+            return self.visual_value(454, 'PDF文件格式不正确', {'md5': cmd5})
 
         # check start page && end page
         if start and end and start > end:
-            return self.format_res(404, '结束页不允许小于开始页', {'md5': cmd5})
+            return self.visual_value(404, '结束页不允许小于开始页', {'md5': cmd5})
         # check word file name
         if word_name:
             word_names = os.path.splitext(word_name)
@@ -266,7 +260,7 @@ class FileLib:
 
         # 文件存储初始化
         now_date = get_now(format="%Y%m%d")
-        real_store_dir = os.path.join(_STORE_CACHE, now_date)
+        real_store_dir = os.path.join(self.default_store_cache, now_date)
         if not os.path.exists(real_store_dir):  # dir is not exist, to make dir
             mk_dirs(real_store_dir)
         word_file = os.path.join(real_store_dir, word_name)  # 文件真实存储
@@ -294,7 +288,11 @@ class FileLib:
 
         cv.close()
         # ---------------------------convert end--------------------------------------------------
-        return self.format_res(100, 'success', {'md5': cmd5, 'word': word_file, 'name': word_name})
+        return self.visual_value(
+            status_id=100,
+            message=status_enum.SUCCESS.value,
+            data={'md5': cmd5, 'word': word_file, 'name': word_name}
+        )
 
     def __pdf2word_no_multi_processing(self, pdf_list: Dict) -> Dict:
         """
@@ -356,7 +354,10 @@ class FileLib:
             if k in results.keys():
                 _v.update(results.get(k))
                 pdf_list[k] = _v
-        return self.format_res(100, 'success', pdf_list)
+        return self.visual_value(
+            status_id=100,
+            message=status_enum.SUCCESS.value,
+            data=pdf_list)
 
     def __pdf2word_by_multi_processing(self, pdf_list: Dict) -> Dict:
         """
@@ -391,9 +392,12 @@ class FileLib:
                 _new_v = pdf_list.get(key)
                 _new_v.update(_d)
                 pdf_list[key] = _new_v
-        return self.format_res(100, 'success', pdf_list)
+        return self.visual_value(
+            status_id=100,
+            message=status_enum.SUCCESS.value,
+            data=pdf_list)
 
-    def pdf2word(self, pdf_list: List[Dict], is_multi_processing: bool = True) -> Dict:
+    def pdf2word(self, pdf_list: Dict, is_multi_processing: bool = True) -> Dict:
         """
         PDF转WORD，基于pdf2docx实现
         批量转换采用多进程进行处理，也可以关闭多进程采用循环的方式进行转换，
@@ -433,7 +437,7 @@ class FileLib:
         }
         """
         if not pdf_list:
-            return self.format_res(400, '缺少pdf_list参数', [])
+            return self.visual_value(status_id=400, message="缺少pdf_list参数")
         # to execute convert method by is_multi_processing value
         return self.__pdf2word_by_multi_processing(pdf_list) if is_multi_processing \
             else self.__pdf2word_no_multi_processing(pdf_list)

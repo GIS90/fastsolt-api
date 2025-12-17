@@ -43,17 +43,17 @@ class WebBaseClass(ABC):
     _instance = None
     _instance_lock = threading.Lock()
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(WebBaseClass, self).__init__()
         # 使用标志位确保entry_point只执行一次
         if not hasattr(self, '_initialized'):
             self._initialized = True
             self.entry_point()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "WebBaseClass Class."
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     def __new__(cls, *args, **kwargs):

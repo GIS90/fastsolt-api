@@ -69,7 +69,7 @@ class ExcelLib:
     DEFAULT_ZIP_PREFIX = '.zip'
     DEFAULT_AUTO_ID = '9999'
 
-    def __init__(self, blank=0):
+    def __init__(self, blank=0) -> None:
         """
         :param blank: blank row number, default is 0
         """
