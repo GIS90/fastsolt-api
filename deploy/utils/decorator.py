@@ -33,7 +33,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from typing import Any
+from typing import Callable
 from datetime import datetime
 from functools import wraps
 
@@ -47,12 +47,12 @@ from deploy.utils.status_value import (StatusMsg as status_msg,
 """
 
 
-def decorator(func):
+def decorator(func: Callable):
     """
     装饰器功能描述
     """
     @wraps(func)
-    async def __wrapper(*args: Any, **kwargs: Any):
+    async def __wrapper(*args, **kwargs):
         # 额外功能
         result = await func(*args, **kwargs)
         # 额外功能
@@ -63,12 +63,12 @@ def decorator(func):
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-def timer(func):
+def timer(func: Callable):
     """
     方法执行时间装饰器
     """
     @wraps(func)
-    async def __wrapper(*args: Any, **kwargs: Any):
+    async def __wrapper(*args, **kwargs):
         start_time = datetime.now()
         result = await func(*args, **kwargs)
         end_time = datetime.now()
@@ -79,36 +79,36 @@ def timer(func):
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-def debug(func):
+def debug(func: Callable):
     """
     debug装饰器
     """
     @wraps(func)
-    async def __wrapper(*args: Any, **kwargs: Any):
+    async def __wrapper(*args, **kwargs):
         LOG.info("[Decorator>Debugging] >>>>> %s - args: %s, kwargs: %s" % (func.__name__, args, kwargs))
         return await func(*args, **kwargs)
     return __wrapper
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-def deprecated(func):
+def deprecated(func: Callable):
     """
     方法过时提示
     """
     @wraps(func)
-    async def __wrapper(*args: Any, **kwargs: Any):
+    async def __wrapper(*args, **kwargs):
         LOG.warn("[Decorator>deprecated] %s is deprecated and will be removed in future versions." % func.__name__, DeprecationWarning)
         return await func(*args, **kwargs)
     return __wrapper
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-def watch_except(func):
+def watch_except(func: Callable):
     """
     异常处理
     """
     @wraps(func)
-    async def __wrapper(*args: Any, **kwargs: Any):
+    async def __wrapper(*args, **kwargs):
         try:
             return await func(*args, **kwargs)
         except Exception as error:
