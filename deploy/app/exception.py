@@ -41,7 +41,9 @@ from fastapi.encoders import jsonable_encoder
 from deploy.utils.status_value import (StatusMsg as status_msg,
                                        StatusCode as status_code)
 from deploy.utils.status import FailureStatus
-from deploy.utils.exception import JwtCredentialsException, UserInvalidException
+from deploy.utils.exception import (JwtCredentialsException,
+                                    UserInvalidException,
+                                    SQLDBHandleException)
 from deploy.utils.enumeration import MediaType
 from deploy.utils.logger import logger as LOG
 
@@ -54,15 +56,15 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
     :param app_headers: 字典类型，包含需要在响应中附加的公共头部信息。
     """
 
-    # RequestValidationError[请求验证错误]
+    # RequestValidationError[请求参数验证错误]
     @app.exception_handler(RequestValidationError)
-    async def request_validation_error(request: Request, exec: RequestValidationError):
+    async def request_validation_handle(request: Request, exec: RequestValidationError):
         """
         :param request: Request
         :param exec: RequestValidationError
         :return: JSONResponse
         """
-        LOG.error(f"请求地址{request.url.__str__()}，[request_validation_error]: {exec.errors()}")
+        LOG.error(f"请求地址{request.url.__str__()}，[request_validation_handle]: {exec.errors()}")
 
         # rewrite response >>> 加入请求体body
         content = FailureStatus(
@@ -129,15 +131,40 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
             media_type=MediaType.APPJson.value
         )
 
-    # HTTPException[HTTP异常]
+    # SQLDBHandleException[数据库操作异常]
+    @app.exception_handler(SQLDBHandleException)
+    async def db_exception_handler(request: Request, exec: SQLDBHandleException):
+        """
+        :param request: Request
+        :param exec: SQLDBHandleException
+        :return: JSONResponse
+        """
+        LOG.error(f"请求地址{request.url.__str__()}，[db_exception_handler]: {exec.__str__()}")
+
+        # rewrite response
+        content = FailureStatus(
+            status_id=status_code.CODE_600_DB_EXCEPTION.value,
+            message=status_msg.get(600),
+            data={"error": exec.detail}
+        ).status_body
+        headers = {"app-cm-exception-webhook": "SQLDBHandleException"}
+        headers.update(app_headers)
+        return JSONResponse(
+            content=content,
+            status_code=fastapi_http_status.HTTP_200_OK,
+            headers=headers,
+            media_type=MediaType.APPJson.value
+        )
+
+    # FastAPI-HTTPException[HTTP异常]
     @app.exception_handler(FastAPI_HTTPException)
-    async def http_exception_handler(request: Request, exec: FastAPI_HTTPException):
+    async def fastapi_http_exception_handler(request: Request, exec: FastAPI_HTTPException):
         """
         :param request: Request
         :param exec: FastAPI HTTPException
         :return: JSONResponse
         """
-        LOG.error(f"请求地址{request.url.__str__()}，[http_exception_handler]: {exec.__str__()}")
+        LOG.error(f"请求地址{request.url.__str__()}，[fastapi_http_exception_handler]: {exec.__str__()}")
 
         # rewrite response
         content = FailureStatus(
@@ -145,7 +172,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
             message=status_msg.get(901),
             data={"error": exec.__str__()}
         ).status_body
-        headers = {"app-cm-exception-webhook": "HTTPException"}
+        headers = {"app-cm-exception-webhook": "FastAPI-HTTPException"}
         headers.update(app_headers)
         return JSONResponse(
             content=content,

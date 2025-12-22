@@ -30,7 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from typing import Optional, List
+from typing import Optional, List, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -38,30 +38,47 @@ from deploy.schema.dao.xtb_user import XtbUserModel
 
 
 class XtbUserBo:
+
+    @staticmethod
+    async def _get_user_by_field(
+        db: AsyncSession,
+        field: Any,
+        value: Any
+    ) -> Optional[XtbUserModel]:
+        try:
+            result = await db.execute(select(XtbUserModel).where(field == value))
+            return result.scalar_one_or_none()
+        except Exception as e:
+            # 日志记录或上报异常
+            raise e
+
     async def get_by_id(self, db: AsyncSession, user_id: int) -> Optional[XtbUserModel]:
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel.id == user_id))
-        return result.scalar_one_or_none()
+        return await self._get_user_by_field(db, XtbUserModel.id, user_id)
 
     async def get_by_rtx_id(self, db: AsyncSession, rtx_id: str) -> Optional[XtbUserModel]:
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel.rtx_id == rtx_id))
-        return result.scalar_one_or_none()
+        return await self._get_user_by_field(db, XtbUserModel.rtx_id, rtx_id)
 
     async def get_by_md5_id(self, db: AsyncSession, md5_id: str) -> Optional[XtbUserModel]:
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel.md5_id == md5_id))
-        return result.scalar_one_or_none()
+        return await self._get_user_by_field(db, XtbUserModel.md5_id, md5_id)
 
     async def get_by_name(self, db: AsyncSession, name: str) -> Optional[XtbUserModel]:
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel.fullname == name))
-        return result.scalar_one_or_none()
+        return await self._get_user_by_field(db, XtbUserModel.fullname, name)
 
     async def get_by_email(self, db: AsyncSession, email: str) -> Optional[XtbUserModel]:
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel.email == email))
-        return result.scalar_one_or_none()
+        return await self._get_user_by_field(db, XtbUserModel.email, email)
 
     @classmethod
-    async def get_all(cls, db: AsyncSession, offset: int = 0, limit: int = 15) -> List:
-        result = await db.execute(select(XtbUserModel).offset(offset).limit(limit))
-        return result.scalars().all()
+    async def get_all(
+        cls, db: AsyncSession, offset: int = 0, limit: int = 15
+    ) -> List[XtbUserModel]:
+        try:
+            result = await db.execute(
+                select(XtbUserModel).offset(offset).limit(limit)
+            )
+            return result.scalars().all()
+        except Exception as e:
+            # 日志记录或上报异常
+            raise e
 
     #
     # @staticmethod

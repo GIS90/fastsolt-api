@@ -30,7 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from enum import Enum, unique
+from enum import Enum, unique, IntEnum, StrEnum
 from colorama import Fore, Back, Style
 
 
@@ -45,7 +45,7 @@ __all__ = [
 
 
 @unique
-class MediaType(Enum):
+class MediaType(StrEnum):
     """
     HTTP协议数据类型
     """
@@ -142,7 +142,7 @@ class fontPrinter(Enum):
 
 
 @unique
-class FileTypeEnum(Enum):
+class FileTypeEnum(IntEnum):
     """
     文件类型
     """

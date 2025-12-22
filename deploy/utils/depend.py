@@ -34,7 +34,7 @@ from fastapi import Header, Query
 from typing import Optional, Dict
 
 from deploy.utils.token import decode_access_token_rtx
-from deploy.utils.exception import JwtCredentialsException, UserInvalidException
+from deploy.utils.exception import JwtCredentialsException
 from deploy.delib.redis_lib import RedisClientLib
 from deploy.config import redis_host, redis_port, redis_db, redis_password
 from deploy.schema.po.x import PageListModel, DownloadFileModel

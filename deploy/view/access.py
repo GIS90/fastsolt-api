@@ -38,7 +38,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from deploy.schema.po.access import TokenBody as Token, O2LUserLogin
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
-from deploy.utils.status_value import StatusCode as status_code, StatusMsg as status_msg
+from deploy.utils.status_value import (StatusCode as status_code,
+                                       StatusMsg as status_msg)
 from deploy.utils.token import encode_access_token, decode_access_token_rtx
 from deploy.delib.redis_lib import RedisClientLib
 from deploy.config import redis_host, redis_port, redis_db, redis_password

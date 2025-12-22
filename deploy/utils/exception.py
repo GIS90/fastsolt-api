@@ -30,10 +30,13 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from sqlalchemy.exc import SQLAlchemyError
+
 
 __all__ = [
     "JwtCredentialsException",
-    "UserInvalidException"
+    "UserInvalidException",
+    "SQLDBHandleException"
 ]
 
 
@@ -42,7 +45,7 @@ class JwtCredentialsException(Exception):
     Jwt验证异常类
     """
     def __init__(self, detail):
-        super().__init__(detail)  # 调用父类构造函数
+        super().__init__(detail)
         self.detail = detail
 
     def __str__(self):
@@ -57,7 +60,7 @@ class JwtCredentialsException(Exception):
 
 class UserInvalidException(Exception):
     """
-    User不可用异常类
+    用户不可用异常类
     - 不存在
     - 已注销
     """
@@ -72,3 +75,20 @@ class UserInvalidException(Exception):
 
     def report(self):
         return f"UserInvalidException: {self.detail}"
+
+
+class SQLDBHandleException(SQLAlchemyError):
+    """
+    Sqlalchemy数据库操作异常类
+    """
+    def __init__(self, detail):
+        self.detail = detail
+
+    def __str__(self):
+        return self.report()
+
+    def __repr__(self):
+        return self.report()
+
+    def report(self):
+        return f"SQLDBHandleException: {self.detail}"

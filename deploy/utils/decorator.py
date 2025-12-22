@@ -39,7 +39,8 @@ from functools import wraps
 
 from deploy.utils.status import FailureStatus
 from deploy.utils.logger import logger as LOG
-from deploy.utils.status_value import StatusMsg as status_msg, StatusCode as status_code
+from deploy.utils.status_value import (StatusMsg as status_msg,
+                                       StatusCode as status_code)
 # ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～ ～
 """
 装饰器模板

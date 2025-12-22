@@ -53,7 +53,11 @@ class XtbUserService:
         self.__str__()
 
     async def user_list(self, db: AsyncSession, rtx_id: str, params: Dict) -> Status:
-        users = await self.xtb_user_bo.get_all(db=db, offset=params.get("offset"), limit=params.get("limit"))
+        users = await self.xtb_user_bo.get_all(
+            db=db,
+            offset=params.get("offset"),
+            limit=params.get("limit")
+        )
         data: List = list()
         data.extend(
             filter(

@@ -36,7 +36,7 @@ from sqlalchemy.orm import sessionmaker
 
 from deploy.config import env, db_link
 from deploy.utils.printer import printer_error
-from deploy.utils.logger import logger as LOG
+from deploy.utils.exception import SQLDBHandleException
 
 
 # 数据库连接地址
@@ -84,8 +84,7 @@ async def get_db():
             await session.commit()
         except Exception as exec:
             await session.rollback()
-            LOG.error(f"{'=' * 10}数据库操作异常：{exec.__str__()}{'=' * 10}")
-            raise
+            raise SQLDBHandleException(f"数据库操作异常：{exec.__str__()}")
         finally:
             await session.close()
 

@@ -30,14 +30,14 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from enum import Enum, unique
+from enum import IntEnum, StrEnum, unique, auto
 
 
 # Status status
 @unique
-class StatusEnum(Enum):
-    SUCCESS = "SUCCESS"
-    FAILURE = "FAILURE"
+class StatusEnum(StrEnum):
+    SUCCESS = auto()
+    FAILURE = auto()
 
 
 # Status message
@@ -131,7 +131,7 @@ StatusMsg = {
 
 # Status code
 @unique
-class StatusCode(Enum):
+class StatusCode(IntEnum):
     # ** success **
     CODE_100_SUCCESS = 100
     CODE_101_SUCCESS_NO_DATA = 101
