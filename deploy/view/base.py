@@ -30,6 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from enum import StrEnum, auto
 from typing import List, Tuple, Dict, Set, Optional, Union, Literal
 from fastapi import (APIRouter, 
                      Path, Query, 
@@ -39,7 +40,7 @@ from fastapi import (APIRouter,
                      HTTPException as FastAPI_HTTPException)
 
 from deploy.schema.po.base import UserBody as User
-from deploy.utils.status import Status, SuccessStatus
+from deploy.utils.status import Status, SuccessStatus, FailureStatus
 from deploy.utils.status_value import (StatusEnum as status_enum,
                                        StatusMsg as status_msg,
                                        StatusCode as status_code)
@@ -244,6 +245,23 @@ def body(
     )
 
 
+@base.post("/request_body/user_body",
+           summary="Request Body Pydantic模型请求体请求示例",
+           description="根上面接口实现是一样的效果，就是请求参数模型使用FastAPI Body"
+           )
+def body(
+        user: User = Body()
+) -> Status:
+    """
+    Pydantic模型请求体请求示例
+    :param user: User Pydantic模型
+    :return: json
+    """
+    return SuccessStatus(
+        data=user.model_dump()
+    )
+
+
 @base.post("/request_body/user/{rtx_id}",
            summary="**Request Body + Path parameters + Query parameters**多参数",
            description="Pydantic定义Request Body，fastapi.Path定义资源请求参数，fastapi.Query定义查询请求参数，运用多参数的一个API示例"
@@ -359,5 +377,38 @@ async def deprecated() -> Status:
     :return: json
     """
     return SuccessStatus()
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+"""
+enum
+"""
+
+class ModelName(StrEnum):
+    abc = auto()
+    asd = auto()
+    xyz = auto()
+    other = auto()
+
+
+@base.get('/enum/{model_name}',
+          summary="枚举路径",
+          description="使用Enum进行定义请求路径资源",
+          status_code=fastapi_http_status.HTTP_200_OK
+          )
+async def enum(model_name: ModelName) -> Status:
+    """
+    :return: json
+    """
+    if model_name is ModelName.abc:
+        return SuccessStatus(data={"key": model_name, "value": model_name.abc})
+    elif model_name is ModelName.asd:
+        return SuccessStatus(data={"key": model_name, "value": model_name.asd})
+    elif model_name is ModelName.xyz:
+        return SuccessStatus(data={"key": model_name, "value": model_name.xyz})
+    else:
+        return FailureStatus(
+            status_id=status_code.CODE_404_REQUEST_PARAMETER_VALUE_ERROR,
+            message="[Enum]枚举值错误"
+        )
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * [ END ] * * * * * * * * * * * * * * * * * * * * * * * * * * *
