@@ -148,9 +148,9 @@ async def query_base(rtx_id: str) -> Status:
 
 @base.get('/user/query/null',
           summary="==非必填==查询参数请求示例",
-          description="使用typing.Optional定义参数，参数值可为空值，在参数传递过程中设置默认值，为空可设置None"
+          description="使用typing.Optional定义参数，参数值可为空值，在参数传递过程中设置默认值，为空可设置None，写法：【新版本】rtx_id: str | None = None【老版本】rtx_id: Optional[str] = None 或者 Union[str, None] = None"
           )
-async def query_null(rtx_id: Optional[str] = None) -> Status:
+async def query_null(rtx_id: str | None = None) -> Status:
     """
     非必填查询参数请求示例
     :param rtx_id: [str]查询请求参数
@@ -270,7 +270,7 @@ def body_request_body(
         rtx_id: str = Path(..., description="资源参数rtx_id", min_length=1, max_length=12, regex="user"),
         work_year: int = Query(..., description="查询参数work_year", ge=1, le=100),
         work_city: str = Query(..., description="资源参数work_city", min_length=1, max_length=12),
-        user: Optional[User] = None
+        user: User | None = None
 ) -> Status:
     """
     :param rtx_id: [str]资源参数rtx_id
@@ -322,7 +322,7 @@ Cookie
           description="定义Cookie参数需要使用Cookie类，否则就是查询参数，测试请求只能用Postman（测试方案：Headers{Cookie: cookie=123abc}），并且Cookie的类属性与Path、Query差不多，这里使用Cookie参数为可选参数"
           )
 def cookie(
-        cookie_id: Optional[str] = Cookie(None, description="Cookie参数")
+        cookie_id: str | None = Cookie(None, description="Cookie参数")
 ) -> Status:
     """
     Cookie参数请求示例
@@ -345,7 +345,7 @@ Header
           description="Header同Path、Query、Cookie属性，包含字符串、整型相关的限制，具体操作请查看Header源码"
           )
 def header(
-        user_agent: Optional[str] = Header(None, convert_underscores=True, description="User-Agent"),
+        user_agent: str | None = Header(None, convert_underscores=True, description="User-Agent"),
         x_token: str = Header(..., min_length=1, max_length=25, convert_underscores=True, description="X-Token")
 ) -> Status:
     """
