@@ -46,15 +46,15 @@ class Address(baseModel):
     city: str = Field(..., min_length=1, max_length=120, description="城市")
     address: Optional[Text] = Field(default=None, min_length=0, max_length=120, description="详情地址")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "province": "地球",
                 "city": "中国",
                 "address": "最牛逼的地方"
             }
         }
-
+    }
 
 class BaseUserBody(baseModel):
     """
@@ -66,8 +66,8 @@ class BaseUserBody(baseModel):
     sex: str = Field(..., min_length=1, max_length=1, description="性别")
     addr: Address
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "name": "法外狂徒张三",
                 "age": 32,
@@ -79,7 +79,7 @@ class BaseUserBody(baseModel):
                 }
             }
         }
-
+    }
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """
     字段特殊验证：字母+数字
@@ -98,8 +98,8 @@ class UserBody(BaseUserBody):
     """
     phone: Optional[str] = Field(default=None, min_length=0, max_length=11, description="联系电话")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "name": "法外狂徒张三",
                 "age": 32,
@@ -112,7 +112,7 @@ class UserBody(BaseUserBody):
                 "phone": ""
             }
         }
-
+    }
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """

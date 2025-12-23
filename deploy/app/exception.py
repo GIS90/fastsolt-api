@@ -70,7 +70,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
         content = FailureStatus(
             status_id=status_code.CODE_404_REQUEST_PARAMETER_VALUE_ERROR.value,
             message="请求参数错误" or status_msg.get(404),
-            data=jsonable_encoder({"error": exec.errors()})  # jsonable_encoder({"error": exec.errors(), "body": exec.body})   # 返回请求体参数 + errors
+            data=jsonable_encoder(exec.errors())  # jsonable_encoder({"error": exec.errors(), "body": exec.body})   # 返回请求体参数 + errors
         ).status_body
         headers = {"app-cm-exception-webhook": "RequestValidationError"}
         headers.update(app_headers)

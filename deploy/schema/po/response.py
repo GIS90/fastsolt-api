@@ -42,8 +42,8 @@ class UserIn(baseModel):
     phone: Optional[str]
     full_name: Union[str, None] = None
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "username": "法外狂徒张三",
                 "password": "123456",
@@ -52,6 +52,7 @@ class UserIn(baseModel):
                 "full_name": "法外狂徒张三"
             }
         }
+    }
 
 
 class UserOut(baseModel):
@@ -60,8 +61,8 @@ class UserOut(baseModel):
     phone: Optional[str]
     full_name: Union[str, None] = None
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "username": "法外狂徒张三",
                 "email": "gaoming@example.com",
@@ -69,3 +70,4 @@ class UserOut(baseModel):
                 "full_name": "法外狂徒张三"
             }
         }
+    }

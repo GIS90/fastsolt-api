@@ -42,13 +42,14 @@ class BasePageBody(baseModel):
     page: int = Field(..., ge=1, le=10000, description="页码")
     limit: int = Field(..., ge=1, le=10000, description="条数")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "page": 1,
                 "limit": 15
             }
         }
+    }
 
 
 class PageLikeBody(BasePageBody):
@@ -58,11 +59,12 @@ class PageLikeBody(BasePageBody):
     """
     search: Optional[Text] = Field(default=None,  min_length=0, max_length=55, description="模糊查询信息")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "page": 1,
                 "limit": 15,
                 "search": "你是我的唯一。。。。。。。。"
             }
         }
+    }

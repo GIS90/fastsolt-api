@@ -49,12 +49,13 @@ class RequestMd5Model(baseModel):
     """
     md5: str = Query(..., min_length=MIN_LENGTH, max_length=MAX_LENGTH, description="数据MD5")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "md5": "A"
             }
         }
+    }
 
 
 class RequestMd5Models(baseModel):
@@ -64,12 +65,13 @@ class RequestMd5Models(baseModel):
     """
     md5: List[str] = Query(..., min_length=MIN_LENGTH, description="数据MD5列表")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "md5": ["A", "B", "C"]
             }
         }
+    }
 
 
 class RequestIDModels(baseModel):
@@ -79,12 +81,13 @@ class RequestIDModels(baseModel):
     """
     id: List[Union[int, str]] = Query(..., description="数据ID列表")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "id": [1, "B", "C"]
             }
         }
+    }
 
 
 class DownloadFileModel(baseModel):
@@ -96,8 +99,8 @@ class DownloadFileModel(baseModel):
     name: str = Query(..., min_length=MIN_LENGTH, max_length=55, description="下载文件名称"),
     md5: Optional[List[str]] = Query(..., description="数据MD5列表")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "api": "api",
                 "type": "ALL",
@@ -105,6 +108,7 @@ class DownloadFileModel(baseModel):
                 "md5": ["A", "B", "C"]
             }
         }
+    }
 
 
 class PageListModel(baseModel):
@@ -115,8 +119,8 @@ class PageListModel(baseModel):
     pageSize: int = Field(..., ge=MIN_LENGTH, description="条数"),
     content: Optional[dict] = Field(..., description="非模糊查询")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "page": 1,
                 "pageSize": 10,
@@ -125,4 +129,5 @@ class PageListModel(baseModel):
                 }
             }
         }
+    }
 

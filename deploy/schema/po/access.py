@@ -38,14 +38,14 @@ class O2LUserLogin(baseModel):
     username: str = Field(..., min_length=1, max_length=25, description="用户名称")
     password: str = Field(..., min_length=1, max_length=30, description="用户密码")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "username": "adc",
                 "password": "123456"
             }
         }
-
+    }
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """
     字段特殊验证：字母+数字

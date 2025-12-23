@@ -35,6 +35,7 @@ from deploy.view.api import api
 from deploy.view.access import access
 
 from deploy.view.base import base
+from deploy.view.annotated import annotated
 from deploy.view.method import method
 from deploy.view.response import response
 from deploy.view.depend import depend
@@ -53,6 +54,7 @@ View根据系统设计的api进行模块划分，其中有3个比较特殊（不
 
 功能模块
 - base：基础参数请求模块 [Path Query Body Form Cookie Header]
+- base：官网最新参数声明Annotated写法
 - method：请求方式模块 [GET POST PUT DELETE PATCH OPTIONS HEAD]
 - response：Response对象类返回测试示例 [Response, PlainTextResponse, HTMLResponse, 
                                     JSONResponse, StreamingResponse, RedirectResponse]
@@ -68,13 +70,14 @@ __all__ = ["add_routers"]
 
 
 add_routers = [
-    root,
-    base,
-    method,
-    response,
-    upload,
-    error,
-    api,
-    access,
-    xtb_user
+    # root,
+    # base,
+    annotated,
+    # method,
+    # response,
+    # upload,
+    # error,
+    # api,
+    # access,
+    # xtb_user
 ]
