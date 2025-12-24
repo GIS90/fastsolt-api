@@ -70,7 +70,7 @@ __all__ = ["add_routers"]
 
 
 add_routers = [
-    # root,
+    root,
     # base,
     annotated,
     # method,

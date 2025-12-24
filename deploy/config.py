@@ -145,7 +145,7 @@ image_width: int = data["image"].get("width")
 @dataclass(frozen=True, order=True)
 class APPProfile:
     title: str = server_name
-    version: str = server_name
+    version: str = server_version
     summary: str = "作者：高明亮"
     description: str = "基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架。"     # 支持Markdown语法
 

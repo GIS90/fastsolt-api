@@ -69,4 +69,4 @@ class WebBaseClass(ABC):
         """
         entry method
         """
-        pass
+        ...

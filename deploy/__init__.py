@@ -43,8 +43,7 @@ from deploy.app.tip import tip_color_startup, tip_color_shutdown    # app startu
 
 from deploy.utils.base_class import WebBaseClass
 from deploy.utils.logger import logger as LOG
-from deploy.config import (server_name, server_version,
-                           app_openapi_url, app_docs_url,
+from deploy.config import (app_openapi_url, app_docs_url,
                            app_static_url, app_static_folder,
                            APPProfile, _author_contact)
 
@@ -87,11 +86,11 @@ class FSWebAppClass(WebBaseClass):
         self.app.mount(path=app_static_url, app=StaticFiles(directory=app_static_folder), name="static")
 
         # 配置本地Swagger UI资源
-        @app.get(app_docs_url, include_in_schema=False)
+        @self.app.get(app_docs_url, include_in_schema=False)
         async def __swagger_ui_html():
             return get_swagger_ui_html(
                 openapi_url=app_openapi_url,
-                title=f"{server_name}-{server_version}-接口说明手册",
+                title=f"{APPProfile.title}-{APPProfile.version}-接口说明手册",
                 swagger_js_url=f"{app_static_url}/swagger-ui-bundle.js",
                 swagger_css_url=f"{app_static_url}/swagger-ui.css",
                 swagger_favicon_url=f"{app_static_url}/favicon.ico"
@@ -100,29 +99,33 @@ class FSWebAppClass(WebBaseClass):
 
         # app middleware
         # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-        register_app_middleware(app=app, app_headers=self.headers)
+        register_app_middleware(app=self.app, app_headers=self.headers)
         # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
         # app webhook: exception_handler
         # -----------------------------------------------------------------------------------------------
-        register_app_exception(app=app, app_headers=self.headers)
+        register_app_exception(app=self.app, app_headers=self.headers)
         # -----------------------------------------------------------------------------------------------
 
         # FSWebAppClass initialize
         super(FSWebAppClass, self).__init__()
 
-        @app.on_event("startup")
+        @self.app.on_event("startup")
         async def startup_event():
             LOG.info('>>>>> Web app startup success......')
             tip_color_startup()
 
-        @app.on_event("shutdown")
+        @self.app.on_event("shutdown")
         async def shutdown_event():
             LOG.info('>>>>> Web app shutdown success......')
             tip_color_shutdown()
 
     def __str__(self) -> str:
-        return "FSWebAppClass instance."
+        return """
+        FSWebAppClass instance.
+        WebApp project class, use to run APIs.
+        contain middleware, exceptions, and tips for the app.
+        """
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -144,7 +147,7 @@ class FSWebAppClass(WebBaseClass):
             if not route: continue
             self.register_blueprint(router=route)
 
-    def entry_point(self):
+    def entry_point(self) -> None:
         """
         Web app initialize, parent class method
         :return: None
