@@ -45,11 +45,14 @@ class XtbUserBo:
         field: Any,
         value: Any
     ) -> Optional[XtbUserModel]:
+        if not hasattr(XtbUserModel, field):
+            return None
+
+        result = await db.execute(select(XtbUserModel).where(XtbUserModel[field] == value))
+        return result.scalar_one_or_none()
         try:
-            result = await db.execute(select(XtbUserModel).where(field == value))
-            return result.scalar_one_or_none()
+            pass
         except Exception as e:
-            # 日志记录或上报异常
             raise e
 
     async def get_by_id(self, db: AsyncSession, user_id: int) -> Optional[XtbUserModel]:
@@ -59,7 +62,8 @@ class XtbUserBo:
         return await self._get_user_by_field(db, XtbUserModel.rtx_id, rtx_id)
 
     async def get_by_md5_id(self, db: AsyncSession, md5_id: str) -> Optional[XtbUserModel]:
-        return await self._get_user_by_field(db, XtbUserModel.md5_id, md5_id)
+        result = await db.execute(select(XtbUserModel).where(XtbUserModel.md5_id == md5_id))
+        return result.scalar_one_or_none()
 
     async def get_by_name(self, db: AsyncSession, name: str) -> Optional[XtbUserModel]:
         return await self._get_user_by_field(db, XtbUserModel.fullname, name)
@@ -77,7 +81,6 @@ class XtbUserBo:
             )
             return result.scalars().all()
         except Exception as e:
-            # 日志记录或上报异常
             raise e
 
     #

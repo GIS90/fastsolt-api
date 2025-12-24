@@ -33,7 +33,7 @@ import datetime
 from typing import Any, List, Dict, Optional
 
 
-async def converter(
+async def model_converter_dict(
         model: Any,
         fields: List[Dict] = None,
         default_value: Any = "-"
@@ -58,7 +58,8 @@ async def converter(
     返回:
         Dict[str, Any]: 转换后的字典，键为字段定义中的 name，值为对应类型的转换结果。
     """
-    if not model or not fields:
+    if (not model
+            or not fields):
         return None
 
 

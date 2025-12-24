@@ -34,8 +34,10 @@ from typing import Dict, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from deploy.curd.xtb_user import XtbUserBo
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
-from deploy.utils.converter import converter
-from deploy.schema.dto.xtb_user import xtb_user_list_fields
+from deploy.utils.status_value import (StatusCode as status_code,
+                                       StatusMsg as status_msg)
+from deploy.utils.converter import model_converter_dict
+from deploy.schema.dto.xtb_user import xtb_user_list_fields, xtb_user_detail_fields
 
 
 class XtbUserService:
@@ -58,11 +60,14 @@ class XtbUserService:
             offset=params.get("offset"),
             limit=params.get("limit")
         )
+        if not users:
+            return FailureStatus(status_id=status_code.CODE_101_SUCCESS_NO_DATA)
+
         data: List = list()
         data.extend(
             filter(
                 lambda x: x is not None and x is not {},
-                [await converter(model=u, fields=xtb_user_list_fields) for u in users if u]
+                [await model_converter_dict(model=u, fields=xtb_user_list_fields) for u in users if u]
             )
         )
         result: Dict = {
@@ -72,3 +77,10 @@ class XtbUserService:
         }
         return SuccessStatus(data=result)
 
+    async def get_user_by_md5_id(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
+        model = await self.xtb_user_bo.get_by_md5_id(db=db, md5_id=md5_id)
+        return SuccessStatus(data=await model_converter_dict(
+            model=model,
+            fields=xtb_user_detail_fields)
+        ) if model \
+            else FailureStatus(status_id=status_code.CODE_501_DATA_NOT_EXIST)

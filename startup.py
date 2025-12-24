@@ -3,7 +3,7 @@
 """
 ------------------------------------------------
 
-describe: 
+describe:
     App manual entry
         dev:
             - python app.py
@@ -21,7 +21,7 @@ base_info:
     __file_name__ = app.py
 
 usage:
-    
+
 design:
 
 reference urls:
@@ -41,12 +41,9 @@ import uvicorn
 """========================================================================================="""
 # manual startup(DEV)
 if __name__ == "__main__":
-    config = uvicorn.Config("deploy:app",
-                            host="127.0.0.1",
-                            port=22222,
-                            log_level="debug",
-                            reload=True
-                            )
+    config = uvicorn.Config(
+        "deploy:app", host="127.0.0.1", port=22222, log_level="debug", reload=True
+    )
     server = uvicorn.Server(config)
     server.run()
 """========================================================================================="""

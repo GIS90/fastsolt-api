@@ -16,9 +16,27 @@ base_info:
     __file_name__ = xtb_user.py
 
 usage:
-    
+  
 design:
-
+    字段含义：
+       - 'key': 模型中的属性名；
+       - 'type': 属性的数据类型（如 "str", "int", "datetime" 等），具体含义参考FieldTypeEnum
+       - 'name': 输出字典中对应的键名。
+    完全体：
+        [
+            {"key": "id", "type": "int", "name": "id"},
+            {"key": "rtx_id", "type": ft.STRING, "name": "rtxId"},
+            {"key": "md5_id", "type": ft.STRING, "name": "md5Id"},
+        ]
+        
+    简版本：
+        [
+            {"key": "id"},
+            {"key": "rtx_id"},
+            {"key": "md5_id"},
+        ]
+        
+        
 reference urls:
 
 python version:
@@ -30,14 +48,30 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from deploy.utils.enumeration import FieldTypeEnum as ft
+
+
 xtb_user_list_fields = [
-    {"key": "id", "type": "int", "name": "id"},
-    {"key": "rtx_id", "type": "str", "name": "rtxId"},
-    {"key": "md5_id", "type": "str", "name": "md5Id"},
-    {"key": "fullname", "type": "str", "name": "name"},
-    {"key": "sex", "type": "str", "name": "sex"},
-    {"key": "email", "type": "str", "name": "email"},
-    {"key": "phone", "type": "str", "name": "phone"},
-    {"key": "avatar", "type": "str", "name": "avatar"},
-    {"key": "introduction", "type": "str", "name": "introduction"},
+    {"key": "id", "type": ft.INT, "name": "id"},
+    {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
+    {"key": "md5_id", "type": ft.STR, "name": "md5Id"},
+    {"key": "fullname", "type": ft.STR, "name": "name"},
+    {"key": "sex", "type": ft.STR, "name": "sex"},
+    {"key": "email", "type": ft.STR, "name": "email"},
+    {"key": "phone", "type": ft.STR, "name": "phone"},
+    {"key": "avatar", "type": ft.STR, "name": "avatar"},
+    {"key": "introduction", "type": ft.STR, "name": "introduction"},
+]
+
+
+xtb_user_detail_fields = [
+    {"key": "id"},
+    {"key": "rtx_id"},
+    {"key": "md5_id"},
+    {"key": "fullname"},
+    {"key": "sex"},
+    {"key": "email"},
+    {"key": "phone"},
+    {"key": "avatar"},
+    {"key": "introduction"},
 ]

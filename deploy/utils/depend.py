@@ -111,24 +111,24 @@ Pageable-Params依赖
 
 
 def pageable_params(
-    page: int = Query(..., ge=MIN_LENGTH, description="页码"),
-    pageSize: int = Query(..., ge=MIN_LENGTH, description="条数"),
+    page: int = Query(default=1, ge=MIN_LENGTH, description="页码"),
+    pageSize: int = Query(default=15, ge=MIN_LENGTH, description="条数"),
 ) -> Dict:
     return {"page": page, "limit": pageSize, "offset": (page - 1) * pageSize}
 
 
 def pageable_query_params(
-    page: int = Query(..., ge=MIN_LENGTH, description="页码"),
-    pageSize: int = Query(..., ge=MIN_LENGTH, description="条数"),
-    content: Optional[str] = Query(..., max_length=MAX_LENGTH, description="非模糊查询"),
+    page: int = Query(default=1, ge=MIN_LENGTH, description="页码"),
+    pageSize: int = Query(default=15, ge=MIN_LENGTH, description="条数"),
+    content: str | None = Query(default=None, max_length=MAX_LENGTH, description="非模糊查询"),
 ) -> Dict:
     return {"page": page, "limit": pageSize, "offset": (page - 1) * pageSize, "content": content}
 
 
 def pageable_like_params(
-    page: int = Query(..., ge=MIN_LENGTH, description="页码"),
-    pageSize: int = Query(..., ge=MIN_LENGTH, description="条数"),
-    content: Optional[str] = Query(..., max_length=MAX_LENGTH, description="模糊查询参数"),
+    page: int = Query(default=1, ge=MIN_LENGTH, description="页码"),
+    pageSize: int = Query(default=15, ge=MIN_LENGTH, description="条数"),
+    content: Optional[str] = Query(default=None, max_length=MAX_LENGTH, description="模糊查询参数"),
 ) -> Dict:
     return {"page": page, "limit": pageSize, "offset": (page - 1) * pageSize, "content": f"%{content}%"}
 

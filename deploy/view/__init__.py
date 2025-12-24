@@ -3,7 +3,7 @@
 """
 ------------------------------------------------
 
-describe: 
+describe:
     MVS：view layer
 
 base_info:
@@ -71,13 +71,13 @@ __all__ = ["add_routers"]
 
 add_routers = [
     root,
-    # base,
+    base,
     annotated,
-    # method,
-    # response,
-    # upload,
-    # error,
-    # api,
-    # access,
-    # xtb_user
+    method,
+    response,
+    upload,
+    error,
+    api,
+    access,
+    xtb_user,
 ]

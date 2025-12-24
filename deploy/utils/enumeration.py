@@ -41,6 +41,7 @@ __all__ = [
     'fontStyle',
     'fontPrinter',
     'FileTypeEnum',
+    'FieldTypeEnum',
 ]
 
 
@@ -157,3 +158,20 @@ class FileTypeEnum(IntEnum):
     AVATAR_CROP = 9
     OTHER = 99
 
+
+@unique
+class FieldTypeEnum(StrEnum):
+    """
+    字段类型
+    """
+    STR = "str"
+    INT = "int"
+    FLOAT = "float"
+    BOOL = "bool"
+    BOOLTEXT = "bool_text"
+    DATETIME = "datetime"
+    DATE = "date"
+    TIME = "time"
+    TIMESTAMP = "timestamp"
+    LIST = "list"
+    DICT = "dict"
