@@ -67,7 +67,6 @@ xtb_user_list_fields = [
 xtb_user_detail_fields = [
     {"key": "id"},
     {"key": "rtx_id"},
-    {"key": "md5_id"},
     {"key": "fullname"},
     {"key": "sex"},
     {"key": "email"},
