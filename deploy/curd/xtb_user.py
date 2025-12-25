@@ -40,8 +40,8 @@ from deploy.schema.dao.xtb_user import XtbUserModel
 
 class XtbUserBo:
 
-    @staticmethod
     async def _get_user_by_field(
+        self,
         db: AsyncSession,
         field: str | InstrumentedAttribute,
         value: Any
@@ -57,7 +57,7 @@ class XtbUserBo:
             result = await db.execute(select(XtbUserModel).where(_field == value))
             return result.scalar_one_or_none()
         except Exception as exec:
-            raise Exception(f"[查询One]{exec}")
+            raise Exception(f"[{self.__class__.__name__}*查询One]{exec}")
 
     async def get_by_id(self, db: AsyncSession, user_id: int):
         return await self._get_user_by_field(db, XtbUserModel.id, user_id)
@@ -74,6 +74,9 @@ class XtbUserBo:
     async def get_by_email(self, db: AsyncSession, email: str):
         return await self._get_user_by_field(db, XtbUserModel.email, email)
 
+    async def get_by_phone(self, db: AsyncSession, phone: str):
+        return await self._get_user_by_field(db, XtbUserModel.phone, phone)
+
     @classmethod
     async def get_all(
         cls, db: AsyncSession, offset: int = 0, limit: int = 15
@@ -84,7 +87,7 @@ class XtbUserBo:
             )
             return result.scalars().all()
         except Exception as exec:
-            raise Exception(f"[查询All]{exec}")
+            raise Exception(f"[{cls.__name__}*查询All]{exec}")
 
     #
     # @staticmethod
