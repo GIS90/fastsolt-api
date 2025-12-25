@@ -85,3 +85,7 @@ class XtbUserService:
             default_value="****")
         ) if model \
             else FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
+
+    async def add_user(self, db: AsyncSession, rtx_id: str, model: Dict):
+        print(model)
+        return SuccessStatus()

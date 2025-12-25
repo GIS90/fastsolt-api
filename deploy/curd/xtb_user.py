@@ -40,6 +40,10 @@ from deploy.schema.dao.xtb_user import XtbUserModel
 
 class XtbUserBo:
 
+    @staticmethod
+    async def new_model():
+        return XtbUserModel()
+
     async def _get_user_by_field(
         self,
         db: AsyncSession,
