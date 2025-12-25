@@ -136,7 +136,7 @@ class DingtalkLib:
         :param message: DingDing消息体，为MarkDown语法
         :param to_id: 接收人ID
         :return: json type result
-            status_id: 状态码,
+            code: 状态码,
             msg: 消息体
             data: 数据体
 
@@ -148,7 +148,7 @@ class DingtalkLib:
         """
         if not self.access_token:
             return FailureStatus(
-                status_id=status_code.CODE_903_OTHER_THREE_API_TOKEN_FAILURE.value,
+                code=status_code.CODE_903_OTHER_THREE_API_TOKEN_FAILURE.value,
                 message="[DingTalk]Token初始化失败")
 
         batch_send_otoheaders = dingtalkrobot__1__0_models.BatchSendOTOHeaders()
@@ -175,5 +175,5 @@ class DingtalkLib:
             msg = '[DingTalk]发送信息 [%s] 异常: %s' % (to_id, error)
             LOG.error(msg)
             return FailureStatus(
-                status_id=status_code.CODE_902_OTHER_THREE_API_SEND_FAILURE.value,
+                code=status_code.CODE_902_OTHER_THREE_API_SEND_FAILURE.value,
                 message=msg)

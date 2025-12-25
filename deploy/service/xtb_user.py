@@ -61,7 +61,7 @@ class XtbUserService:
             limit=params.get("limit")
         )
         if not users:
-            return FailureStatus(status_id=status_code.CODE_101_SUCCESS_NO_DATA)
+            return FailureStatus(code=status_code.CODE_101_SUCCESS_NO_DATA)
 
         data: List = list()
         data.extend(
@@ -81,6 +81,7 @@ class XtbUserService:
         model = await self.xtb_user_bo.get_by_md5_id(db=db, md5_id=md5_id)
         return SuccessStatus(data=await model_converter_dict(
             model=model,
-            fields=xtb_user_detail_fields)
+            fields=xtb_user_detail_fields,
+            default_value="****")
         ) if model \
-            else FailureStatus(status_id=status_code.CODE_501_DATA_NOT_EXIST)
+            else FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)

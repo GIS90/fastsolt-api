@@ -73,14 +73,14 @@ class ImageLib:
         return self.__str__()
 
     @staticmethod
-    def visual_value(status_id: int, message: str, data: Optional[List, Dict]) -> Dict:
+    def visual_value(code: int, message: str, data: Optional[List, Dict]) -> Dict:
         """
         方法请求结果格式化
         """
         if data is None: data = []
         return {
-            'status_id': status_id,
-            'message': message if message else status_msg.get(status_id),
+            'code': code,
+            'message': message if message else status_msg.get(code),
             'data': data
         }
 
@@ -143,7 +143,7 @@ class ImageLib:
                 small_img = small_img.resize((self.width, h_size), Image.ANTIALIAS)
                 small_img.save(image_real_file, quality=self.quality)
             return self.visual_value(
-                    status_id=100,
+                    code=100,
                     message=status_enum.SUCCESS.value,
                     data={'name': store_name_md5, 'file': os.path.join(real_store_dir, store_name_md5)}
                    )
@@ -168,7 +168,7 @@ class ImageLib:
             upsize_image = im.resize((length, width), Image.ANTIALIAS)
             upsize_image.save(out_image_file)
             return self.visual_value(
-                status_id=100,
+                code=100,
                 message=status_enum.SUCCESS.value,
                 data={'md5': out_file_md5, 'name': out_file_name})
         except Exception as error:

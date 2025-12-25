@@ -73,7 +73,7 @@ async def files_api(
     for f in files:
         if not f: continue
         res = upload_service.file_api(file=f)
-        if res.get('status_id'):
+        if res.get('code'):
             result.append(res.get('data').get('file'))
 
     return SuccessStatus()
@@ -108,7 +108,7 @@ async def upload_files(
     for f in files:
         if not f: continue
         res = await upload_service.upload_file_api(file=f)
-        if res.get('status_id'):
+        if res.get('code'):
             result.append(res.get('data').get('file'))
     return SuccessStatus()
 

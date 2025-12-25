@@ -107,7 +107,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
         if __APP_ALLOW_HOST and \
                 request.client.host not in __APP_ALLOW_HOST:
             content = FailureStatus(
-                status_id=status_code.CODE_10001_BAN_REQUEST.value,
+                code=status_code.CODE_10001_BAN_REQUEST.value,
                 message=f"IP not allow access: {request.client.host}"
             ).status_body
             headers = {"X-App-CM-Request-Webhook": "CM-IP"}
@@ -123,7 +123,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
         if __APP_BAN_ROUTER and \
                 request.url.path in __APP_BAN_ROUTER:
             content = FailureStatus(
-                status_id=status_code.CODE_10001_BAN_REQUEST.value,
+                code=status_code.CODE_10001_BAN_REQUEST.value,
                 message=f"Request resource is forbid: {request.url.path}"
             ).status_body
             headers = {"X-App-CM-Request-Webhook": "CM-ROUTE"}
@@ -139,7 +139,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
         if __APP_REQUEST_METHOD and \
                 str(request.method).upper() not in __APP_REQUEST_METHOD:
             content = FailureStatus(
-                status_id=status_code.CODE_300_REQUEST_METHOD_ERROR.value,
+                code=status_code.CODE_300_REQUEST_METHOD_ERROR.value,
                 message=f"Request method is error: {request.url.path}"
             ).status_body
             headers = {"X-App-CM-Request-Webhook": "CM-METHOD"}
@@ -174,7 +174,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
             # NO Token
             if not request_token:
                 content = FailureStatus(
-                    status_id=status_code.CODE_250_TOKEN_NOT_FOUND.value,
+                    code=status_code.CODE_250_TOKEN_NOT_FOUND.value,
                     message=status_msg.get(250)
                 ).status_body
                 return JSONResponse(
@@ -187,7 +187,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
             expire, __token_rtx_id = verify_access_token_expire(x_token=request_token)
             if expire:
                 content = FailureStatus(
-                    status_id=status_code.CODE_253_TOKEN_EXPIRE.value,
+                    code=status_code.CODE_253_TOKEN_EXPIRE.value,
                     message=status_msg.get(253)
                 ).status_body
                 return JSONResponse(

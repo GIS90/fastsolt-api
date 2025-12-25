@@ -68,7 +68,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
 
         # rewrite response >>> 加入请求体body
         content = FailureStatus(
-            status_id=status_code.CODE_404_REQUEST_PARAMETER_VALUE_ERROR.value,
+            code=status_code.CODE_404_REQUEST_PARAMETER_VALUE_ERROR.value,
             message="请求参数错误" or status_msg.get(404),
             data=jsonable_encoder(exec.errors())  # jsonable_encoder({"error": exec.errors(), "body": exec.body})   # 返回请求体参数 + errors
         ).status_body
@@ -93,7 +93,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
 
         # rewrite response
         content = FailureStatus(
-            status_id=status_code.CODE_251_TOKEN_VERIFY_FAILURE.value,
+            code=status_code.CODE_251_TOKEN_VERIFY_FAILURE.value,
             message=status_msg.get(251),
             data={"error": exec.detail}
         ).status_body
@@ -118,7 +118,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
 
         # rewrite response
         content = FailureStatus(
-            status_id=status_code.CODE_207_USER_INVALID.value,
+            code=status_code.CODE_207_USER_INVALID.value,
             message=status_msg.get(207),
             data={"error": exec.detail}
         ).status_body
@@ -143,7 +143,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
 
         # rewrite response
         content = FailureStatus(
-            status_id=status_code.CODE_600_DB_EXCEPTION.value,
+            code=status_code.CODE_600_DB_EXCEPTION.value,
             message=status_msg.get(600),
             data={"error": exec.detail}
         ).status_body
@@ -168,7 +168,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
 
         # rewrite response
         content = FailureStatus(
-            status_id=status_code.CODE_901_HTTP_EXCEPTION.value,
+            code=status_code.CODE_901_HTTP_EXCEPTION.value,
             message=status_msg.get(901),
             data={"error": exec.__str__()}
         ).status_body
@@ -193,7 +193,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
 
         # rewrite response
         content = FailureStatus(
-            status_id=status_code.CODE_900_SERVER_API_EXCEPTION.value,
+            code=status_code.CODE_900_SERVER_API_EXCEPTION.value,
             message=status_msg.get(900),
             data={"error": exec.__str__()}
         ).status_body

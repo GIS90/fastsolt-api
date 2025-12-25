@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    the class of response, type json to use api
+    the class of response, type json to use API
 
 base_info:
     __author__ = PyGo
@@ -44,7 +44,7 @@ class Status(JSONResponse):
     状态响应类，用于构建统一格式的JSON响应，继承FastAPI的JSONResponse
 
     Args:
-        status_id (int): 状态码ID
+        code (int): 状态码
         message (str): 响应消息，如果为空则根据状态码ID获取默认消息
         data (Union[List, Dict], optional): 响应数据，默认为None
 
@@ -52,12 +52,12 @@ class Status(JSONResponse):
         Status: 状态响应对象
     """
 
-    def __init__(self, status_id: int, message: str, data: Union[List, Dict] = None):
+    def __init__(self, code: int, message: str, data: Union[List, Dict] = None):
         if data is None:
             data = {}
         self.status_body = {
-            "status_id": status_id,
-            "message": message if message else StatusMsg.get(status_id),
+            "code": code,
+            "message": message if message else StatusMsg.get(code),
             "data": data,
         }
         super().__init__(
@@ -79,12 +79,12 @@ class SuccessStatus(Status):
     """
 
     def __init__(self,
-                 status_id: int = StatusCode.CODE_100_SUCCESS.value,
+                 code: int = StatusCode.CODE_100_SUCCESS.value,
                  message: str = None,
                  data: Union[List, Dict] = None
                  ):
 
-        super().__init__(status_id, message, data)
+        super().__init__(code, message, data)
 
 
 class FailureStatus(Status):
@@ -93,10 +93,10 @@ class FailureStatus(Status):
     """
 
     def __init__(self,
-                 status_id: int = StatusCode.CODE_900_SERVER_API_EXCEPTION.value,
+                 code: int = StatusCode.CODE_900_SERVER_API_EXCEPTION.value,
                  message: str = None,
                  data: Union[List, Dict] = None
                  ):
 
-        super().__init__(status_id, message, data)
+        super().__init__(code, message, data)
 

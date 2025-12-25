@@ -407,7 +407,7 @@ async def enum(model_name: ModelName) -> Status:
         return SuccessStatus(data={"key": model_name, "value": model_name.xyz})
     else:
         return FailureStatus(
-            status_id=status_code.CODE_404_REQUEST_PARAMETER_VALUE_ERROR,
+            code=status_code.CODE_404_REQUEST_PARAMETER_VALUE_ERROR,
             message="[Enum]枚举值错误"
         )
 

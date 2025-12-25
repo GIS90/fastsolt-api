@@ -33,6 +33,7 @@ Life is short, I use python.
 from typing import Optional, List, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from deploy.schema.dao.xtb_user import XtbUserModel
 
@@ -42,46 +43,48 @@ class XtbUserBo:
     @staticmethod
     async def _get_user_by_field(
         db: AsyncSession,
-        field: Any,
+        field: str | InstrumentedAttribute,
         value: Any
     ) -> Optional[XtbUserModel]:
-        if not hasattr(XtbUserModel, field):
-            return None
-
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel[field] == value))
-        return result.scalar_one_or_none()
         try:
-            pass
-        except Exception as e:
-            raise e
+            if isinstance(field, str):
+                if not hasattr(XtbUserModel, field):
+                    return None
+                _field = getattr(XtbUserModel, field)
+            else:
+                _field = field
 
-    async def get_by_id(self, db: AsyncSession, user_id: int) -> Optional[XtbUserModel]:
+            result = await db.execute(select(XtbUserModel).where(_field == value))
+            return result.scalar_one_or_none()
+        except Exception as exec:
+            raise Exception(f"[查询One]{exec}")
+
+    async def get_by_id(self, db: AsyncSession, user_id: int):
         return await self._get_user_by_field(db, XtbUserModel.id, user_id)
 
-    async def get_by_rtx_id(self, db: AsyncSession, rtx_id: str) -> Optional[XtbUserModel]:
+    async def get_by_rtx_id(self, db: AsyncSession, rtx_id: str):
         return await self._get_user_by_field(db, XtbUserModel.rtx_id, rtx_id)
 
-    async def get_by_md5_id(self, db: AsyncSession, md5_id: str) -> Optional[XtbUserModel]:
-        result = await db.execute(select(XtbUserModel).where(XtbUserModel.md5_id == md5_id))
-        return result.scalar_one_or_none()
+    async def get_by_md5_id(self, db: AsyncSession, md5_id: str):
+        return await self._get_user_by_field(db, XtbUserModel.md5_id, md5_id)
 
-    async def get_by_name(self, db: AsyncSession, name: str) -> Optional[XtbUserModel]:
+    async def get_by_name(self, db: AsyncSession, name: str):
         return await self._get_user_by_field(db, XtbUserModel.fullname, name)
 
-    async def get_by_email(self, db: AsyncSession, email: str) -> Optional[XtbUserModel]:
+    async def get_by_email(self, db: AsyncSession, email: str):
         return await self._get_user_by_field(db, XtbUserModel.email, email)
 
     @classmethod
     async def get_all(
         cls, db: AsyncSession, offset: int = 0, limit: int = 15
-    ) -> List[XtbUserModel]:
+    ) -> Optional[List]:
         try:
             result = await db.execute(
                 select(XtbUserModel).offset(offset).limit(limit)
             )
             return result.scalars().all()
-        except Exception as e:
-            raise e
+        except Exception as exec:
+            raise Exception(f"[查询All]{exec}")
 
     #
     # @staticmethod

@@ -66,11 +66,13 @@ xtb_user_list_fields = [
 
 xtb_user_detail_fields = [
     {"key": "id"},
-    {"key": "rtx_id"},
-    {"key": "fullname"},
+    {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
+    {"key": "fullname", "type": ft.STR, "name": "name"},
     {"key": "sex"},
     {"key": "email"},
     {"key": "phone"},
     {"key": "avatar"},
     {"key": "introduction"},
+    {"key": "create_rtx", "type": ft.STR, "name": "createRtx"},
+    {"key": "create_time", "type": ft.DATETIME, "name": "createTime"},
 ]

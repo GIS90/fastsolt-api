@@ -109,14 +109,14 @@ class FileLib:
         return self.__str__()
 
     @staticmethod
-    def visual_value(status_id: int, message: str, data: Optional[List, Dict]) -> Dict:
+    def visual_value(code: int, message: str, data: Optional[List, Dict]) -> Dict:
         """
         方法请求结果格式化
         """
         if data is None: data = []
         return {
-            'status_id': status_id,
-            'message': message if message else status_msg.get(status_id),
+            'code': code,
+            'message': message if message else status_msg.get(code),
             'data': data
         }
 
@@ -170,7 +170,7 @@ class FileLib:
             }
         """
         if not file:
-            return self.visual_value(status_id=450, message='缺少上传文件')
+            return self.visual_value(code=450, message='缺少上传文件')
 
         # 文件存储初始化
         now_date = get_now(format="%Y%m%d")
@@ -201,12 +201,12 @@ class FileLib:
                 'path': os.path.join(real_store_dir, file_name)
             }
             return self.visual_value(
-                status_id=100,
+                code=100,
                 message=status_enum.SUCCESS.value,
                 data = _data
             )
         except Exception as error:
-            return self.visual_value(status_id=456, message=f"文件本地存储失败：{error}")
+            return self.visual_value(code=456, message=f"文件本地存储失败：{error}")
 
     def _pdf2word(self, cmd5: str,
                   pdf_file: str, word_name: str,
@@ -289,7 +289,7 @@ class FileLib:
         cv.close()
         # ---------------------------convert end--------------------------------------------------
         return self.visual_value(
-            status_id=100,
+            code=100,
             message=status_enum.SUCCESS.value,
             data={'md5': cmd5, 'word': word_file, 'name': word_name}
         )
@@ -355,7 +355,7 @@ class FileLib:
                 _v.update(results.get(k))
                 pdf_list[k] = _v
         return self.visual_value(
-            status_id=100,
+            code=100,
             message=status_enum.SUCCESS.value,
             data=pdf_list)
 
@@ -393,7 +393,7 @@ class FileLib:
                 _new_v.update(_d)
                 pdf_list[key] = _new_v
         return self.visual_value(
-            status_id=100,
+            code=100,
             message=status_enum.SUCCESS.value,
             data=pdf_list)
 
@@ -437,7 +437,7 @@ class FileLib:
         }
         """
         if not pdf_list:
-            return self.visual_value(status_id=400, message="缺少pdf_list参数")
+            return self.visual_value(code=400, message="缺少pdf_list参数")
         # to execute convert method by is_multi_processing value
         return self.__pdf2word_by_multi_processing(pdf_list) if is_multi_processing \
             else self.__pdf2word_no_multi_processing(pdf_list)

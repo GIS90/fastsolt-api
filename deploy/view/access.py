@@ -89,7 +89,7 @@ async def access_token_request_o_form(
     password = getattr(form_data, "password", None)
     if not username or not password:
         return FailureStatus(
-            status_id=status_code.CODE_204_LOGIN_USER_PASSWORD_ERROR.value
+            code=status_code.CODE_204_LOGIN_USER_PASSWORD_ERROR.value
         )
 
     # TODO 用户校验 密码校验
@@ -122,7 +122,7 @@ async def access_token_request_from(
     if not username \
             or not password:
         return FailureStatus(
-            status_id=status_code.CODE_204_LOGIN_USER_PASSWORD_ERROR.value
+            code=status_code.CODE_204_LOGIN_USER_PASSWORD_ERROR.value
         )
 
     # TODO 用户校验 密码校验
@@ -153,7 +153,7 @@ async def access_token_request_body(body_data: O2LUserLogin) -> Status:
     # 缺少登录参数
     if not username or not password:
         return FailureStatus(
-            status_id=status_code.CODE_204_LOGIN_USER_PASSWORD_ERROR.value
+            code=status_code.CODE_204_LOGIN_USER_PASSWORD_ERROR.value
         )
 
     # TODO 用户校验 密码校验
@@ -202,7 +202,7 @@ async def logout(
         x_token_rtx = await __get_token_rtx(token=x_token)
     except:
         return FailureStatus(
-            status_id=status_code.CODE_250_TOKEN_NOT_FOUND.value,
+            code=status_code.CODE_250_TOKEN_NOT_FOUND.value,
             message=status_msg.get(250)
         )
 
@@ -213,7 +213,7 @@ async def logout(
         return SuccessStatus()
     else:
         return FailureStatus(
-            status_id=status_code.CODE_251_TOKEN_VERIFY_FAILURE.value,
+            code=status_code.CODE_251_TOKEN_VERIFY_FAILURE.value,
             message=status_msg.get(251)
         )
 
