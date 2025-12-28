@@ -88,14 +88,14 @@ class XtbUserService:
 
     async def add_user(self, db: AsyncSession, rtx_id: str, model: Dict):
         new_user = await self.xtb_user_bo.new_model()
-        now = get_now()
-        password = random_string()
-        new_user.md5_id = md5(v=f"{model.get('rtx_id')}-{now}-{password}")
+        __now = get_now()
+        __password = random_string()
+        new_user.md5_id = md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
         new_user.avatar = "http://pygo2.top/images/article_github.jpg"
         new_user.status = False
-        new_user.create_time = now
+        new_user.create_time = __now
         new_user.create_rtx = rtx_id
-        new_user.password = password
+        new_user.password = __password
         new_user.role = ""
         for k, v in model.items():
             setattr(new_user, k, v)
