@@ -4,6 +4,7 @@
 ------------------------------------------------
 
 describe: 
+    common field
 
 base_info:
     __author__ = PyGo
