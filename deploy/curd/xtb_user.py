@@ -34,6 +34,7 @@ from typing import Optional, List, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy import func
 
 from deploy.schema.dao.xtb_user import XtbUserModel
 
@@ -82,16 +83,41 @@ class XtbUserBo:
         return await self._get_user_by_field(db, XtbUserModel.phone, phone)
 
     @classmethod
-    async def get_all(
+    async def get_count(cls, db: AsyncSession) -> int:
+        """获取用户表总记录数"""
+        try:
+            result = await db.execute(
+                select(func.count(XtbUserModel.id)).where(XtbUserModel.status != 1)
+            )
+            return result.scalar()
+        except Exception as exec:
+            raise Exception(f"[{cls.__name__}*总数]{exec}")
+
+    @classmethod
+    async def get_pagination(
         cls, db: AsyncSession, offset: int = 0, limit: int = 15
     ) -> Optional[List]:
         try:
             result = await db.execute(
-                select(XtbUserModel).offset(offset).limit(limit)
+                select(XtbUserModel).where(XtbUserModel.status != 1).offset(offset).limit(limit)
             )
             return result.scalars().all()
         except Exception as exec:
             raise Exception(f"[{cls.__name__}*查询All]{exec}")
+
+    @classmethod
+    async def add(
+            cls, db: AsyncSession, model: XtbUserModel
+    ) -> int:
+        try:
+            db.add(model)
+            await db.commit()
+            await db.refresh(model)
+            return 1
+        except Exception as exec:
+            raise Exception(f"[{cls.__name__}*新增]{exec}")
+
+
 
     #
     # @staticmethod

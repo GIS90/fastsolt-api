@@ -37,7 +37,7 @@ from typing import Optional
 
 
 class XtbUserBaseModel(baseModel):
-    rtx_id: str = Field(..., min_length=1, max_length=35, description="用户RTX-ID")
+    rtx_id: str = Field(..., min_length=1, max_length=35, description="用户RTX-ID", alias="rtxId")
     name: str = Field(..., min_length=1, max_length=30, description="用户昵称")
     sex: str = Field(..., min_length=1, max_length=2, description="用户性别")
     email: str = Field(..., min_length=1, max_length=55, description="用户邮箱")
@@ -47,7 +47,7 @@ class XtbUserBaseModel(baseModel):
     model_config = {
         "json_schema_extra": {
             "example": {
-                "rtx_id": "ADC",
+                "rtxId": "ADC",
                 "name": "abcd木头人",
                 "sex": "M",
                 "email": "gaoming971366@163.com",
@@ -59,13 +59,13 @@ class XtbUserBaseModel(baseModel):
 
 
 class XtbUserUpdateModel(XtbUserBaseModel):
-    md5: str = Field(..., min_length=1, max_length=55, description="数据MD5")
+    md5_id: str = Field(..., min_length=1, max_length=55, description="数据MD5", alias="md5Id")
 
     model_config = {
         "json_schema_extra": {
             "example": {
-                "rtx_id": "adc",
-                "md5": "AAAAAAAAAA",
+                "rtxId": "adc",
+                "md5Id": "AAAAAAAAAA",
                 "name": "adc",
                 "sex": "M",
                 "email": "gaoming971366@163.com",

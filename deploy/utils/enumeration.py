@@ -137,7 +137,7 @@ class fontPrinter(Enum):
     """
     字体样式
     """
-    info = fontForeColor.BLUE.value + fontStyle.NORMAL.value
+    info = fontForeColor.BLUE.value
     warn = fontForeColor.LIGHT_YELLOW_EX.value + fontBackColor.BLUE.value
     error = fontForeColor.LIGHT_RED_EX.value + fontBackColor.WHITE.value
 

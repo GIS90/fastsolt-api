@@ -38,6 +38,7 @@ from deploy.utils.status_value import (StatusCode as status_code,
                                        StatusMsg as status_msg)
 from deploy.utils.converter import model_converter_dict
 from deploy.schema.dto.xtb_user import xtb_user_list_fields, xtb_user_detail_fields
+from deploy.utils.utils import get_now, random_string, md5
 
 
 class XtbUserService:
@@ -55,7 +56,7 @@ class XtbUserService:
         self.__str__()
 
     async def user_list(self, db: AsyncSession, rtx_id: str, params: Dict) -> Status:
-        users = await self.xtb_user_bo.get_all(
+        users = await self.xtb_user_bo.get_pagination(
             db=db,
             offset=params.get("offset"),
             limit=params.get("limit")
@@ -71,9 +72,8 @@ class XtbUserService:
             )
         )
         result: Dict = {
-            "rtxId": rtx_id,
             "list": data,
-            "total": len(users)
+            "total": await self.xtb_user_bo.get_count(db)
         }
         return SuccessStatus(data=result)
 
@@ -87,5 +87,17 @@ class XtbUserService:
             else FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
 
     async def add_user(self, db: AsyncSession, rtx_id: str, model: Dict):
-        print(model)
+        new_user = await self.xtb_user_bo.new_model()
+        now = get_now()
+        password = random_string()
+        new_user.md5_id = md5(v=f"{model.get('rtx_id')}-{now}-{password}")
+        new_user.avatar = "http://pygo2.top/images/article_github.jpg"
+        new_user.status = False
+        new_user.create_time = now
+        new_user.create_rtx = rtx_id
+        new_user.password = password
+        new_user.role = ""
+        for k, v in model.items():
+            setattr(new_user, k, v)
+        await self.xtb_user_bo.add(db=db, model=new_user)
         return SuccessStatus()

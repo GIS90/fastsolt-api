@@ -50,7 +50,7 @@ class XtbUserModel(baseModel, RTXIDField, MD5Field, CUDField):
     __table_args__ = ({'comment': '系统表-系统用户表'})
 
     id: Mapped[int] = mapped_column(Integer, name="id", autoincrement="auto", primary_key=True, comment="主键，自增ID")
-    fullname: Mapped[str] = mapped_column(String(30), name="fullname", nullable=False, comment="用户名称")
+    name: Mapped[str] = mapped_column(String(30), name="name", nullable=False, comment="用户名称")
     password: Mapped[str] = mapped_column(String(120), name="password", nullable=False, comment="用户密码[md5加密]")
     sex: Mapped[str] = mapped_column(String(2), name="sex", nullable=False, comment="用户性别")
     email: Mapped[Optional[str]] = mapped_column(String(55), name="email", comment="用户邮箱")
