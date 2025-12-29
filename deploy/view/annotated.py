@@ -35,6 +35,7 @@ from fastapi import APIRouter, Path, Query, Body, Cookie, Header
 from pydantic import BaseModel, Field, HttpUrl
 
 
+# route
 annotated: APIRouter = APIRouter(prefix="/annotated", tags=["官网最新参数声明Annotated写法"])
 
 

@@ -42,12 +42,12 @@ from sqlalchemy import (
 )
 
 
-class RTXIDField:
-    rtx_id: Mapped[str] = mapped_column(String(35), name="rtx_id", nullable=False, comment="用户rtx-id唯一标识")
+class RtxIdField:
+    rtx_id: Mapped[str] = mapped_column(String(35), name="rtx_id", nullable=False, comment="用户RTX-ID唯一标识")
 
 
-class MD5Field:
-    md5_id: Mapped[str] = mapped_column(String(55), name="md5_id", nullable=False, comment="唯一标识：MD5-ID")
+class Md5Field:
+    md5_id: Mapped[str] = mapped_column(String(55), name="md5_id", nullable=False, comment="数据唯一标识：MD5-ID")
 
 
 class CUDField:
@@ -57,3 +57,8 @@ class CUDField:
     update_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="update_rtx", comment="更新用户")
     delete_time: Mapped[Optional[datetime]] = mapped_column(DateTime(), name="delete_time", comment="删除时间")
     delete_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="delete_rtx", comment="删除用户")
+
+
+class StatusField:
+    status: Mapped[bool] = mapped_column(Boolean(), name="status", default=False, comment="状态：1注销/删除；0启用/正常（默认）")
+

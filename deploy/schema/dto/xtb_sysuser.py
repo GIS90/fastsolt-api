@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    xtb_user
+    xtb_sysuser
 
 base_info:
     __author__ = PyGo
@@ -13,7 +13,7 @@ base_info:
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo2.top
     __project__ = fastslot-api
-    __file_name__ = xtb_user.py
+    __file_name__ = xtb_sysuser.py
 
 usage:
   
@@ -51,7 +51,7 @@ Life is short, I use python.
 from deploy.utils.enumeration import FieldTypeEnum as ft
 
 
-xtb_user_list_fields = [
+xtb_sysuser_list_fields = [
     {"key": "id", "type": ft.INT, "name": "id"},
     {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
     {"key": "md5_id", "type": ft.STR, "name": "md5Id"},
@@ -64,7 +64,7 @@ xtb_user_list_fields = [
 ]
 
 
-xtb_user_detail_fields = [
+xtb_sysuser_detail_fields = [
     {"key": "id"},
     {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
     {"key": "fullname", "type": ft.STR, "name": "name"},

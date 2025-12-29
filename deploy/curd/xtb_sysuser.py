@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe:
-    xtb_user
+    xtb_sysuser
 
 base_info:
     __author__ = PyGo
@@ -13,7 +13,7 @@ base_info:
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo2.top
     __project__ = fastslot-api
-    __file_name__ = xtb_user.py
+    __file_name__ = xtb_sysuser.py
 
 usage:
     
@@ -36,58 +36,57 @@ from sqlalchemy.future import select
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy import func
 
-from deploy.schema.dao.xtb_user import XtbUserModel
+from deploy.schema.dao.xtb_sysuser import XtbSysUserModel
 
 
-class XtbUserBo:
+class XtbSysUserBo:
 
     @staticmethod
     async def new_model():
-        return XtbUserModel()
+        return XtbSysUserModel()
 
     async def _get_user_by_field(
         self,
         db: AsyncSession,
         field: str | InstrumentedAttribute,
         value: Any
-    ) -> Optional[XtbUserModel]:
+    ) -> Optional[XtbSysUserModel]:
         try:
             if isinstance(field, str):
-                if not hasattr(XtbUserModel, field):
+                if not hasattr(XtbSysUserModel, field):
                     return None
-                _field = getattr(XtbUserModel, field)
+                _field = getattr(XtbSysUserModel, field)
             else:
                 _field = field
 
-            result = await db.execute(select(XtbUserModel).where(_field == value))
+            result = await db.execute(select(XtbSysUserModel).where(_field == value))
             return result.scalar_one_or_none()
         except Exception as exec:
             raise Exception(f"[{self.__class__.__name__}*查询One]{exec}")
 
     async def get_by_id(self, db: AsyncSession, user_id: int):
-        return await self._get_user_by_field(db, XtbUserModel.id, user_id)
+        return await self._get_user_by_field(db, XtbSysUserModel.id, user_id)
 
     async def get_by_rtx_id(self, db: AsyncSession, rtx_id: str):
-        return await self._get_user_by_field(db, XtbUserModel.rtx_id, rtx_id)
+        return await self._get_user_by_field(db, XtbSysUserModel.rtx_id, rtx_id)
 
     async def get_by_md5_id(self, db: AsyncSession, md5_id: str):
-        return await self._get_user_by_field(db, XtbUserModel.md5_id, md5_id)
+        return await self._get_user_by_field(db, XtbSysUserModel.md5_id, md5_id)
 
     async def get_by_name(self, db: AsyncSession, name: str):
-        return await self._get_user_by_field(db, XtbUserModel.fullname, name)
+        return await self._get_user_by_field(db, XtbSysUserModel.fullname, name)
 
     async def get_by_email(self, db: AsyncSession, email: str):
-        return await self._get_user_by_field(db, XtbUserModel.email, email)
+        return await self._get_user_by_field(db, XtbSysUserModel.email, email)
 
     async def get_by_phone(self, db: AsyncSession, phone: str):
-        return await self._get_user_by_field(db, XtbUserModel.phone, phone)
+        return await self._get_user_by_field(db, XtbSysUserModel.phone, phone)
 
     @classmethod
     async def get_count(cls, db: AsyncSession) -> int:
-        """获取用户表总记录数"""
         try:
             result = await db.execute(
-                select(func.count(XtbUserModel.id)).where(XtbUserModel.status != 1)
+                select(func.count(XtbSysUserModel.id)).where(XtbSysUserModel.status != 1)
             )
             return result.scalar()
         except Exception as exec:
@@ -99,7 +98,7 @@ class XtbUserBo:
     ) -> Optional[List]:
         try:
             result = await db.execute(
-                select(XtbUserModel).where(XtbUserModel.status != 1).offset(offset).limit(limit)
+                select(XtbSysUserModel).where(XtbSysUserModel.status != 1).offset(offset).limit(limit)
             )
             return result.scalars().all()
         except Exception as exec:
@@ -107,7 +106,7 @@ class XtbUserBo:
 
     @classmethod
     async def add(
-            cls, db: AsyncSession, model: XtbUserModel
+            cls, db: AsyncSession, model: XtbSysUserModel
     ) -> int:
         try:
             db.add(model)

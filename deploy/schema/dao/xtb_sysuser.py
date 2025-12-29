@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    sysuser model
+    xtb_sysuser
 
 base_info:
     __author__ = PyGo
@@ -13,7 +13,7 @@ base_info:
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo2.top
     __project__ = fastslot-api
-    __file_name__ = sysuser.py
+    __file_name__ = xtb_sysuser.py
 
 usage:
     
@@ -39,14 +39,14 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column
 from deploy.schema._dao_base_model import baseModel
-from .common_field import RTXIDField, MD5Field, CUDField
+from .common_field import RtxIdField, Md5Field, CUDField, StatusField
 from typing import Optional
 
-__all__ = ("XtbUserModel")
+__all__ = ("XtbSysUserModel")
 
 
-class XtbUserModel(baseModel, RTXIDField, MD5Field, CUDField):
-    __tablename__ = 'xtb_user'
+class XtbSysUserModel(baseModel, RtxIdField, Md5Field, CUDField, StatusField):
+    __tablename__ = 'xtb_sysuser'
     __table_args__ = ({'comment': '系统表-系统用户表'})
 
     id: Mapped[int] = mapped_column(Integer, name="id", autoincrement="auto", primary_key=True, comment="主键，自增ID")
@@ -59,10 +59,9 @@ class XtbUserModel(baseModel, RTXIDField, MD5Field, CUDField):
     introduction: Mapped[Optional[str]] = mapped_column(Text, name="introduction", comment="用户描述")
     role: Mapped[Optional[str]] = mapped_column(String(120), name="role", nullable=False, comment="用户角色engname值，关联role表，多角色用;分割")
     department: Mapped[Optional[str]] = mapped_column(String(55), name="department", comment="用户部门md5-id值，关联department表")
-    status: Mapped[bool] = mapped_column(Boolean(), name="status", default=False, comment="用户状态：True注销状态；False可用状态")
 
     def __str__(self):
-        return f"XtbUserModel Class[DB table: xtb_user], id: {self.id}, rtx_id: {self.rtx_id}, fullname: {self.fullname}."
+        return f"XtbSysUserModel Class[DB table: {self.__tablename__}], id: {self.id}, rtx_id: {self.rtx_id}, name: {self.name}."
 
     def __repr__(self):
         return self.__str__()

@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    xtb_user view
+    xtb_sysuser view
 
 base_info:
     __author__ = PyGo
@@ -13,7 +13,7 @@ base_info:
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo2.top
     __project__ = fastslot-api
-    __file_name__ = user.py
+    __file_name__ = xtb_sysuser.py
 
 usage:
     
@@ -35,41 +35,40 @@ from fastapi import APIRouter, Depends, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from deploy.curd.database import get_db
-from deploy.service.xtb_user import XtbUserService
+from deploy.service.xtb_sysuser import XtbSysUserService
 from deploy.utils.status import Status
 from deploy.utils.depend import pageable_params, depend_token_rtx
 from deploy.schema.po.xtb_user import XtbUserBaseModel
 
 
-# define route
-xtb_user: APIRouter = APIRouter(prefix="/user", tags=["实例代码：系统用户增删改查"])
-
+# route
+xtb_sysuser: APIRouter = APIRouter(prefix="/user", tags=["实例代码：系统用户增删改查"])
 # service
-xtb_user_service: XtbUserService = XtbUserService()
+xtb_sysuser_service: XtbSysUserService = XtbSysUserService()
 
 
-@xtb_user.get("/list", summary="用户列表")
+@xtb_sysuser.get("/list", summary="用户列表")
 async def user_list(
     params: dict = Depends(pageable_params),
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_user_service.user_list(db=db, rtx_id=token_rtx_id, params=params)
+    return await xtb_sysuser_service.user_list(db=db, rtx_id=token_rtx_id, params=params)
 
 
-@xtb_user.get("", summary="单条用户")
+@xtb_sysuser.get("", summary="单条用户")
 async def user(
     md5_id: str = Query(..., description="用户md5-id"),
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_user_service.get_user_by_md5_id(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
+    return await xtb_sysuser_service.get_user_by_md5_id(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
 
 
-@xtb_user.post("", summary="新增用户")
+@xtb_sysuser.post("", summary="新增用户")
 async def user(
     params: Annotated[XtbUserBaseModel, Body()],
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_user_service.add_user(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+    return await xtb_sysuser_service.add_user(db=db, rtx_id=token_rtx_id, model=params.model_dump())
