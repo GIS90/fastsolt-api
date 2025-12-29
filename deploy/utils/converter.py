@@ -80,7 +80,6 @@ async def model_converter_dict(
         raw_value = getattr(model, field_key, None)
         # 显式判断 None 来决定是否使用默认值
         field_value = raw_value if raw_value is not None else default_value
-
         try:
             match field_type:
                 case "str":

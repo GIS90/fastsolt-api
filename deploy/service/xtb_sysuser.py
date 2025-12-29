@@ -30,7 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from typing import Dict, List
+from typing import Dict, List, Tuple, Literal, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from deploy.curd.xtb_sysuser import XtbSysUserBo
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
@@ -57,6 +57,25 @@ class XtbSysUserService:
     def __repr__(self):
         self.__str__()
 
+    async def __valid_user_by_md5_id(
+            self,
+            db: AsyncSession,
+            md5_id: str,
+            status_check: bool = True,
+            response_type: Literal["dict", "model"] = "model"
+    ) -> Tuple[bool, Any]:
+        if not md5_id:
+            return False, FailureStatus(code=status_code.CODE_4002_REQUEST_PARAMETER_MISS_MD5)
+
+        user = await self.xtb_sysuser_bo.get_by_md5_id(db=db, md5_id=md5_id)
+        if not user:
+            return False, FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
+        if status_check and getattr(user, "status", None):
+            return False, FailureStatus(code=status_code.CODE_503_DATA_DELETE_NOT_EDIT)
+
+        return (True, user if response_type == "model"
+                        else await model_converter_dict(model=user, fields=xtb_sysuser_detail_fields, default_value="****"))
+
     async def user_list(self, db: AsyncSession, rtx_id: str, params: Dict) -> Status:
         users = await self.xtb_sysuser_bo.get_pagination(
             db=db,
@@ -80,15 +99,12 @@ class XtbSysUserService:
         return SuccessStatus(data=result)
 
     async def get_user_by_md5_id(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
-        model = await self.xtb_sysuser_bo.get_by_md5_id(db=db, md5_id=md5_id)
-        return SuccessStatus(data=await model_converter_dict(
-            model=model,
-            fields=xtb_sysuser_detail_fields,
-            default_value="****")
-        ) if model \
-            else FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
+        _, data = await self.__valid_user_by_md5_id(
+            db=db, md5_id=md5_id, status_check=False, response_type="dict"
+        )
+        return data
 
-    async def add_user(self, db: AsyncSession, rtx_id: str, model: Dict):
+    async def user_add(self, db: AsyncSession, rtx_id: str, model: Dict):
         new_user = await self.xtb_sysuser_bo.new_model()
         __now = get_now()
         __password = random_string()
@@ -103,3 +119,19 @@ class XtbSysUserService:
             setattr(new_user, k, v)
         await self.xtb_sysuser_bo.add(db=db, model=new_user)
         return SuccessStatus(data={"password": __password})
+
+    async def user_update(self, db: AsyncSession, rtx_id: str, model: Dict):
+        _md5 = model.get("md5_id")
+        flag, data = await self.__valid_user_by_md5_id(
+            db=db, md5_id=_md5, status_check=True, response_type="model"
+        )
+        if not flag: return data
+        if model.get("rtx_id"):
+            del model["rtx_id"]
+        del model["md5_id"]
+        model["update_rtx"] = rtx_id
+        model["update_time"] = get_now()
+        for k, v in model.items():
+            setattr(data, k, v)
+        await self.xtb_sysuser_bo.update(db=db, model=data)
+        return SuccessStatus()

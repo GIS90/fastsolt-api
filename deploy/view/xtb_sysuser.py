@@ -38,7 +38,7 @@ from deploy.curd.database import get_db
 from deploy.service.xtb_sysuser import XtbSysUserService
 from deploy.utils.status import Status
 from deploy.utils.depend import pageable_params, depend_token_rtx
-from deploy.schema.po.xtb_user import XtbUserBaseModel
+from deploy.schema.po.xtb_user import XtbUserBaseModel, XtbUserUpdateModel
 
 
 # route
@@ -57,7 +57,7 @@ async def user_list(
 
 
 @xtb_sysuser.get("", summary="单条用户")
-async def user(
+async def get_user_by_md5_id(
     md5_id: str = Query(..., description="用户md5-id"),
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
@@ -66,9 +66,36 @@ async def user(
 
 
 @xtb_sysuser.post("", summary="新增用户")
-async def user(
+async def user_add(
     params: Annotated[XtbUserBaseModel, Body()],
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_sysuser_service.add_user(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+    return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+
+
+@xtb_sysuser.put("", summary="更新用户")
+async def user_update(
+    params: Annotated[XtbUserUpdateModel, Body()],
+    token_rtx_id: str = Depends(depend_token_rtx),
+    db: AsyncSession = Depends(get_db)
+) -> Status:
+    return await xtb_sysuser_service.user_update(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+
+
+@xtb_sysuser.delete("/hard", summary="【硬删除】用户")
+async def user_delete(
+    params: Annotated[XtbUserBaseModel, Body()],
+    token_rtx_id: str = Depends(depend_token_rtx),
+    db: AsyncSession = Depends(get_db)
+) -> Status:
+    return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+
+
+@xtb_sysuser.delete("/soft", summary="【软删除】用户")
+async def user_delete(
+    params: Annotated[XtbUserBaseModel, Body()],
+    token_rtx_id: str = Depends(depend_token_rtx),
+    db: AsyncSession = Depends(get_db)
+) -> Status:
+    return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())

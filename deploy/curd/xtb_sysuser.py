@@ -110,63 +110,28 @@ class XtbSysUserBo:
     ) -> int:
         try:
             db.add(model)
-            await db.commit()
-            await db.refresh(model)
             return 1
         except Exception as exec:
             raise Exception(f"[{cls.__name__}*新增]{exec}")
 
+    @classmethod
+    async def update(
+            cls, db: AsyncSession, model: XtbSysUserModel
+    ) -> int:
+        try:
+            await db.merge(model)
+            return 1
+        except Exception as exec:
+            raise Exception(f"[{cls.__name__}*更新]{exec}")
 
+    @classmethod
+    async def delete(
+            cls, db: AsyncSession, model: XtbSysUserModel
+    ) -> int:
+        try:
+            await db.delete(model)
+            return 1
+        except Exception as exec:
+            raise Exception(f"[{cls.__name__}*更新]{exec}")
 
-    #
-    # @staticmethod
-    # async def create(db: AsyncSession, user_in: UserCreate) -> User:
-    #     # 在实际项目中，这里应该对密码进行哈希处理
-    #     db_user = User(
-    #         email=user_in.email,
-    #         username=user_in.username,
-    #         full_name=user_in.full_name,
-    #         hashed_password=user_in.password + "_hashed"  # 简化处理，实际应使用密码哈希
-    #     )
-    #     db.add(db_user)
-    #     await db.commit()
-    #     await db.refresh(db_user)
-    #     return db_user
-    #
-    # @staticmethod
-    # async def update(db: AsyncSession, user_id: int, user_in: UserUpdate) -> Optional[User]:
-    #     """
-    #     :param db:
-    #     :param user_id:
-    #     :param user_in:
-    #     :return:
-    #
-    #     # 方法2: 直接更新
-    #     # stmt = update(User).where(User.id == user_id).values(**update_data)
-    #     # await self.session.execute(stmt)
-    #     # await self.session.commit()
-    #     # return await self.get_user_by_id(user_id)
-    #     """
-    #     user = await CRUDUser.get_by_id(db, user_id)
-    #     if user:
-    #         update_data = user_in.model_dump(exclude_unset=True)
-    #         if "password" in update_data:
-    #             update_data["hashed_password"] = update_data.pop("password") + "_hashed"
-    #
-    #         for field, value in update_data.items():
-    #             setattr(user, field, value)
-    #
-    #         await db.commit()
-    #         await db.refresh(user)
-    #     return user
-    #
-    # @staticmethod
-    # async def delete(db: AsyncSession, user_id: int) -> bool:
-    #     user = await CRUDUser.get_by_id(db, user_id)
-    #     if user:
-    #         await db.delete(user)
-    #         await db.commit()
-    #         return True
-    #     return False
-    #
 
