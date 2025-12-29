@@ -55,24 +55,26 @@ xtb_sysuser_list_fields = [
     {"key": "id", "type": ft.INT, "name": "id"},
     {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
     {"key": "md5_id", "type": ft.STR, "name": "md5Id"},
-    {"key": "fullname", "type": ft.STR, "name": "name"},
+    {"key": "name", "type": ft.STR, "name": "name"},
     {"key": "sex", "type": ft.STR, "name": "sex"},
     {"key": "email", "type": ft.STR, "name": "email"},
     {"key": "phone", "type": ft.STR, "name": "phone"},
     {"key": "avatar", "type": ft.STR, "name": "avatar"},
     {"key": "introduction", "type": ft.STR, "name": "introduction"},
+    {"key": "status", "type": ft.BOOLTEXT, "name": "status"},
+    {"key": "create_rtx", "type": ft.STR, "name": "createRtx"},
+    {"key": "create_time", "type": ft.DATETIME, "name": "createTime"}
 ]
 
 
 xtb_sysuser_detail_fields = [
     {"key": "id"},
     {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
-    {"key": "fullname", "type": ft.STR, "name": "name"},
+    {"key": "name"},
     {"key": "sex"},
     {"key": "email"},
     {"key": "phone"},
     {"key": "avatar"},
     {"key": "introduction"},
-    {"key": "create_rtx", "type": ft.STR, "name": "createRtx"},
-    {"key": "create_time", "type": ft.DATETIME, "name": "createTime"},
+    {"key": "status", "type": ft.BOOLTEXT, "name": "status"},
 ]

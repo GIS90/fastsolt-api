@@ -74,7 +74,7 @@ class XtbSysUserBo:
         return await self._get_user_by_field(db, XtbSysUserModel.md5_id, md5_id)
 
     async def get_by_name(self, db: AsyncSession, name: str):
-        return await self._get_user_by_field(db, XtbSysUserModel.fullname, name)
+        return await self._get_user_by_field(db, XtbSysUserModel.name, name)
 
     async def get_by_email(self, db: AsyncSession, email: str):
         return await self._get_user_by_field(db, XtbSysUserModel.email, email)

@@ -17,8 +17,8 @@ flush  privileges;
 DROP TABLES IF EXISTS `xtb_sysuser`;
 CREATE TABLE `xtb_sysuser` (
     `id` int NOT NULL AUTO_INCREMENT COMMENT '主键，自增ID',
-    `rtx_id` varchar(35) not null COMMENT '用户rtx唯一标识',
-    `md5_id` varchar(55) not null COMMENT '唯一标识：MD5-ID',
+    `rtx_id` varchar(35) not null COMMENT '用户RTX-ID唯一标识',
+    `md5_id` varchar(55) not null COMMENT '数据唯一标识：MD5-ID',
     `name` varchar(30) not null COMMENT '用户名称',
     `password` varchar(120) not null COMMENT '用户密码[md5加密]',
     `sex` varchar(2) COMMENT '用户性别',
@@ -28,10 +28,12 @@ CREATE TABLE `xtb_sysuser` (
     `introduction` text COMMENT '用户描述',
     `role` varchar(120) COMMENT '用户角色engname值，关联role表，多角色用;分割',
     `department` varchar(55) COMMENT '用户部门md5-id值，关联department表',
-    `create_time` timestamp default CURRENT_TIMESTAMP COMMENT '创建时间',
     `create_rtx` varchar(35) COMMENT '创建用户',
-    `delete_time` timestamp COMMENT '删除时间',
+    `create_time` datetime default CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_rtx` varchar(35) COMMENT '更新用户',
+    `update_time` datetime COMMENT '更新时间',
     `delete_rtx` varchar(35) COMMENT '删除用户',
+    `delete_time` datetime COMMENT '删除时间',
     `status` bool default False COMMENT '状态：1注销/删除；0启用/正常（默认）',
 
     PRIMARY KEY (`id`)

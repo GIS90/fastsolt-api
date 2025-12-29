@@ -43,6 +43,8 @@ from deploy.utils.utils import get_now, random_string, md5
 
 class XtbSysUserService:
 
+    DEFAULT_AVATAR = "http://pygo2.top/images/article_github.jpg"
+
     def __init__(self):
         """
         XtbSysUserService class initialize
@@ -90,14 +92,14 @@ class XtbSysUserService:
         new_user = await self.xtb_sysuser_bo.new_model()
         __now = get_now()
         __password = random_string()
+        # TODO 用户默认的头像、密码可以放在数据库中
         new_user.md5_id = md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
-        new_user.avatar = "http://pygo2.top/images/article_github.jpg"
+        new_user.avatar = self.DEFAULT_AVATAR
         new_user.status = False
         new_user.create_time = __now
         new_user.create_rtx = rtx_id
-        new_user.password = __password
-        new_user.role = ""
+        new_user.password = md5(v=__password)
         for k, v in model.items():
             setattr(new_user, k, v)
         await self.xtb_sysuser_bo.add(db=db, model=new_user)
-        return SuccessStatus()
+        return SuccessStatus(data={"password": __password})
