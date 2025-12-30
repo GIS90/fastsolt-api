@@ -76,7 +76,7 @@ async def get_db():
         AsyncSession: 异步数据库会话对象，用于执行数据库操作
 
     Raises:
-        Exception: 当数据库操作过程中发生异常时，会自动回滚事务并重新抛出异常
+        SQLDBHandleException: 当数据库操作过程中发生异常时，会自动回滚事务并重新抛出异常
     """
     async with AsyncSessionLocal() as session:
         try:
