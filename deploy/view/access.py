@@ -46,8 +46,8 @@ from deploy.config import redis_host, redis_port, redis_db, redis_password
 from deploy.utils.exception import JwtCredentialsException
 
 
-# route
-access: APIRouter = APIRouter(prefix="/access", tags=["JWT Token系统验证"])
+# router
+router: APIRouter = APIRouter(prefix="/access", tags=["JWT Token系统验证"])
 
 
 # ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ *
@@ -72,7 +72,7 @@ credentials_exception = FASTAPI_HTTPException(
 )
 
 
-@access.post("/token_request_o_form",
+@router.post("/token_request_o_form",
              response_model=Token,
              summary="用户Token API[OAuth2PasswordRequestForm组件表单] > Demo代码",
              description="依据用户[OAuth2PasswordRequestForm组件表单]提供的username，password参数（KEY不可更改），获取用户登录Token"
@@ -104,7 +104,7 @@ async def access_token_request_o_form(
     )
 
 
-@access.post("/token_request_form",
+@router.post("/token_request_form",
              response_model=Token,
              summary="用户Token API[Form表单] > Demo代码",
              description="依据用户[Form表单]提供的username，password参数（KEY不可更改），获取用户登录Token"
@@ -137,7 +137,7 @@ async def access_token_request_from(
     )
 
 
-@access.post("/token_request_body",
+@router.post("/token_request_body",
              response_model=Token,
              summary="用户Token API[Request Body] > Demo代码",
              description="依据用户[Request Body]提供的username，password参数（KEY不可更改），获取用户登录Token"
@@ -187,7 +187,7 @@ async def __get_token_rtx(token: str) -> str:
     return token_rtx_id
 
 
-@access.get('/logout',
+@router.get('/logout',
             summary="[ACCESS]Logout退出",
             description="后端APIs的logout退出API"
             )

@@ -36,16 +36,15 @@ from deploy.service.api import ApiService
 from deploy.utils.decorator import watch_except
 
 
-# route
-api: APIRouter = APIRouter(prefix="/api", tags=["APIs集合"])
+# router
+router: APIRouter = APIRouter(prefix="/api", tags=["APIs集合"])
 # service
 api_service: ApiService = ApiService()
 
 
-@api.get('/m1/case',
-         summary="[M1模块]CASE",
-         description="[M1模块]测试用例"
-         )
+@router.get('/m1/case',
+            summary="[M1模块]CASE",
+            description="[M1模块]测试用例")
 @watch_except
 async def m1_case() -> dict:
     """

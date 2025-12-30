@@ -34,14 +34,13 @@ from fastapi import APIRouter
 from deploy.utils.status import Status, SuccessStatus
 
 
-# route
-method: APIRouter = APIRouter(prefix="/method", tags=["METHOD请求方法"])
+# router
+router: APIRouter = APIRouter(prefix="/method", tags=["METHOD请求方法"])
 
 
-@method.get('/get',
+@router.get('/get',
             summary="GET请求请求示例",
-            description="GET请求请求示例"
-            )
+            description="GET请求请求示例")
 async def method_get(rtx_id: str) -> Status:
     """
     GET请求请求示例
@@ -53,10 +52,9 @@ async def method_get(rtx_id: str) -> Status:
     )
 
 
-@method.post('/post',
+@router.post('/post',
              summary="POST请求请求示例",
-             description="POST请求请求示例"
-             )
+             description="POST请求请求示例")
 async def method_post(rtx_id: str) -> Status:
     """
     POST请求请求示例
@@ -68,10 +66,9 @@ async def method_post(rtx_id: str) -> Status:
     )
 
 
-@method.put('/put',
+@router.put('/put',
             summary="PUT请求请求示例",
-            description="PUT请求请求示例"
-            )
+            description="PUT请求请求示例")
 async def method_put(rtx_id: str) -> Status:
     """
     PUT请求请求示例
@@ -83,10 +80,9 @@ async def method_put(rtx_id: str) -> Status:
     )
 
 
-@method.delete('/delete',
+@router.delete('/delete',
                summary="DELETE请求请求示例",
-               description="DELETE请求请求示例"
-               )
+               description="DELETE请求请求示例")
 async def method_delete(rtx_id: str) -> Status:
     """
     DELETE请求请求示例
@@ -98,10 +94,9 @@ async def method_delete(rtx_id: str) -> Status:
     )
 
 
-@method.head('/head',
+@router.head('/head',
              summary="HEAD请求请求示例",
-             description="HEAD请求请求示例"
-             )
+             description="HEAD请求请求示例")
 async def method_head(rtx_id: str) -> Status:
     """
     HEAD请求请求示例
@@ -113,10 +108,9 @@ async def method_head(rtx_id: str) -> Status:
     )
 
 
-@method.options('/options',
+@router.options('/options',
                 summary="OPTIONS请求请求示例",
-                description="OPTIONS请求请求示例"
-                )
+                description="OPTIONS请求请求示例")
 async def method_options(rtx_id: str) -> Status:
     """
     OPTIONS请求请求示例
@@ -128,10 +122,9 @@ async def method_options(rtx_id: str) -> Status:
     )
 
 
-@method.patch('/patch',
+@router.patch('/patch',
               summary="PATCH请求请求示例",
-              description="PATCH请求请求示例"
-              )
+              description="PATCH请求请求示例")
 async def method_patch(rtx_id: str) -> Status:
     """
     PATCH请求请求示例

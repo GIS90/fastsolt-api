@@ -37,13 +37,13 @@ from deploy.service.upload import UploadService
 from deploy.utils.status import Status, SuccessStatus
 
 
-# route
-upload: APIRouter = APIRouter(prefix='/upload', tags=["文件上传"])
+# router
+router: APIRouter = APIRouter(prefix='/upload', tags=["文件上传"])
 # service
 upload_service: UploadService = UploadService()
 
 
-@upload.post('/file',
+@router.post('/file',
              summary="File单个小文件上传",
              description="单个小文件上传，File也有很多参数，目前来说通过file对象获取不到文件的名称等属性，具体查看源码，不推荐使用"
              )
@@ -58,7 +58,7 @@ async def file_api(
     return upload_service.file_api(file)
 
 
-@upload.post('/files',
+@router.post('/files',
              summary="File多个小文件上传",
              description="多个小文件上传，使用的就是List，其中元素都是File对象，不推荐使用")
 async def files_api(
@@ -79,7 +79,7 @@ async def files_api(
     return SuccessStatus()
 
 
-@upload.post('/upload_file',
+@router.post('/upload_file',
              summary="UploadFile单个大文件上传",
              description="单个大文件上传，UploadFile对象可以获取文件属性，具体参数请查看UploadFile源码，推荐使用")
 async def upload_file(
@@ -93,7 +93,7 @@ async def upload_file(
     return await upload_service.upload_file_api(file)
 
 
-@upload.post('/upload_files',
+@router.post('/upload_files',
              summary="UploadFile多个大文件上传",
              description="多个大文件上传，UploadFile对象可以获取文件属性，具体参数请查看UploadFile源码，推荐使用")
 async def upload_files(

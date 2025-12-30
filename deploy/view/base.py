@@ -46,8 +46,8 @@ from deploy.utils.status_value import (StatusEnum as status_enum,
                                        StatusCode as status_code)
 
 
-# route
-base: APIRouter = APIRouter(prefix="/base", tags=["基础API：Path Query Body Form Cookie Header"])
+# router
+router: APIRouter = APIRouter(prefix="/base", tags=["基础API：Path Query Body Form Cookie Header"])
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -56,10 +56,10 @@ Path
 """
 
 
-@base.get('/user/{rtx_id}',
-          summary="--必填--资源参数请求示例",
-          description="必填资源参数请求"
-          )
+@router.get('/user/{rtx_id}',
+              summary="--必填--资源参数请求示例",
+              description="必填资源参数请求"
+            )
 async def path_base(rtx_id: str) -> Status:
     """
     必填资源参数请求示例
@@ -71,7 +71,7 @@ async def path_base(rtx_id: str) -> Status:
     )
 
 
-@base.get('/user/path-str/{rtx_id}',
+@router.get('/user/path-str/{rtx_id}',
           summary="**Path限制**字符型资源参数请求示例[非正则路径]",
           description="参数为字符型，使用fastapi.Path进行参数条件限制，包含description[描述]，min_length[最小长度]，max_length[最大长度]，regex[正则表达式]，参数限制可省略，"
                       "如果使用Path定义参数为必填参数，第一个参数为...（看源码是语法糖写法）"
@@ -89,7 +89,7 @@ async def path_str(
     )
 
 
-@base.get('/user/path-str-regex/{rtx_id}',
+@router.get('/user/path-str-regex/{rtx_id}',
           summary="**Path限制**字符型资源参数请求示例[正则路径]",
           description="参数为字符型，使用fastapi.Path进行参数条件限制，包含description[描述]，min_length[最小长度]，max_length[最大长度]，regex[正则表达式]，参数限制可省略，"
                       "如果使用Path定义参数为必填参数，第一个参数为...（看源码是语法糖写法）"
@@ -107,7 +107,7 @@ async def path_str_regex(
     )
 
 
-@base.get('/user/path-int/{rtx_id}',
+@router.get('/user/path-int/{rtx_id}',
           summary="**Path限制**整型资源参数请求示例",
           description="参数为整型，使用fastapi.Path进行参数条件限制，包含description[描述]，ge[大等于]，le[小等于]，gt[大于]，lt[小于]，参数限制可省略，"
                       "如果使用Path定义参数为必填参数，第一个参数为...（看源码是语法糖写法）"
@@ -131,7 +131,7 @@ Query
 """
 
 
-@base.get('/user/query',
+@router.get('/user/query',
           summary="--必填--查询参数请求示例",
           description="必填查询参数请求"
           )
@@ -146,7 +146,7 @@ async def query_base(rtx_id: str) -> Status:
     )
 
 
-@base.get('/user/query/null',
+@router.get('/user/query/null',
           summary="==非必填==查询参数请求示例",
           description="使用typing.Optional定义参数，参数值可为空值，在参数传递过程中设置默认值，为空可设置None，写法：【新版本】rtx_id: str | None = None【老版本】rtx_id: Optional[str] = None 或者 Union[str, None] = None"
           )
@@ -161,7 +161,7 @@ async def query_null(rtx_id: str | None = None) -> Status:
     )
 
 
-@base.get('/user/query/q-str',
+@router.get('/user/query/q-str',
           summary="**Query限制**字符型查询参数请求示例[非正则参数请求]",
           description="参数为字符串，使用fastapi.Query进行参数条件限制，包含description[描述]，min_length[最小长度]，max_length[最大长度]，regex[正则表达式]，参数限制可省略，"
                       "如果使用Query定义参数为必填参数，第一个参数为...（看源码是语法糖写法）"
@@ -179,7 +179,7 @@ async def query_q_str(
     )
 
 
-@base.get('/user/query/q-str-regex',
+@router.get('/user/query/q-str-regex',
           summary="**Query限制**字符型查询参数请求示例[正则参数请求]",
           description="参数为字符串，使用fastapi.Query进行参数条件限制，包含description[描述]，min_length[最小长度]，max_length[最大长度]，regex[正则表达式]，参数限制可省略，"
                       "如果使用Query定义参数为必填参数，第一个参数为...（看源码是语法糖写法）"
@@ -197,7 +197,7 @@ async def query_q_str_regex(
     )
 
 
-@base.get('/user/query/q-int',
+@router.get('/user/query/q-int',
           summary="**Query限制**整型查询参数请求示例",
           description="参数为整型，使用fastapi.Query进行参数条件限制，包含description[描述]，ge[大等于]，le[小等于]，gt[大于]，lt[小于]，参数限制可省略，"
                       "如果使用Query定义参数为必填参数，第一个参数为...（看源码是语法糖写法）"
@@ -226,7 +226,7 @@ Body
 """
 
 
-@base.post("/request_body/user",
+@router.post("/request_body/user",
            summary="Pydantic模型请求体请求示例",
            description="参数类型为继承Pydantic模块的BaseModel类的数据模型类，则它将被解释为请求体参数body，Pydantic对于模型的属性字段采用Field类，Field具体相关使用请查询源码"
            )
@@ -245,7 +245,7 @@ def body(
     )
 
 
-@base.post("/request_body/user_body",
+@router.post("/request_body/user_body",
            summary="Request Body Pydantic模型请求体请求示例",
            description="根上面接口实现是一样的效果，就是请求参数模型使用FastAPI Body"
            )
@@ -262,7 +262,7 @@ def body(
     )
 
 
-@base.post("/request_body/user/{rtx_id}",
+@router.post("/request_body/user/{rtx_id}",
            summary="**Request Body + Path parameters + Query parameters**多参数",
            description="Pydantic定义Request Body，fastapi.Path定义资源请求参数，fastapi.Query定义查询请求参数，运用多参数的一个API示例"
            )
@@ -292,7 +292,7 @@ Form
 """
 
 
-@base.post("/form",
+@router.post("/form",
            summary="Form表单参数请求示例",
            description="定义Form表单请求参数，需要安装python-multipart包才支持Form表单验证, Form的使用与Path、Query差不多，具体查看源码"
            )
@@ -317,7 +317,7 @@ Cookie
 """
 
 
-@base.get("/cookie",
+@router.get("/cookie",
           summary="Cookie参数请求示例",
           description="定义Cookie参数需要使用Cookie类，否则就是查询参数，测试请求只能用Postman（测试方案：Headers{Cookie: cookie=123abc}），并且Cookie的类属性与Path、Query差不多，这里使用Cookie参数为可选参数"
           )
@@ -340,7 +340,7 @@ Header
 """
 
 
-@base.get("/header",
+@router.get("/header",
           summary="Header参数请求示例",
           description="Header同Path、Query、Cookie属性，包含字符串、整型相关的限制，具体操作请查看Header源码"
           )
@@ -366,7 +366,7 @@ deprecated
 """
 
 
-@base.get('/deprecated',
+@router.get('/deprecated',
           summary="过时接口示例",
           description="使用deprecated=True设置API过时，但是请求依然可以用",
           status_code=fastapi_http_status.HTTP_200_OK,
@@ -390,7 +390,7 @@ class ModelName(StrEnum):
     other = auto()
 
 
-@base.get('/enum/{model_name}',
+@router.get('/enum/{model_name}',
           summary="枚举路径",
           description="使用Enum进行定义请求路径资源",
           status_code=fastapi_http_status.HTTP_200_OK

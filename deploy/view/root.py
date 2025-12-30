@@ -35,15 +35,14 @@ from fastapi.responses import HTMLResponse
 from deploy.config import app_docs_url, server_name, server_version
 
 
-# route
-root: APIRouter = APIRouter(prefix="", tags=["首页"])
+# router
+router: APIRouter = APIRouter(prefix="", tags=["首页"])
 
 
-@root.get('/',
-          summary="Welcome to Fastslot-API脚手架",
-          description="Hello Fastslot-API脚手架!",
-          status_code=fastapi_http_status.HTTP_200_OK
-          )
+@router.get('/',
+            summary="Welcome to Fastslot-API脚手架",
+            description="Hello Fastslot-API脚手架!",
+            status_code=fastapi_http_status.HTTP_200_OK)
 async def hi() -> HTMLResponse:
     """
     :return: HTMLResponse

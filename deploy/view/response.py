@@ -76,16 +76,17 @@ from deploy.utils.status import Status
 from deploy.schema.po.response import UserIn, UserOut
 
 
-# route
-response: APIRouter = APIRouter(prefix="/response", tags=["Response对象类返回测试示例"])
+# router
+router: APIRouter = APIRouter(prefix="/response", tags=["Response对象类返回测试示例"])
 
 headers: Dict = {"Hello": "World"}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - [Response返回类] - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@response.get("/response",
-              summary="[Response返回类]Response对象测试用例",
-              description="Response对象为基类，包含：content: typing.Any内容；status_code: int状态码，默认200；headers: Optional[typing.Mapping[str, str]]Header；media_type: Optional[str]媒体类型；background: Optional[BackgroundTask]后台任务")
+@router.get("/response",
+            summary="[Response返回类]Response对象测试用例",
+            description="Response对象为基类，包含：content: typing.Any内容；status_code: int状态码，默认200；headers: Optional[typing.Mapping[str, str]]Header；media_type: Optional[str]媒体类型；background: Optional[BackgroundTask]后台任务"
+            )
 async def base_response() -> Response:
     """
     :return: Response
@@ -105,9 +106,10 @@ async def base_response() -> Response:
     )
 
 
-@response.get("/plaintext-response",
-              summary="[Response返回类]PlainTextResponse对象测试用例",
-              description="继承Response，media_type = text/plain，content直接展示字符串格式")
+@router.get("/plaintext-response",
+            summary="[Response返回类]PlainTextResponse对象测试用例",
+            description="继承Response，media_type = text/plain，content直接展示字符串格式"
+            )
 async def plaintext_response() -> PlainTextResponse:
     """
     :return: PlainTextResponse
@@ -125,9 +127,10 @@ async def plaintext_response() -> PlainTextResponse:
     )
 
 
-@response.get("/html-response",
-              summary="[Response返回类]HTMLResponse对象测试用例",
-              description="继承Response，media_type = text/html，content为HTML代码，直接编写HTML、CSS样式")
+@router.get("/html-response",
+            summary="[Response返回类]HTMLResponse对象测试用例",
+            description="继承Response，media_type = text/html，content为HTML代码，直接编写HTML、CSS样式"
+            )
 async def html_response() -> HTMLResponse:
     """
     :return: HTMLResponse
@@ -145,9 +148,10 @@ async def html_response() -> HTMLResponse:
     )
 
 
-@response.get("/json-response",
-              summary="[Response返回类]JSONResponse对象测试用例",
-              description="继承Response，media_type = application/json，content为json数据")
+@router.get("/json-response",
+            summary="[Response返回类]JSONResponse对象测试用例",
+            description="继承Response，media_type = application/json，content为json数据"
+            )
 async def json_response() -> JSONResponse:
     """
     :return: JSONResponse
@@ -169,10 +173,11 @@ async def json_response() -> JSONResponse:
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - [Response返回参数]- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@response.post("/response-model",
-               response_model=UserOut,
-               summary="[Response返回参数]response-model类测试用例",
-               description="用指定的response-model来返回JSON值，通过response-model来优化不需要显示的字段")
+@router.post("/response-model",
+             response_model=UserOut,
+             summary="[Response返回参数]response-model类测试用例",
+             description="用指定的response-model来返回JSON值，通过response-model来优化不需要显示的字段"
+             )
 async def response_model(user: UserIn):
     """
     :return: JSON
@@ -188,11 +193,12 @@ data = {
 }
 
 
-@response.post("/response-model-include/{data_id}",
-               response_model=UserIn,
-               response_model_include={'username', 'password'},
-               summary="[Response返回参数]response_model_include返回数据字段操作测试用例",
-               description="response_model_include指定return json需要返回的字段列表，采用字典包含字段格式，例如：{'username', 'password'}，data_id数据包含：d1，d2，d3，d4。")
+@router.post("/response-model-include/{data_id}",
+             response_model=UserIn,
+             response_model_include={'username', 'password'},
+             summary="[Response返回参数]response_model_include返回数据字段操作测试用例",
+             description="response_model_include指定return json需要返回的字段列表，采用字典包含字段格式，例如：{'username', 'password'}，data_id数据包含：d1，d2，d3，d4。"
+             )
 async def response_model_include(data_id: str):
     """
     :return: JSON
@@ -200,11 +206,12 @@ async def response_model_include(data_id: str):
     return data.get(data_id) or {"username": "无此用户"}
 
 
-@response.post("/response-model-exclude/{data_id}",
-               response_model=UserIn,
-               response_model_exclude={'password', 'email'},
-               summary="[Response返回参数]response_model_exclude返回数据字段操作测试用例",
-               description="response-model-exclude指定return json需要过滤的字段列表，采用字典包含字段格式，例如：{'password', 'email'}，data_id数据包含：d1，d2，d3，d4。")
+@router.post("/response-model-exclude/{data_id}",
+             response_model=UserIn,
+             response_model_exclude={'password', 'email'},
+             summary="[Response返回参数]response_model_exclude返回数据字段操作测试用例",
+             description="response-model-exclude指定return json需要过滤的字段列表，采用字典包含字段格式，例如：{'password', 'email'}，data_id数据包含：d1，d2，d3，d4。"
+             )
 async def response_model_exclude(data_id: str):
     """
     :return: JSON

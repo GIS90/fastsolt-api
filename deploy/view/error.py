@@ -38,14 +38,14 @@ from fastapi.exceptions import RequestValidationError
 from deploy.utils.status import Status, FailureStatus, SuccessStatus
 
 
-# route
-error: APIRouter = APIRouter(prefix="/error", tags=["ERROR错误"])
+# router
+router: APIRouter = APIRouter(prefix="/error", tags=["ERROR错误"])
 
 
-@error.get('/http_exception/404',
-           summary="自定义FASTAPI-HTTPException**[404]**异常处理",
-           description="基于Fastapi的FASTAPI的HTTPException，返回response，HTTPException包含status_code、detail、headers内容，"
-                       "status_code是状态码，detail是具体内容，headers请求头。在app中可以设置全局exception_handler，具体可以参考deploy/__init__.py文件的app初始化配置。"
+@router.get('/http_exception/404',
+            summary="自定义FASTAPI-HTTPException**[404]**异常处理",
+            description="基于Fastapi的FASTAPI的HTTPException，返回response，HTTPException包含status_code、detail、headers内容，"
+                        "status_code是状态码，detail是具体内容，headers请求头。在app中可以设置全局exception_handler，具体可以参考deploy/__init__.py文件的app初始化配置。"
            )
 async def error_http_exception_404(
         exec: bool = True
@@ -65,8 +65,8 @@ async def error_http_exception_404(
     return SuccessStatus()
 
 
-@error.get('/http_exception/500',
-           summary="自定义FASTAPI-HTTPException**[500]**异常处理"
+@router.get('/http_exception/500',
+            summary="自定义FASTAPI-HTTPException**[500]**异常处理"
            )
 async def error_http_exception_500(
     exec: bool = True
@@ -86,8 +86,8 @@ async def error_http_exception_500(
     return SuccessStatus()
 
 
-@error.get('/request_valid_error',
-           summary="自定义RequestValidationError异常处理"
+@router.get('/request_valid_error',
+            summary="自定义RequestValidationError异常处理"
            )
 async def error_request_valid_error(
     exec: bool = True

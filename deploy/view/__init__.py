@@ -30,19 +30,19 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from deploy.view.root import root
-from deploy.view.api import api
-from deploy.view.access import access
+from deploy.view.root import router as root_router
+from deploy.view.api import router as api_router
+from deploy.view.access import router as access_router
 
-from deploy.view.base import base
-from deploy.view.annotated import annotated
-from deploy.view.method import method
-from deploy.view.response import response
-from deploy.view.depend import depend
-from deploy.view.upload import upload
-from deploy.view.error import error
+from deploy.view.base import router as base_router
+from deploy.view.annotated import router as annotated_router
+from deploy.view.method import router as method_router
+from deploy.view.response import router as response_router
+from deploy.view.depend import router as depend_router
+from deploy.view.upload import router as upload_router
+from deploy.view.error import router as error_router
 
-from deploy.view.xtb_sysuser import xtb_sysuser
+from deploy.view.xtb_sysuser import router as xtb_sysuser_router
 
 
 """
@@ -64,20 +64,20 @@ View根据系统设计的api进行模块划分，其中有3个比较特殊（不
 
 
 实例模块
-- xtb_user：系统用户增删改查
+- xtb_sysuser：系统用户增删改查
 """
 __all__ = ["add_routers"]
 
 
 add_routers = [
-    root,
-    # base,
-    # annotated,
-    # method,
-    # response,
-    # upload,
-    # error,
-    # api,
-    # access,
-    xtb_sysuser,
+    root_router,
+    base_router,
+    annotated_router,
+    method_router,
+    response_router,
+    upload_router,
+    error_router,
+    api_router,
+    access_router,
+    xtb_sysuser_router,
 ]

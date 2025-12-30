@@ -42,13 +42,13 @@ from deploy.schema.po.xtb_user import XtbUserBaseModel, XtbUserUpdateModel
 from deploy.utils.exception import JwtCredentialsException
 
 
-# route
-xtb_sysuser: APIRouter = APIRouter(prefix="/user", tags=["实例代码：系统用户增删改查"])
+# router
+router: APIRouter = APIRouter(prefix="/user", tags=["实例代码：系统用户增删改查"])
 # service
 xtb_sysuser_service: XtbSysUserService = XtbSysUserService()
 
 
-@xtb_sysuser.get("/list", summary="用户列表")
+@router.get("/list", summary="用户列表")
 async def user_list(
     params: dict = Depends(pageable_params),
     token_rtx_id: str = Depends(depend_token_rtx),
@@ -57,7 +57,7 @@ async def user_list(
     return await xtb_sysuser_service.user_list(db=db, rtx_id=token_rtx_id, params=params)
 
 
-@xtb_sysuser.get("", summary="单条用户")
+@router.get("", summary="单条用户")
 async def get_user_by_md5_id(
     md5_id: str = Query(..., description="用户md5-id"),
     token_rtx_id: str = Depends(depend_token_rtx),
@@ -66,7 +66,7 @@ async def get_user_by_md5_id(
     return await xtb_sysuser_service.get_user_by_md5_id(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
 
 
-@xtb_sysuser.post("", summary="新增用户")
+@router.post("", summary="新增用户")
 async def user_add(
     params: Annotated[XtbUserBaseModel, Body()],
     token_rtx_id: str = Depends(depend_token_rtx),
@@ -75,7 +75,7 @@ async def user_add(
     return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())
 
 
-@xtb_sysuser.put("", summary="更新用户")
+@router.put("", summary="更新用户")
 async def user_update(
     params: Annotated[XtbUserUpdateModel, Body()],
     token_rtx_id: str = Depends(depend_token_rtx),
@@ -84,7 +84,7 @@ async def user_update(
     return await xtb_sysuser_service.user_update(db=db, rtx_id=token_rtx_id, model=params.model_dump())
 
 
-@xtb_sysuser.delete("/hard", summary="【硬删除】用户")
+@router.delete("/hard", summary="【硬删除】用户")
 async def user_delete(
     params: Annotated[XtbUserBaseModel, Body()],
     token_rtx_id: str = Depends(depend_token_rtx),
@@ -93,7 +93,7 @@ async def user_delete(
     return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())
 
 
-@xtb_sysuser.delete("/soft", summary="【软删除】用户")
+@router.delete("/soft", summary="【软删除】用户")
 async def user_delete(
     params: Annotated[XtbUserBaseModel, Body()],
     token_rtx_id: str = Depends(depend_token_rtx),

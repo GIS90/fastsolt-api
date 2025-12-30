@@ -130,7 +130,7 @@ class FSWebAppClass(WebBaseClass):
     def __repr__(self) -> str:
         return self.__str__()
 
-    def register_blueprint(self, router: APIRouter):
+    def register_router(self, router: APIRouter):
         """
         register router
         :param router: route object
@@ -142,10 +142,10 @@ class FSWebAppClass(WebBaseClass):
             LOG.info(f'Blueprint [{__route_prefix}] is register')
             self.app.include_router(router)
 
-    def __auto_register_blueprint(self):
+    def __auto_register_router(self):
         for route in add_routers:
             if not route: continue
-            self.register_blueprint(router=route)
+            self.register_router(router=route)
 
     def entry_point(self) -> None:
         """
@@ -153,7 +153,7 @@ class FSWebAppClass(WebBaseClass):
         :return: None
         """
         LOG.info('Web app server start initialize......')
-        self.__auto_register_blueprint()
+        self.__auto_register_router()
         LOG.info('Web app server end initialize......')
 
 

@@ -38,8 +38,8 @@ from deploy.schema.po.depend import BasePageBody
 from deploy.utils.status import Status, SuccessStatus
 
 
-# route
-depend: APIRouter = APIRouter(prefix="/depend", tags=["Depend依赖注入"])
+# router
+router: APIRouter = APIRouter(prefix="/depend", tags=["Depend依赖注入"])
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -51,7 +51,7 @@ async def page_common_parameters(parameter: BasePageBody) -> Status:
     return parameter.model_dump()
 
 
-@depend.post('/function_depend',
+@router.post('/function_depend',
              summary="[函数依赖]同步请求依赖注入",
              description="方法使用同步请求"
              )
@@ -64,7 +64,7 @@ def function_depend(page: dict = Depends(page_common_parameters)) -> Status:
     )
 
 
-@depend.post('/function_async_depend',
+@router.post('/function_async_depend',
              summary="[函数依赖]异步请求依赖注入",
              description="方法使用async异步请求"
              )
@@ -91,7 +91,7 @@ class PageClass(object):
         self.limit = limit
 
 
-@depend.post('/class_depend',
+@router.post('/class_depend',
              summary="[类依赖]同步请求依赖注入",
              description="方法使用同步请求"
              )
@@ -108,7 +108,7 @@ def class_depend(page=Depends(PageClass)) -> Status:
     )
 
 
-@depend.post('/class_async_depend',
+@router.post('/class_async_depend',
              summary="[类依赖]异步请求依赖注入",
              description="方法使用async异步请求"
              )
@@ -139,7 +139,7 @@ async def two_depend(q1: str = Depends(one_depend), q2: Optional[str] = None) ->
     return {"q1": q1, "q2": q2}
 
 
-@depend.post('/sub_depend',
+@router.post('/sub_depend',
              summary="[子依赖]同步请求依赖注入",
              description="方法使用同步请求"
              )
@@ -152,7 +152,7 @@ def sub_depend(page: dict = Depends(two_depend, use_cache=True)) -> Status:
     )
 
 
-@depend.post('/sub_async_depend',
+@router.post('/sub_async_depend',
              summary="[子依赖]异步请求依赖注入",
              description="方法使用async异步请求"
              )
@@ -189,7 +189,7 @@ async def verify_token(x_token: str = Header(...)) -> str:
     return x_token
 
 
-@depend.post('/route_depend',
+@router.post('/route_depend',
              summary="[路径依赖]同步请求依赖注入",
              description="方法使用同步请求，参数值为a返回异常处理",
              dependencies=[Depends(verify_key), Depends(verify_token)]
@@ -203,7 +203,7 @@ def route_depend() -> Status:
     )
 
 
-@depend.post('/route_async_depend',
+@router.post('/route_async_depend',
              summary="[路径依赖]异步请求依赖注入",
              description="方法使用async异步请求，参数值为a返回异常处理",
              dependencies=[Depends(verify_key), Depends(verify_token)]

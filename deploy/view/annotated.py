@@ -35,12 +35,12 @@ from fastapi import APIRouter, Path, Query, Body, Cookie, Header
 from pydantic import BaseModel, Field, HttpUrl
 
 
-# route
-annotated: APIRouter = APIRouter(prefix="/annotated", tags=["官网最新参数声明Annotated写法"])
+# router
+router: APIRouter = APIRouter(prefix="/annotated", tags=["官网最新参数声明Annotated写法"])
 
 
-@annotated.get("/q/{item_id}",
-               summary="[查询参数模型]直接在路径、请求参数定义在方法上")
+@router.get("/q/{item_id}",
+            summary="[查询参数模型]直接在路径、请求参数定义在方法上")
 async def query_path(
     item_id: Annotated[int, Path(description="路径参数Item-id")],
     q: Annotated[str | None, Query(description="查询参数Item-q", alias="item-query")] = None,
@@ -55,8 +55,8 @@ class FilterParams(BaseModel):
     tags: list[str] = []
 
 
-@annotated.get("/model/items/",
-               summary="[查询参数模型]使用pydantic.BaseModel定义查询参数模型")
+@router.get("/model/items/",
+            summary="[查询参数模型]使用pydantic.BaseModel定义查询参数模型")
 async def query_model(filter_query: Annotated[FilterParams, Query(description="查询参数")]) -> Dict:
     return filter_query.model_dump()
 
@@ -66,8 +66,8 @@ class User(BaseModel):
     full_name: str | None = None
 
 
-@annotated.put("/model/{item_id}",
-                summary="[查询参数模型]路径请求参数 + Query查询参数 + Body请求体参数模型（pydantic.BaseModel）")
+@router.put("/model/{item_id}",
+            summary="[查询参数模型]路径请求参数 + Query查询参数 + Body请求体参数模型（pydantic.BaseModel）")
 async def query_models(
         item_id: Annotated[int, Path(description="路径参数Item-id")],
         q: Annotated[FilterParams, Query(description="分页查询请求参数")],
@@ -99,8 +99,8 @@ class GOODS(BaseModel):
     }
 
 
-@annotated.put("/field/{item_id}",
-               summary="[查询参数模型]采用Pydantic.Field定义请求体参数，其中embed=True只有一个请求体")
+@router.put("/field/{item_id}",
+            summary="[查询参数模型]采用Pydantic.Field定义请求体参数，其中embed=True只有一个请求体")
 async def query_field(
         item_id: int,
         goods: Annotated[GOODS, Body(embed=True)]
@@ -125,8 +125,8 @@ class CookieModel(BaseModel):
     }
 
 
-@annotated.get("/cookie/",
-               summary="[查询参数模型]Cookie示例")
+@router.get("/cookie/",
+            summary="[查询参数模型]Cookie示例")
 async def query_cookie(cookies: Annotated[CookieModel, Cookie()]):
     return cookies
 
@@ -146,7 +146,7 @@ class HeaderModel(BaseModel):
         }
     }
 
-@annotated.get("/header/",
-               summary="[查询参数模型]Header示例")
+@router.get("/header/",
+            summary="[查询参数模型]Header示例")
 async def query_header(headers: Annotated[HeaderModel, Header()]):
     return headers
