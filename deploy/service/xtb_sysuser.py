@@ -16,7 +16,7 @@ base_info:
     __file_name__ = xtb_sysuser.py
 
 usage:
-    
+
 design:
 
 reference urls:
@@ -42,7 +42,6 @@ from deploy.utils.utils import get_now, random_string, md5
 
 
 class XtbSysUserService:
-
     DEFAULT_AVATAR = "http://pygo2.top/images/article_github.jpg"
 
     def __init__(self):
@@ -74,7 +73,7 @@ class XtbSysUserService:
             return False, FailureStatus(code=status_code.CODE_503_DATA_DELETE_NOT_EDIT)
 
         return (True, user if response_type == "model"
-                        else await model_converter_dict(model=user, fields=xtb_sysuser_detail_fields, default_value="****"))
+        else await model_converter_dict(model=user, fields=xtb_sysuser_detail_fields, default_value="****"))
 
     async def user_list(self, db: AsyncSession, rtx_id: str, params: Dict) -> Status:
         users = await self.xtb_sysuser_bo.get_pagination(

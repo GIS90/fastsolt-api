@@ -42,7 +42,7 @@ from deploy.utils.exception import SQLDBHandleException
 # 数据库连接地址
 _DB_LINK: str = db_link
 if not _DB_LINK:
-    printer_error(content="数据库连接地址空，系统退出！", hr=True)
+    printer_error(content="数据库连接地址配置为空，系统退出！", hr=True)
     sys.exit(1)
 
 # 根据环境决定是否开启SQL日志
@@ -82,7 +82,7 @@ async def get_db():
         try:
             yield session
             await session.commit()
-        except Exception as exec:
+        except SQLDBHandleException as exec:
             await session.rollback()
             raise SQLDBHandleException(f"数据库操作异常：{exec.__str__()}")
         finally:

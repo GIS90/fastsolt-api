@@ -71,13 +71,13 @@ __all__ = ["add_routers"]
 
 add_routers = [
     root,
-    base,
-    annotated,
-    method,
-    response,
-    upload,
-    error,
-    api,
-    access,
+    # base,
+    # annotated,
+    # method,
+    # response,
+    # upload,
+    # error,
+    # api,
+    # access,
     xtb_sysuser,
 ]

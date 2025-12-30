@@ -39,6 +39,7 @@ from deploy.service.xtb_sysuser import XtbSysUserService
 from deploy.utils.status import Status
 from deploy.utils.depend import pageable_params, depend_token_rtx
 from deploy.schema.po.xtb_user import XtbUserBaseModel, XtbUserUpdateModel
+from deploy.utils.exception import JwtCredentialsException
 
 
 # route
