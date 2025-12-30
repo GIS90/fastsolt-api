@@ -39,7 +39,6 @@ from deploy.service.xtb_sysuser import XtbSysUserService
 from deploy.utils.status import Status
 from deploy.utils.depend import pageable_params, depend_token_rtx
 from deploy.schema.po.xtb_user import XtbUserBaseModel, XtbUserUpdateModel
-from deploy.utils.exception import JwtCredentialsException
 
 
 # router
@@ -86,17 +85,17 @@ async def user_update(
 
 @router.delete("/hard", summary="【硬删除】用户")
 async def user_delete(
-    params: Annotated[XtbUserBaseModel, Body()],
+    md5_id: str = Query(..., description="用户md5-id"),
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+    return await xtb_sysuser_service.user_delete_hard(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
 
 
 @router.delete("/soft", summary="【软删除】用户")
 async def user_delete(
-    params: Annotated[XtbUserBaseModel, Body()],
+    md5_id: str = Query(..., description="用户md5-id"),
     token_rtx_id: str = Depends(depend_token_rtx),
     db: AsyncSession = Depends(get_db)
 ) -> Status:
-    return await xtb_sysuser_service.user_add(db=db, rtx_id=token_rtx_id, model=params.model_dump())
+    return await xtb_sysuser_service.user_delete_soft(db=db, rtx_id=token_rtx_id, md5_id=md5_id)

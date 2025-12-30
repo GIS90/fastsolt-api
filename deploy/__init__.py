@@ -138,8 +138,8 @@ class FSWebAppClass(WebBaseClass):
         :return: None
         """
         if router:
-            __route_prefix = "/root" if router.prefix == "" else router.prefix
-            LOG.info(f'Blueprint [{__route_prefix}] is register')
+            __route_prefix = "/" if router.prefix == "" else router.prefix
+            LOG.info(f'Router [{__route_prefix}] is register')
             self.app.include_router(router)
 
     def __auto_register_router(self):

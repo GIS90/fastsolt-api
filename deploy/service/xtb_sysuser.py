@@ -103,7 +103,7 @@ class XtbSysUserService:
         )
         return data
 
-    async def user_add(self, db: AsyncSession, rtx_id: str, model: Dict):
+    async def user_add(self, db: AsyncSession, rtx_id: str, model: Dict) -> Status:
         new_user = await self.xtb_sysuser_bo.new_model()
         __now = get_now()
         __password = random_string()
@@ -119,7 +119,7 @@ class XtbSysUserService:
         await self.xtb_sysuser_bo.add(db=db, model=new_user)
         return SuccessStatus(data={"password": __password})
 
-    async def user_update(self, db: AsyncSession, rtx_id: str, model: Dict):
+    async def user_update(self, db: AsyncSession, rtx_id: str, model: Dict) -> Status:
         _md5 = model.get("md5_id")
         flag, data = await self.__valid_user_by_md5_id(
             db=db, md5_id=_md5, status_check=True, response_type="model"
@@ -132,5 +132,27 @@ class XtbSysUserService:
         model["update_time"] = get_now()
         for k, v in model.items():
             setattr(data, k, v)
+        await self.xtb_sysuser_bo.update(db=db, model=data)
+        return SuccessStatus()
+
+    async def user_delete_hard(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
+        flag, data = await self.__valid_user_by_md5_id(
+            db=db, md5_id=md5_id, status_check=True, response_type="model"
+        )
+        if not flag: return data
+
+        await self.xtb_sysuser_bo.delete(db=db, model=data)
+        return SuccessStatus()
+
+
+    async def user_delete_soft(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
+        flag, data = await self.__valid_user_by_md5_id(
+            db=db, md5_id=md5_id, status_check=True, response_type="model"
+        )
+        if not flag: return data
+
+        setattr(data, "status", True)
+        setattr(data, "delete_rtx", rtx_id)
+        setattr(data, "delete_time", get_now())
         await self.xtb_sysuser_bo.update(db=db, model=data)
         return SuccessStatus()
