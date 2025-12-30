@@ -62,8 +62,8 @@ class XtbSysUserBo:
 
             result = await db.execute(select(XtbSysUserModel).where(_field == value))
             return result.scalar_one_or_none()
-        except Exception as exec:
-            raise SQLDBHandleException(f"[{self.__class__.__name__}*查询One]{exec}")
+        except Exception as e:
+            raise SQLDBHandleException(f"[{self.__class__.__name__}*查询One]{e}")
 
     async def get_by_id(self, db: AsyncSession, user_id: int):
         return await self._get_user_by_field(db, XtbSysUserModel.id, user_id)
@@ -90,8 +90,8 @@ class XtbSysUserBo:
                 select(func.count(XtbSysUserModel.id)).where(XtbSysUserModel.status != 1)
             )
             return result.scalar()
-        except Exception as exec:
-            raise SQLDBHandleException(f"[{cls.__name__}*总数]{exec}")
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*总数]{e}")
 
     @classmethod
     async def get_pagination(
@@ -102,8 +102,8 @@ class XtbSysUserBo:
                 select(XtbSysUserModel).where(XtbSysUserModel.status != 1).offset(offset).limit(limit)
             )
             return result.scalars().all()
-        except Exception as exec:
-            raise SQLDBHandleException(f"[{cls.__name__}*查询All]{exec}")
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*查询All]{e}")
 
     @classmethod
     async def add(
@@ -112,8 +112,8 @@ class XtbSysUserBo:
         try:
             db.add(model)
             return 1
-        except Exception as exec:
-            raise SQLDBHandleException(f"[{cls.__name__}*新增]{exec}")
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*新增]{e}")
 
     @classmethod
     async def update(
@@ -122,8 +122,8 @@ class XtbSysUserBo:
         try:
             await db.merge(model)
             return 1
-        except Exception as exec:
-            raise SQLDBHandleException(f"[{cls.__name__}*更新]{exec}")
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*更新]{e}")
 
     @classmethod
     async def delete(
@@ -132,7 +132,7 @@ class XtbSysUserBo:
         try:
             await db.delete(model)
             return 1
-        except Exception as exec:
-            raise SQLDBHandleException(f"[{cls.__name__}*更新]{exec}")
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*删除]{e}")
 
 

@@ -82,9 +82,9 @@ async def get_db():
         try:
             yield session
             await session.commit()
-        except SQLDBHandleException as exec:
+        except SQLDBHandleException as db_exec:
             await session.rollback()
-            raise SQLDBHandleException(f"数据库操作异常：{exec.__str__()}")
+            raise SQLDBHandleException(f"数据库操作异常：{db_exec.__str__()}")
         finally:
             await session.close()
 
