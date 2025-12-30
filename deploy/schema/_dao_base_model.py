@@ -30,7 +30,8 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 
-baseModel = declarative_base()
+class baseModel(DeclarativeBase):
+    ...
