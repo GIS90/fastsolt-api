@@ -108,30 +108,27 @@ class XtbSysUserBo:
     @classmethod
     async def add(
             cls, db: AsyncSession, model: XtbSysUserModel
-    ) -> int:
+    ) -> None:
         try:
             db.add(model)
-            return 1
         except Exception as e:
             raise SQLDBHandleException(f"[{cls.__name__}*新增]{e}")
 
     @classmethod
     async def update(
             cls, db: AsyncSession, model: XtbSysUserModel
-    ) -> int:
+    ) -> None:
         try:
             await db.merge(model)
-            return 1
         except Exception as e:
             raise SQLDBHandleException(f"[{cls.__name__}*更新]{e}")
 
     @classmethod
     async def delete(
             cls, db: AsyncSession, model: XtbSysUserModel
-    ) -> int:
+    ) -> None:
         try:
             await db.delete(model)
-            return 1
         except Exception as e:
             raise SQLDBHandleException(f"[{cls.__name__}*删除]{e}")
 
