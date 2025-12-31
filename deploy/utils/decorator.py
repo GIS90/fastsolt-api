@@ -33,6 +33,8 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+import time
+from contextlib import contextmanager, ContextDecorator
 from typing import Callable
 from datetime import datetime
 from functools import wraps
@@ -49,7 +51,7 @@ from deploy.utils.status_value import (StatusMsg as status_msg,
 
 def decorator(func: Callable):
     """
-    装饰器功能描述
+    装饰器 > 模板（功能描述）
     """
     @wraps(func)
     async def __wrapper(*args, **kwargs):
@@ -65,14 +67,14 @@ def decorator(func: Callable):
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 def timer(func: Callable):
     """
-    方法执行时间装饰器
+    装饰器 > 计时器
     """
     @wraps(func)
     async def __wrapper(*args, **kwargs):
         start_time = datetime.now()
         result = await func(*args, **kwargs)
         end_time = datetime.now()
-        cost = round((end_time - start_time).microseconds * pow(0.1, 6), 3)
+        cost = round((end_time - start_time).microseconds * pow(0.1, 6), 4)
         LOG.info("[Decorator>Timer] >>>>> %s cost %s seconds." % (func.__name__, cost))
         return result
     return __wrapper
@@ -81,7 +83,7 @@ def timer(func: Callable):
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 def debug(func: Callable):
     """
-    debug装饰器
+    装饰器 > debug打印
     """
     @wraps(func)
     async def __wrapper(*args, **kwargs):
@@ -93,11 +95,11 @@ def debug(func: Callable):
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 def deprecated(func: Callable):
     """
-    方法过时提示
+    装饰器 > 方法过时提示
     """
     @wraps(func)
     async def __wrapper(*args, **kwargs):
-        LOG.warn("[Decorator>deprecated] %s is deprecated and will be removed in future versions." % func.__name__, DeprecationWarning)
+        LOG.warn("[Decorator>Deprecated] %s is deprecated and will be removed in future versions." % func.__name__, DeprecationWarning)
         return await func(*args, **kwargs)
     return __wrapper
 
@@ -105,7 +107,7 @@ def deprecated(func: Callable):
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 def watch_except(func: Callable):
     """
-    异常处理
+    装饰器 > 异常处理
     """
     @wraps(func)
     async def __wrapper(*args, **kwargs):
@@ -123,5 +125,31 @@ def watch_except(func: Callable):
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+@contextmanager
+def with_timer():
+    """
+    上下文 > 方法 > 计时器
+    """
+    start_time = time.perf_counter()
+    try:
+        yield
+    finally:
+        end_time = time.perf_counter()
+        LOG.info(f"[Context>With>Timer] >>>>> cost {end_time - start_time:.4f} seconds.")
 
 
+class ContextTimer(ContextDecorator):
+    """
+    上下文 > 类 > 计时器
+    """
+    def __init__(self, name: str = "操作名称"):
+        self.name = name
+
+    def __enter__(self):
+        self.start_time = time.perf_counter()
+        return self
+
+    def __exit__(self, *exc):
+        end_time = time.perf_counter()
+        LOG.info(f"[Context>Class>Timer] >>>>> {self.name} cost {end_time - self.start_time:.4f} seconds.")
+        return None
