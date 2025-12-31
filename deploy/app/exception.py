@@ -89,13 +89,13 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
         :param exec: JwtCredentialsException
         :return: JSONResponse
         """
-        LOG.error(f"请求地址{request.url.__str__()}，[jwt_exception_handler]: {exec.__str__()}")
+        LOG.error(f"请求地址{request.url.__str__()}，[jwt_exception_handler]: {exec.detail}")
 
         # rewrite response
         content = FailureStatus(
             code=status_code.CODE_251_TOKEN_VERIFY_FAILURE.value,
             message=status_msg.get(251),
-            data={"error": exec.detail}
+            data={"error": exec.report()}
         ).status_body
         headers = {"app-cm-exception-webhook": "JwtCredentialsException"}
         headers.update(app_headers)
@@ -114,13 +114,13 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
         :param exec: UserInvalidException
         :return: JSONResponse
         """
-        LOG.error(f"请求地址{request.url.__str__()}，[user_invalid_exception_handler]: {exec.__str__()}")
+        LOG.error(f"请求地址{request.url.__str__()}，[user_invalid_exception_handler]: {exec.detail}")
 
         # rewrite response
         content = FailureStatus(
             code=status_code.CODE_207_USER_INVALID.value,
             message=status_msg.get(207),
-            data={"error": exec.detail}
+            data={"error": exec.report()}
         ).status_body
         headers = {"app-cm-exception-webhook": "UserInvalidException"}
         headers.update(app_headers)
@@ -139,12 +139,10 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
         :param exec: SQLDBHandleException
         :return: JSONResponse
         """
-        exec_message = exec.__str__()
-        print('*' * 100)
-        print(exec_message)
-        LOG.error(f"请求地址{request.url.__str__()}，[db_exception_handler]: {exec_message}")
+        LOG.error(f"请求地址{request.url.__str__()}，[db_exception_handler]: {exec.detail}")
 
         # rewrite response
+        exec_message = exec.report()
         if exec_message.find("新增") > 0:
             _code = status_code.CODE_601_DB_ADD_FAILURE.value
         elif exec_message.find("删除") > 0:
