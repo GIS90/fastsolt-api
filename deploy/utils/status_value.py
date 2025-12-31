@@ -113,7 +113,8 @@ StatusMsg = {
     601: "数据库新增失败",
     602: "数据库删除失败",
     603: "数据库更新失败",
-    604: "数据库提交失败",
+    604: "数据库查询失败",
+    605: "数据库提交失败",
 
     # ** other **
     900: "服务端API请求发生异常，请稍后尝试",
@@ -203,7 +204,8 @@ class StatusCode(IntEnum):
     CODE_601_DB_ADD_FAILURE = 601
     CODE_602_DB_DELETE_FAILURE = 602
     CODE_603_DB_UPDATE_FAILURE = 603
-    CODE_604_DB_COMMIT_FAILURE = 604
+    CODE_604_DB_QUERY_FAILURE = 604
+    CODE_605_DB_COMMIT_FAILURE = 605
 
     # ** other **
     CODE_900_SERVER_API_EXCEPTION = 900

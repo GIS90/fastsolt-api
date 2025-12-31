@@ -139,12 +139,25 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
         :param exec: SQLDBHandleException
         :return: JSONResponse
         """
-        LOG.error(f"请求地址{request.url.__str__()}，[db_exception_handler]: {exec.__str__()}")
+        exec_message = exec.__str__()
+        print('*' * 100)
+        print(exec_message)
+        LOG.error(f"请求地址{request.url.__str__()}，[db_exception_handler]: {exec_message}")
 
         # rewrite response
+        if exec_message.find("新增") > 0:
+            _code = status_code.CODE_601_DB_ADD_FAILURE.value
+        elif exec_message.find("删除") > 0:
+            _code = status_code.CODE_602_DB_DELETE_FAILURE.value
+        elif exec_message.find("更新") > 0:
+            _code = status_code.CODE_603_DB_UPDATE_FAILURE.value
+        elif exec_message.find("查询") > 0:
+            _code = status_code.CODE_604_DB_QUERY_FAILURE.value
+        else:
+            _code = status_code.CODE_600_DB_EXCEPTION.value
         content = FailureStatus(
-            code=status_code.CODE_600_DB_EXCEPTION.value,
-            message=status_msg.get(600),
+            code=_code,
+            message=status_msg.get(_code),
             data={"error": exec.detail}
         ).status_body
         headers = {"app-cm-exception-webhook": "SQLDBHandleException"}
