@@ -31,7 +31,7 @@ Life is short, I use python.
 ------------------------------------------------
 """
 from datetime import timedelta
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple, Union
 from jose import JWTError, jwt, ExpiredSignatureError
 
 from deploy.utils.utils import d2s, get_now_time, d2ts, ts2d
@@ -74,14 +74,14 @@ JWT Token APIs[JWT]:
 
 
 def encode_access_token(
-        rtx_id: str = None,
+        rtx_id: str = ...,
         token_time: int = TOKEN_EXPIRE_MINUTE
-) -> Optional[str]:
+) -> str | None:
     """
     生成Jwt Token
     :param rtx_id: [str]rtx-id
     :param token_time: [int]Token过期时间，系统默认4h，单位：分钟
-    :return: [dict]jwt token
+    :return: [str | None]jwt token
     """
     encoded_jwt_token = None
     if not rtx_id:
@@ -127,11 +127,11 @@ def encode_access_token(
 
 def decode_access_token(
         token: str
-) -> dict:
+) -> Dict:
     """
     解码Jwt Token
     :param token: [str]Token
-    :return: [dict]Token data
+    :return: [Dict]Token data
     """
     claims = dict()
     if not token:
@@ -161,7 +161,7 @@ def decode_access_token_rtx(
     """
     解密Jwt Token的rtx-id
     :param token: [str]token
-    :return: [str]rtx-id
+    :return: [str | None]rtx-id
     """
     if not token:
         return None
@@ -191,11 +191,11 @@ def verify_access_token(
 
 def read_token_header(
         token: str
-) -> dict:
+) -> Dict:
     """
     读取Jwt Token HEADER信息
     :param token: [str]token
-    :return: [dict]header
+    :return: [Dict]header
     """
     header: Dict = dict()
     if not token:
@@ -219,11 +219,11 @@ JWT Token APIs[Redis]:
 
 def __verify_access_token_expire_jwt(
         token: str
-) -> str:
+) -> str | None:
     """
     验证Jwt Token是否过期
     :param token: [str]token
-    :return: [str]rtx-id
+    :return: [str | None]rtx-id
     """
     if not token:
         return None
@@ -250,7 +250,7 @@ def __verify_access_token_expire_jwt(
 
 def verify_access_token_expire(
         x_token: str
-) -> (bool, Optional[str]):
+) -> Tuple[bool, Optional[str]]:
     """
     验证Jwt Token是否过期Form Redis
     :param x_token: [str]token
@@ -264,7 +264,7 @@ def verify_access_token_expire(
         if redis_cli.connection:
             token_rtx_id = redis_cli.get_key(key=x_token)
     except Exception as e:
-        pass
+        ...
 
     if not token_rtx_id:
         try:

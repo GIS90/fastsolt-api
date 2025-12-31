@@ -32,7 +32,7 @@ Life is short, I use python.
 """
 from typing import Optional, List, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
+from sqlalchemy import select, update, delete
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy import func
 
