@@ -147,7 +147,7 @@ class APPProfile:
     title: str = server_name
     version: str = server_version
     summary: str = "作者：高明亮"
-    description: str = "基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架。"     # 支持Markdown语法
+    description: str = "基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架，Github地址：https://github.com/GIS90/fastsolt-api"     # 支持Markdown语法
 
 
 # 作者
