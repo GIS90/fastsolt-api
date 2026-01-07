@@ -51,7 +51,7 @@ class XtbSysUserService:
         self.xtb_sysuser_bo = XtbSysUserBo()
 
     def __str__(self):
-        print("UserService class.")
+        print("XtbSysUserService class.")
 
     def __repr__(self):
         self.__str__()
