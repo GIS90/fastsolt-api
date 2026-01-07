@@ -63,7 +63,9 @@ xtb_sysuser_list_fields = [
     {"key": "introduction", "type": ft.STR, "name": "introduction"},
     {"key": "status", "type": ft.BOOLTEXT, "name": "status"},
     {"key": "create_rtx", "type": ft.STR, "name": "createRtx"},
-    {"key": "create_time", "type": ft.DATETIME, "name": "createTime"}
+    {"key": "create_time", "type": ft.DATETIME, "name": "createTime"},
+    {"key": "update_rtx", "type": ft.STR, "name": "updateRtx"},
+    {"key": "update_time", "type": ft.DATETIME, "name": "updateTime"},
 ]
 
 

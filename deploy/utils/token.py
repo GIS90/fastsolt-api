@@ -64,7 +64,7 @@ redis_cli = RedisClientLib(
 JWT Token APIs[JWT]:
     > encode_access_token：生成Jwt Token
     > decode_access_token：解码Jwt Token
-    > decode_access_token_rtx：解密Jwt Token的rtx-id
+    > decode_access_token_rtx：解密Jwt Token的Rtx-id
     > verify_access_token：验证Jwt Token
     > verify_access_token_expire：验证Jwt Token是否过期
     > read_token_header：读取Jwt Token HEADER信息
