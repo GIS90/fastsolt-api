@@ -132,4 +132,26 @@ class XtbSysUserBo:
         except Exception as e:
             raise SQLDBHandleException(f"[{cls.__name__}*删除]{e}")
 
+    @classmethod
+    async def batch_delete(
+            cls, db: AsyncSession, md5_id: List[str]
+    ) -> None:
+        try:
+            stmt = delete(XtbSysUserModel).where(XtbSysUserModel.md5_id.in_(md5_id))
+            await db.execute(stmt)
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*批量删除]{e}")
 
+    @classmethod
+    async def batch_soft_delete_update(
+            cls, db: AsyncSession, md5_id: List[str], rtx_id: str
+    ) -> None:
+        try:
+            stmt = update(XtbSysUserModel).where(XtbSysUserModel.md5_id.in_(md5_id)).values(
+                status = True,
+                delete_rtx = rtx_id,
+                delete_time = func.now(),
+            )
+            await db.execute(stmt)
+        except Exception as e:
+            raise SQLDBHandleException(f"[{cls.__name__}*批量更新]{e}")

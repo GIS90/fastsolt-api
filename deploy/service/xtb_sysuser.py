@@ -156,3 +156,12 @@ class XtbSysUserService:
         setattr(data, "delete_time", get_now())
         await self.xtb_sysuser_bo.update(db=db, model=data)
         return SuccessStatus()
+
+    async def user_batch_delete_hard(self, db: AsyncSession, rtx_id: str, md5_id: List) -> Status:
+        await self.xtb_sysuser_bo.batch_delete(db=db, md5_id=md5_id)
+        return SuccessStatus()
+
+
+    async def user_batch_delete_soft(self, db: AsyncSession, rtx_id: str, md5_id: List) -> Status:
+        await self.xtb_sysuser_bo.batch_soft_delete_update(db=db, md5_id=md5_id, rtx_id=rtx_id)
+        return SuccessStatus()

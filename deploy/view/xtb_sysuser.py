@@ -30,7 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import APIRouter, Depends, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -99,3 +99,21 @@ async def user_delete(
     db: AsyncSession = Depends(get_db)
 ) -> Status:
     return await xtb_sysuser_service.user_delete_soft(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
+
+
+@router.delete("/batch/hard", summary="【批量硬删除】用户")
+async def user_delete(
+    md5_id: List = Query(..., description="用户md5-id列表"),
+    token_rtx_id: str = Depends(depend_token_rtx),
+    db: AsyncSession = Depends(get_db)
+) -> Status:
+    return await xtb_sysuser_service.user_batch_delete_hard(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
+
+
+@router.delete("/batch/soft", summary="【批量软删除】用户")
+async def user_delete(
+    md5_id: List = Query(..., description="用户md5-id列表"),
+    token_rtx_id: str = Depends(depend_token_rtx),
+    db: AsyncSession = Depends(get_db)
+) -> Status:
+    return await xtb_sysuser_service.user_batch_delete_soft(db=db, rtx_id=token_rtx_id, md5_id=md5_id)
