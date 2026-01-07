@@ -1,0 +1,79 @@
+# 系统信息配置
+[server]
+name = "Fastslot-API"
+version = "v1.0.1"
+
+# Flask APP[默认配置，不建议更改]
+[app]
+# 中间件
+secret_key = "IbelivemeIcanfly-gaomingliang"
+allow_host = []  # 白名单IP列表 ["127.0.0.1"]，默认为空允许全部访问
+cors_origin = ["*"]
+ban_router = ["/ban1", "/ban2"]  # 禁止访问的路由列表
+session_max_age = 86400  # unit: minute, default 1 days = 24 * 60 * 60
+request_method = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]  # 允许通过的请求方法列表[备注：大写]
+gzip_size = 1000
+gzip_level = 6
+# docs
+openapi_url = "/api/documentation/v1/openapi.json"
+docs_url = "/api/documentation/v1/docs"
+# 静态资源
+static = "static"  # 静态资源目录名称，并且固定在deploy目录下
+
+# 数据库
+[db]
+link = "mysql+asyncmy://fastapi-q:3d829dd6151b80e9351261164abae1e3@110.40.141.32:3306/fastapi-q"
+
+# Redis
+[redis]
+host = "110.40.141.32"
+port = 9777
+db = 10
+password = ""
+
+# JWT Token
+[jwt]
+verify = false
+secret_key = "Enjoy the good life every day！！!"
+algorithm = "HS256"
+expire = 240    # 单位：分，默认4小时 = 4 * 60
+
+# 日志
+[log]
+folder = "log"
+level = "debug"
+format = "%(asctime)s - %(pathname)s[line:%(lineno)d] - [%(levelname)s] - %(message)s"
+prefix = "fastslot-api-log"
+max_size = 1048576  # 1M = 1 * 1024KB * 1024KB
+count = 10
+
+# 钉钉
+[dingtalk]
+base = "https://oapi.dingtalk.com/"
+token_api = "gettoken"
+
+# 企业微信
+[qywx]
+base = "https://qyapi.weixin.qq.com"
+token_api = "/cgi-bin/gettoken"
+send_api = "/cgi-bin/message/send"
+recall_api = "/cgi-bin/message/recall"
+upload_api = "/cgi-bin/media/upload"
+temp_api = "/cgi-bin/media/get"
+
+# 存储
+[store]
+# 本地缓存路径【绝对路径】 WIN：E:\_CACHE MacOS：/Users/gaomingliang/Downloads/_CACHE
+cache = "/home/gaomingliang/_CACHE"
+# 7牛云存储
+yun_access = "mRF0cKGUJcfv7ry_Wyvc24cDNWEQz9DAKo_UOn0G"
+yun_secret = "xabmlB9zZ_MRwtgofQJzUxINnmcO_VUfkXYILx_Q"
+yun_base = "https://2lstore.pygo2.top"
+yun_space = "open2lstore"
+
+# 图片
+[image]
+quality = 100
+width = 700
+
+

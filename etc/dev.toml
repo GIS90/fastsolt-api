@@ -1,7 +1,7 @@
 # 系统信息配置
 [server]
 name = "Fastslot-API"
-version = "v1.0.0"
+version = "v1.0.1"
 
 # Flask APP[默认配置，不建议更改]
 [app]
