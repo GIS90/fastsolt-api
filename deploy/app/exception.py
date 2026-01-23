@@ -142,7 +142,7 @@ def register_app_exception(app: FastAPI, app_headers: Dict):
         LOG.error(f"请求地址{request.url.__str__()}，[db_exception_handler]: {exec.detail}")
 
         # rewrite response
-        exec_message = exec.report()
+        exec_message: str = exec.report()
         if exec_message.find("新增") > 0:
             _code = status_code.CODE_601_DB_ADD_FAILURE.value
         elif exec_message.find("删除") > 0:

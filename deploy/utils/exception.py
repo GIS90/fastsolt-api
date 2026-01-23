@@ -30,6 +30,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from abc import ABC, abstractmethod
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -40,40 +41,41 @@ __all__ = [
 ]
 
 
-class JwtCredentialsException(Exception):
+class __FSBaseException(Exception, ABC):
     """
-    Jwt验证异常类
+    Fastsolt-API 异常基类
     """
-    def __init__(self, detail):
+
+    def __init__(self, detail: str):
         super().__init__(detail)
         self.detail = detail
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.report()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.report()
 
-    def report(self):
+    @abstractmethod
+    def report(self) -> str:
+        ...
+
+
+class JwtCredentialsException(__FSBaseException):
+    """
+    Jwt验证异常类
+    """
+    def report(self) -> str:
         return f"JwtCredentialsException: {self.detail}"
 
 
-class UserInvalidException(Exception):
+class UserInvalidException(__FSBaseException):
     """
     用户不可用异常类
     - 不存在
     - 已注销
     """
-    def __init__(self, detail):
-        self.detail = detail
-
-    def __str__(self):
-        return self.report()
-
-    def __repr__(self):
-        return self.report()
-
-    def report(self):
+    def report(self) -> str:
         return f"UserInvalidException: {self.detail}"
 
 
@@ -81,14 +83,14 @@ class SQLDBHandleException(SQLAlchemyError):
     """
     Sqlalchemy数据库操作异常类
     """
-    def __init__(self, detail):
+    def __init__(self, detail: str):
         self.detail = detail
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.report()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.report()
 
-    def report(self):
+    def report(self) -> str:
         return f"SQLDBHandleException: {self.detail}"
