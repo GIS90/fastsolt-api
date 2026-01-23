@@ -74,7 +74,7 @@ async def login(
 ) -> Status:
     """
     [ACCESS]Login登录
-    :param db: 数据库DB
+    :param xtb_sysuser_service: service
     :param body_data: [dict]查询请求参数
     :param request: Request
     :return: JSONResponse
