@@ -35,7 +35,7 @@ from typing import Dict
 from fastapi import APIRouter, Depends, Header, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from deploy.curd.database import get_db
+from deploy.curd.database import get_session
 from deploy.schema.po.access import O2LUserLogin
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
 from deploy.utils.status_value import StatusCode as Status_code
@@ -49,7 +49,8 @@ from deploy.service.xtb_sysuser import XtbSysUserService
 # view
 router = APIRouter(prefix="/access", tags=["系统登录、退出"])
 # service
-xtb_sysuser_service: XtbSysUserService = XtbSysUserService()
+def get_xtb_sysuser_service(db: AsyncSession = Depends(get_session)):
+    return XtbSysUserService(db_connection=db)
 # redis-cli
 redis_cli = RedisClientLib(host=redis_host, port=redis_port, db=redis_db, password=redis_password)
 __JWT_TOKEN_EXPIRE_MINUTES = jwt_expire
@@ -69,7 +70,7 @@ APIs：
 async def login(
         body_data: O2LUserLogin,
         request: Request,
-        db: AsyncSession = Depends(get_db)
+        xtb_sysuser_service: XtbSysUserService = Depends(get_xtb_sysuser_service)
 ) -> Status:
     """
     [ACCESS]Login登录
@@ -90,7 +91,7 @@ async def login(
     # 用户信息核对
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     username = username.strip()     # 去空格
-    user: Dict = await xtb_sysuser_service.get_login_by_rtx_id(db=db, rtx_id=username)
+    user: Dict = await xtb_sysuser_service.get_login_by_rtx_id(rtx_id=username)
     # >>> 不用不存在
     if not user:
         return FailureStatus(

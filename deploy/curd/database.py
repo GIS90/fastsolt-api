@@ -46,7 +46,7 @@ if not _DB_LINK:
     sys.exit(1)
 
 # 根据环境决定是否开启SQL日志
-_ECHO_SQL = True if env == "dev" else False
+_ECHO_SQL: bool = True if env == "dev" else False
 
 # 异步引擎
 engine = create_async_engine(
@@ -65,7 +65,7 @@ AsyncSessionLocal = sessionmaker(
 )
 
 # 依赖注入：获取数据库会话
-async def get_db():
+async def get_session():
     """
     异步获取数据库会话的依赖注入函数
 

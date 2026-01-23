@@ -42,12 +42,14 @@ from deploy.utils.utils import get_now, random_string, md5
 
 
 class XtbSysUserService:
+
     DEFAULT_AVATAR = "http://pygo2.top/images/article_github.jpg"
 
-    def __init__(self):
+    def __init__(self, db_connection: AsyncSession):
         """
         XtbSysUserService class initialize
         """
+        self.db: AsyncSession = db_connection
         self.xtb_sysuser_bo = XtbSysUserBo()
 
     def __str__(self):
@@ -58,7 +60,6 @@ class XtbSysUserService:
 
     async def __valid_user_by_md5_or_rtx(
             self,
-            db: AsyncSession,
             user_id: str,
             status_check: bool = True,
             response_type: Literal["dict", "model"] = "model",
@@ -69,8 +70,8 @@ class XtbSysUserService:
                 code=status_code.CODE_400_REQUEST_PARAMETER_MISS,
                 message="缺少md5参数" if user_type == "md5" else "缺少rtx参数")
 
-        user = await self.xtb_sysuser_bo.get_by_md5_id(db=db, md5_id=user_id) if user_type == "md5" \
-            else await self.xtb_sysuser_bo.get_by_rtx_id(db=db, rtx_id=user_id)
+        user = await self.xtb_sysuser_bo.get_by_md5_id(db=self.db, md5_id=user_id) if user_type == "md5" \
+            else await self.xtb_sysuser_bo.get_by_rtx_id(db=self.db, rtx_id=user_id)
         if not user:
             return False, FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
         if status_check and getattr(user, "status", None):
@@ -79,9 +80,9 @@ class XtbSysUserService:
         return (True, user if response_type == "model"
                         else await model_converter_dict(model=user, fields=xtb_sysuser_detail_fields, default_value="****"))
 
-    async def user_list(self, db: AsyncSession, rtx_id: str, params: Dict) -> Status:
+    async def user_list(self, rtx_id: str, params: Dict) -> Status:
         users = await self.xtb_sysuser_bo.get_pagination(
-            db=db,
+            db=self.db,
             offset=params.get("offset"),
             limit=params.get("limit")
         )
@@ -97,23 +98,23 @@ class XtbSysUserService:
         )
         result: Dict = {
             "list": data,
-            "total": await self.xtb_sysuser_bo.get_count(db)
+            "total": await self.xtb_sysuser_bo.get_count(self.db)
         }
         return SuccessStatus(data=result)
 
-    async def get_login_by_rtx_id(self, db: AsyncSession, rtx_id: str) -> Dict:
-        result, data = await self.__valid_user_by_md5_or_rtx(
-            db=db, user_id=rtx_id, status_check=False, response_type="dict", user_type="rtx"
+    async def get_login_by_rtx_id(self, rtx_id: str) -> Dict:
+        __flag, data = await self.__valid_user_by_md5_or_rtx(
+            user_id=rtx_id, status_check=False, response_type="dict", user_type="rtx"
         )
-        return data if result else None
+        return data if __flag else None
 
-    async def get_user_by_md5_id(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
-        result, data = await self.__valid_user_by_md5_or_rtx(
-            db=db, user_id=md5_id, status_check=False, response_type="dict", user_type="md5"
+    async def get_user_by_md5_id(self, rtx_id: str, md5_id: str) -> Status:
+        __flag, data = await self.__valid_user_by_md5_or_rtx(
+            user_id=md5_id, status_check=False, response_type="dict", user_type="md5"
         )
-        return SuccessStatus(data=data) if result else data
+        return SuccessStatus(data=data) if __flag else data
 
-    async def user_add(self, db: AsyncSession, rtx_id: str, model: Dict) -> Status:
+    async def user_add(self, rtx_id: str, model: Dict) -> Status:
         new_user = await self.xtb_sysuser_bo.new_model()
         __now = get_now()
         __password: str = random_string()
@@ -128,15 +129,16 @@ class XtbSysUserService:
         new_user.password = md5(v=f"{__password}{__salt}")
         for k, v in model.items():
             setattr(new_user, k, v)
-        await self.xtb_sysuser_bo.add(db=db, model=new_user)
+        await self.xtb_sysuser_bo.add(db=self.db, model=new_user)
         return SuccessStatus(data={"password": __password})
 
-    async def user_update(self, db: AsyncSession, rtx_id: str, model: Dict) -> Status:
+    async def user_update(self, rtx_id: str, model: Dict) -> Status:
         _md5 = model.get("md5_id")
-        flag, data = await self.__valid_user_by_md5_id(
-            db=db, md5_id=_md5, status_check=True, response_type="model"
+        __flag, data = await self.__valid_user_by_md5_or_rtx(
+            user_id=_md5, status_check=True, response_type="model"
         )
-        if not flag: return data
+        if not __flag: return data
+
         if model.get("rtx_id"):
             del model["rtx_id"]
         del model["md5_id"]
@@ -144,36 +146,36 @@ class XtbSysUserService:
         model["update_time"] = get_now()
         for k, v in model.items():
             setattr(data, k, v)
-        await self.xtb_sysuser_bo.update(db=db, model=data)
+        await self.xtb_sysuser_bo.update(db=self.db, model=data)
         return SuccessStatus()
 
-    async def user_delete_hard(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
-        flag, data = await self.__valid_user_by_md5_id(
-            db=db, md5_id=md5_id, status_check=True, response_type="model"
+    async def user_delete_hard(self, rtx_id: str, md5_id: str) -> Status:
+        __flag, data = await self.__valid_user_by_md5_or_rtx(
+            user_id=md5_id, status_check=True, response_type="model", user_type="md5"
         )
-        if not flag: return data
+        if not __flag: return data
 
-        await self.xtb_sysuser_bo.delete(db=db, model=data)
+        await self.xtb_sysuser_bo.delete(db=self.db, model=data)
         return SuccessStatus()
 
 
-    async def user_delete_soft(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
-        flag, data = await self.__valid_user_by_md5_id(
-            db=db, md5_id=md5_id, status_check=True, response_type="model"
+    async def user_delete_soft(self, rtx_id: str, md5_id: str) -> Status:
+        __flag, data = await self.__valid_user_by_md5_or_rtx(
+            user_id=md5_id, status_check=True, response_type="model", user_type="md5"
         )
-        if not flag: return data
+        if not __flag: return data
 
         setattr(data, "status", True)
         setattr(data, "delete_rtx", rtx_id)
         setattr(data, "delete_time", get_now())
-        await self.xtb_sysuser_bo.update(db=db, model=data)
+        await self.xtb_sysuser_bo.update(db=self.db, model=data)
         return SuccessStatus()
 
-    async def user_batch_delete_hard(self, db: AsyncSession, rtx_id: str, md5_id: List) -> Status:
-        await self.xtb_sysuser_bo.batch_delete(db=db, md5_id=md5_id)
+    async def user_batch_delete_hard(self, rtx_id: str, md5_id: List) -> Status:
+        await self.xtb_sysuser_bo.batch_delete(db=self.db, md5_id=md5_id)
         return SuccessStatus()
 
 
-    async def user_batch_delete_soft(self, db: AsyncSession, rtx_id: str, md5_id: List) -> Status:
-        await self.xtb_sysuser_bo.batch_soft_delete_update(db=db, md5_id=md5_id, rtx_id=rtx_id)
+    async def user_batch_delete_soft(self, rtx_id: str, md5_id: List) -> Status:
+        await self.xtb_sysuser_bo.batch_soft_delete_update(db=self.db, md5_id=md5_id, rtx_id=rtx_id)
         return SuccessStatus()

@@ -72,8 +72,7 @@ class UploadService:
         """
         if not file:
             return FailureStatus(
-                code=status_code.CODE_450_REQUEST_FILE_NO_UPLOAD
-            )
+                code=status_code.CODE_450_REQUEST_FILE_NO_UPLOAD)
 
         file_name = d2s(datetime.now())  # custom define upload file name
         real_file = pathlib_path.joinpath(abs_store_folder, file_name)
@@ -93,8 +92,7 @@ class UploadService:
         """
         if not file:
             return FailureStatus(
-                code=status_code.CODE_450_REQUEST_FILE_NO_UPLOAD
-            )
+                code=status_code.CODE_450_REQUEST_FILE_NO_UPLOAD)
 
         file_name = getattr(file, 'filename')  # use getattr method to get file name
         if not file_name:
