@@ -35,14 +35,17 @@ from pydantic import Field, field_validator
 
 
 class O2LUserLogin(baseModel):
-    username: str = Field(..., min_length=1, max_length=25, description="用户名称")
-    password: str = Field(..., min_length=1, max_length=30, description="用户密码")
+    username: str = Field(..., min_length=1, max_length=35, description="用户名称")
+    password: str = Field(..., min_length=1, max_length=55, description="用户密码")
+    t24: bool = Field(..., description="Token有效性是否24h")
+
 
     model_config = {
         "json_schema_extra": {
             "example": {
                 "username": "adc",
-                "password": "123456"
+                "password": "123456",
+                "t24": False
             }
         }
     }
@@ -56,10 +59,3 @@ class O2LUserLogin(baseModel):
         return value
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-class TokenBody(baseModel):
-    """
-    Token body
-    """
-    access_token: str
-    token_type: str

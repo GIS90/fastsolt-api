@@ -56,6 +56,7 @@ StatusMsg = {
     206: "输入的两次新密码不一致",
     207: "无效用户",
     208: "用户未分配系统菜单权限，请联系管理员",
+    209: "缺少用户名/密码",
 
     # ** token **
     250: "没有发现用户TOKEN",
@@ -147,6 +148,7 @@ class StatusCode(IntEnum):
     CODE_206_USER_NEW_PASSWORD_NOT_MATCH = 206
     CODE_207_USER_INVALID = 207
     CODE_208_USER_MENU_INVALID = 208
+    CODE_209_MISS_USER_PASSWORD = 209
 
     # ** token **
     CODE_250_TOKEN_NOT_FOUND = 250

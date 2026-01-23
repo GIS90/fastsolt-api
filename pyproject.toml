@@ -5,6 +5,8 @@ description = "基于FastAPI Web框架、Pydantic、异步的快速开发API脚�
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiofiles==25.1.0",
+    "aiohttp==3.13.3",
     "aiomysql>=0.3.2",
     "fastapi==0.123.7",
     "python-jose==3.5.0",

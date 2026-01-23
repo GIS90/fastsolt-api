@@ -52,6 +52,7 @@ class XtbSysUserModel(baseModel, RtxIdField, Md5Field, CUDField, StatusField):
     id: Mapped[int] = mapped_column(Integer, name="id", autoincrement="auto", primary_key=True, comment="主键，自增ID")
     name: Mapped[str] = mapped_column(String(30), name="name", nullable=False, comment="用户名称")
     password: Mapped[str] = mapped_column(String(120), name="password", nullable=False, comment="用户密码[md5加密]")
+    salt: Mapped[Optional[str]] = mapped_column(String(55), name="salt", comment="密码盐值")
     sex: Mapped[str] = mapped_column(String(2), name="sex", nullable=False, comment="用户性别")
     email: Mapped[Optional[str]] = mapped_column(String(55), name="email", comment="用户邮箱")
     phone: Mapped[Optional[str]] = mapped_column(String(15), name="phone", comment="用户电话")

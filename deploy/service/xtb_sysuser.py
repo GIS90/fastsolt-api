@@ -56,17 +56,21 @@ class XtbSysUserService:
     def __repr__(self):
         self.__str__()
 
-    async def __valid_user_by_md5_id(
+    async def __valid_user_by_md5_or_rtx(
             self,
             db: AsyncSession,
-            md5_id: str,
+            user_id: str,
             status_check: bool = True,
-            response_type: Literal["dict", "model"] = "model"
+            response_type: Literal["dict", "model"] = "model",
+            user_type: Literal["md5", "rtx"] = "md5",
     ) -> Tuple[bool, Any]:
-        if not md5_id:
-            return False, FailureStatus(code=status_code.CODE_4002_REQUEST_PARAMETER_MISS_MD5)
+        if not user_id:
+            return False, FailureStatus(
+                code=status_code.CODE_400_REQUEST_PARAMETER_MISS,
+                message="缺少md5参数" if user_type == "md5" else "缺少rtx参数")
 
-        user = await self.xtb_sysuser_bo.get_by_md5_id(db=db, md5_id=md5_id)
+        user = await self.xtb_sysuser_bo.get_by_md5_id(db=db, md5_id=user_id) if user_type == "md5" \
+            else await self.xtb_sysuser_bo.get_by_rtx_id(db=db, rtx_id=user_id)
         if not user:
             return False, FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
         if status_check and getattr(user, "status", None):
@@ -97,23 +101,31 @@ class XtbSysUserService:
         }
         return SuccessStatus(data=result)
 
-    async def get_user_by_md5_id(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
-        _, data = await self.__valid_user_by_md5_id(
-            db=db, md5_id=md5_id, status_check=False, response_type="dict"
+    async def get_login_by_rtx_id(self, db: AsyncSession, rtx_id: str) -> Dict:
+        result, data = await self.__valid_user_by_md5_or_rtx(
+            db=db, user_id=rtx_id, status_check=False, response_type="dict", user_type="rtx"
         )
-        return data
+        return data if result else None
+
+    async def get_user_by_md5_id(self, db: AsyncSession, rtx_id: str, md5_id: str) -> Status:
+        result, data = await self.__valid_user_by_md5_or_rtx(
+            db=db, user_id=md5_id, status_check=False, response_type="dict", user_type="md5"
+        )
+        return SuccessStatus(data=data) if result else data
 
     async def user_add(self, db: AsyncSession, rtx_id: str, model: Dict) -> Status:
         new_user = await self.xtb_sysuser_bo.new_model()
         __now = get_now()
-        __password = random_string()
+        __password: str = random_string()
+        __salt: str = random_string()
         # TODO 用户默认的头像、密码可以放在数据库中
         new_user.md5_id = md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
         new_user.avatar = self.DEFAULT_AVATAR
         new_user.status = False
+        new_user.salt = __salt
         new_user.create_time = __now
         new_user.create_rtx = rtx_id
-        new_user.password = md5(v=__password)
+        new_user.password = md5(v=f"{__password}{__salt}")
         for k, v in model.items():
             setattr(new_user, k, v)
         await self.xtb_sysuser_bo.add(db=db, model=new_user)
