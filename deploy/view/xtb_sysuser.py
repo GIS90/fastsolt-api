@@ -44,7 +44,7 @@ from deploy.schema.po.xtb_user import XtbUserBaseModel, XtbUserUpdateModel
 # router
 router: APIRouter = APIRouter(prefix="/user", tags=["实例代码：系统用户增删改查"])
 # service
-def get_xtb_sysuser_service(db: AsyncSession = Depends(get_session)):
+def get_xtb_sysuser_service(db: AsyncSession = Depends(get_session)) -> XtbSysUserService:
     return XtbSysUserService(db_connection=db)
 
 

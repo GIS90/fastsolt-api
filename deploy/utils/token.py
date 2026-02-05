@@ -42,12 +42,12 @@ from deploy.delib.redis_lib import RedisClientLib
 
 
 # ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ * ～ *
-JWT_TOKEN_SECRET_KEY: str = jwt_secret_key
-JWT_TOKEN_ALGORITHM: str = jwt_algorithm
+__JWT_TOKEN_SECRET_KEY: str = jwt_secret_key
+__JWT_TOKEN_ALGORITHM: str = jwt_algorithm
 # 访问令牌过期[默认时间]，单位：分
-TOKEN_EXPIRE_MINUTE: int = 4 * 60
+__TOKEN_EXPIRE_MINUTE: int = 4 * 60
 if jwt_expire:
-    TOKEN_EXPIRE_MINUTE = jwt_expire
+    __TOKEN_EXPIRE_MINUTE = jwt_expire
 
 # redis-cli
 redis_cli = RedisClientLib(
@@ -75,7 +75,7 @@ JWT Token APIs[JWT]:
 
 def encode_access_token(
         rtx_id: str = ...,
-        token_time: int = TOKEN_EXPIRE_MINUTE
+        token_time: int = __TOKEN_EXPIRE_MINUTE
 ) -> str | None:
     """
     生成Jwt Token
@@ -98,12 +98,12 @@ def encode_access_token(
     to_encode_data['expire_time_ts'] = expire_ts
     to_encode_data.update({"exp": expire_ts})    # jwt过期时间KEY：['exp', 'iat', 'nbf']
     # header
-    HEADERS = {"alg": JWT_TOKEN_ALGORITHM, "typ": "JWT"}
+    HEADERS = {"alg": __JWT_TOKEN_ALGORITHM, "typ": "JWT"}
     try:
         encoded_jwt_token = jwt.encode(
             claims=to_encode_data,
-            key=JWT_TOKEN_SECRET_KEY,
-            algorithm=JWT_TOKEN_ALGORITHM,
+            key=__JWT_TOKEN_SECRET_KEY,
+            algorithm=__JWT_TOKEN_ALGORITHM,
             headers=HEADERS)
         # 存储->Redis
         if redis_cli.connection:
@@ -138,7 +138,7 @@ def decode_access_token(
         return claims
 
     try:
-        claims = jwt.decode(token=token, key=JWT_TOKEN_SECRET_KEY, algorithms=[JWT_TOKEN_ALGORITHM])
+        claims = jwt.decode(token=token, key=__JWT_TOKEN_SECRET_KEY, algorithms=[__JWT_TOKEN_ALGORITHM])
         """jwt.decode
         参数解析：
             token (str): Token字符串
