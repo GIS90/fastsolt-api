@@ -33,6 +33,7 @@ Life is short, I use python.
 import sys
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from typing import Final
 
 from deploy.config import env, db_link
 from deploy.utils.printer import printer_error
@@ -40,7 +41,7 @@ from deploy.utils.exception import SQLDBHandleException
 
 
 # 数据库连接地址
-_DB_LINK: str = db_link
+_DB_LINK: Final[str] = db_link
 if not _DB_LINK:
     printer_error(content="数据库连接地址配置为空，系统退出！", hr=True)
     sys.exit(1)
