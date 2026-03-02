@@ -11,7 +11,7 @@ base_info:
     __time__ = 2025/12/22 22:02
     __version__ = v.1.0.0
     __mail__ = gaoming971366@163.com
-    __blog__ = www.pygo2.top
+    __blog__ = www.pygo.space
     __project__ = fastslot-api
     __file_name__ = annotated.py
 
@@ -93,7 +93,7 @@ class GOODS(BaseModel):
                 "description": "格力牌子的电风扇",
                 "price": 35.4,
                 "tax": 3.2,
-                "url": "http://www.pygo2.top",
+                "url": "http://www.pygo.space",
             }
         }
     }

@@ -11,7 +11,7 @@ base_info:
     __time__ = 2025/11/26 22:37
     __version__ = v.1.0.0
     __mail__ = gaoming971366@163.com
-    __blog__ = www.pygo2.top
+    __blog__ = www.pygo.space
     __project__ = fastslot-api
     __file_name__ = config.py
 
@@ -153,7 +153,7 @@ class APPProfile:
 # 作者
 _author_contact: Dict[str, str] = {
     "name": "Pygo2",
-    "url": "http://www.pygo2.top",
+    "url": "http://www.pygo.space",
     "email": "gaoming971366@163.com"
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

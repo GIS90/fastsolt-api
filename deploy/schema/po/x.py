@@ -11,7 +11,7 @@ base_info:
     __time__ = 2025/12/6 15:29
     __version__ = v.1.0.0
     __mail__ = gaoming971366@163.com
-    __blog__ = www.pygo2.top
+    __blog__ = www.pygo.space
     __project__ = fastslot-api
     __file_name__ = x.py
 
