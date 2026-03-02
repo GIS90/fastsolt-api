@@ -36,11 +36,12 @@ from sqlalchemy import select, update, delete, insert
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy import func
 
+from deploy.curd.base_curd import BaseCurd
 from deploy.schema.dao.xtb_sysuser import XtbSysUserModel
 from deploy.utils.exception import SQLDBHandleException
 
 
-class XtbSysUserBo:
+class XtbSysUserCurd(BaseCurd):
 
     @staticmethod
     async def new_model():
@@ -65,8 +66,8 @@ class XtbSysUserBo:
         except Exception as e:
             raise SQLDBHandleException(f"[{self.__class__.__name__}*查询One]{e}")
 
-    async def get_by_id(self, db: AsyncSession, user_id: int):
-        return await self._get_user_by_field(db, XtbSysUserModel.id, user_id)
+    async def get_by_id(self, db: AsyncSession, data_id: int):
+        return await self._get_user_by_field(db, XtbSysUserModel.id, data_id)
 
     async def get_by_rtx_id(self, db: AsyncSession, rtx_id: str):
         return await self._get_user_by_field(db, XtbSysUserModel.rtx_id, rtx_id)
