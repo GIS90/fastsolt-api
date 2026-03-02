@@ -27,6 +27,7 @@ colorama==0.4.6
 cryptography==44.0.3
 darabonba-core==1.0.4
 dnspython==2.8.0
+dotenv==0.9.9
 ecdsa==0.19.1
 email-validator==2.3.0
 et-xmlfile==2.0.0
