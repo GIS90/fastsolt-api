@@ -33,6 +33,7 @@ Life is short, I use python.
 
 ------------------------------------------------
 """
+from typing import Final
 import pyfiglet
 from deploy.utils.enumeration import (fontForeColor as ffc,
                                       fontBackColor as fbc)
@@ -47,8 +48,8 @@ __all__ = [
 
 
 # 显示的字符
-__STARTUP_ASCII : str= """Server Run"""
-__SHUTDOWN_ASCII : str= """Shutdown"""
+__STARTUP_ASCII : Final[str]= """Server Run"""
+__SHUTDOWN_ASCII : Final[str]= """Shutdown"""
 
 
 # 字体配置
