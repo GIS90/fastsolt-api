@@ -122,6 +122,16 @@ if __name__ == "__main__":
     asyncio.run(example_usage1())
     # asyncio.run(example_usage2())
 
+
+状态码说明：
+408     Request Timeout(请求超时)
+429	    Too Many Requests(请求过多)
+500	    Internal Server Error(服务器内部错误)
+502	    Bad Gateway(错误网关)
+503	    Service Unavailable(服务不可用)
+504	    Gateway Timeout(网关超时)
+
+
 design:
 
 reference urls:
@@ -165,7 +175,7 @@ class AsyncHTTPClientLib:
             timeout: 超时时间（秒）
             max_retries: 最大重试次数
             retry_delay: 重试延迟（秒）
-            retry_status_codes: 需要重试的HTTP状态码
+            retry_status_codes: 重试的HTTP状态码
             pool_limits: 连接池限制 {'max_connections': 100, 'max_keepalive_connections': 20}
             headers: 默认请求头
             cookies: 默认cookies
@@ -391,7 +401,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送GET请求"""
-        return await self.__request('GET', url, params=params, **kwargs)
+        return await self.__request('GET', url=url, params=params, **kwargs)
 
     async def post(
             self,
@@ -401,7 +411,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送POST请求"""
-        return await self.__request('POST', url, data=data, json_data=json_data, **kwargs)
+        return await self.__request('POST', url=url, data=data, json_data=json_data, **kwargs)
 
     async def put(
             self,
@@ -411,7 +421,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送PUT请求"""
-        return await self.__request('PUT', url, data=data, json_data=json_data, **kwargs)
+        return await self.__request('PUT', url=url, data=data, json_data=json_data, **kwargs)
 
     async def patch(
             self,
@@ -421,7 +431,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送PATCH请求"""
-        return await self.__request('PATCH', url, data=data, json_data=json_data, **kwargs)
+        return await self.__request('PATCH', url=url, data=data, json_data=json_data, **kwargs)
 
     async def delete(
             self,
@@ -429,7 +439,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送DELETE请求"""
-        return await self.__request('DELETE', url, **kwargs)
+        return await self.__request('DELETE', url=url, **kwargs)
 
     async def head(
             self,
@@ -437,7 +447,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送HEAD请求"""
-        return await self.__request('HEAD', url, **kwargs)
+        return await self.__request('HEAD', url=url, **kwargs)
 
     async def options(
             self,
@@ -445,7 +455,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> httpx.Response:
         """发送OPTIONS请求"""
-        return await self.__request('OPTIONS', url, **kwargs)
+        return await self.__request('OPTIONS', url=url, **kwargs)
 
     # 便捷方法：自动解析JSON
     async def get_json(
@@ -455,7 +465,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> Any:
         """发送GET请求并返回JSON响应"""
-        response = await self.get(url, params=params, **kwargs)
+        response = await self.get(url=url, params=params, **kwargs)
         return response.json()
 
     async def post_json(
@@ -465,7 +475,7 @@ class AsyncHTTPClientLib:
             **kwargs
     ) -> Any:
         """发送POST请求并返回JSON响应"""
-        response = await self.post(url, json_data=json_data, **kwargs)
+        response = await self.post(url=url, json_data=json_data, **kwargs)
         return response.json()
 
     # 批量请求
