@@ -96,10 +96,10 @@
 - token.py Token
 
 
-## 开发特定点
+> ## 开发特定点
 
 ### Excel合并与拆分
-> 文件：deploy/delib/excel_lib.py
+1、文件：deploy/delib/excel_lib.py
 
 在开发Excel功能上，使用了openpyxl、xlwt && xlrd，但是都一些小问题，如下：
 - openpyxl: 不支持.xls（老版本excel）
