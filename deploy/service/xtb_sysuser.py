@@ -38,7 +38,7 @@ from deploy.utils.status_value import (StatusCode as status_code,
                                        StatusMsg as status_msg)
 from deploy.utils.converter import model_converter_dict
 from deploy.schema.dto.xtb_sysuser import xtb_sysuser_list_fields, xtb_sysuser_detail_fields
-from deploy.utils.utils import get_now, random_string, md5
+from deploy.utils.utils import get_now, random_string, md5 as generator_md5
 
 
 class XtbSysUserService:
@@ -120,13 +120,13 @@ class XtbSysUserService:
         __password: str = random_string()
         __salt: str = random_string()
         # TODO 用户默认的头像、密码可以放在数据库中
-        new_user.md5_id = md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
+        new_user.md5_id = generator_md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
         new_user.avatar = self.DEFAULT_AVATAR
         new_user.status = False
         new_user.salt = __salt
         new_user.create_time = __now
         new_user.create_rtx = rtx_id
-        new_user.password = md5(v=f"{__password}{__salt}")
+        new_user.password = generator_md5(v=f"{__password}{__salt}")
         for k, v in model.items():
             setattr(new_user, k, v)
         await self.xtb_sysuser_curd.add(db=self.db, model=new_user)
