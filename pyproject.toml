@@ -9,6 +9,7 @@ dependencies = [
     "aiohttp==3.13.3",
     "aiomysql>=0.3.2",
     "fastapi==0.123.7",
+    "httpx>=0.28.1",
     "python-jose==3.5.0",
     "sqlalchemy[asyncio]>=2.0.44",
     "uvicorn>=0.38.0",
