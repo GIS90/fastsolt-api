@@ -17,7 +17,111 @@ base_info:
     __file_name__ = aiohttp_lib.py
 
 usage:
-    
+
+# 使用示例
+async def example_usage1():
+    # 创建客户端实例
+    async with AsyncHTTPClientLib(
+            base_url="https://jsonplaceholder.typicode.com",
+            timeout=10.0,
+            max_retries=2,
+            http2=True,
+            log=True
+    ) as client:
+        # 1. 简单的GET请求
+        response = await client.get("/posts/1")
+        print(f"GET响应: {response.status_code}")
+        print(response.json())
+
+        # 2. POST请求
+        new_post = {
+            "title": "测试文章",
+            "body": "这是文章内容",
+            "userId": 1
+        }
+        response = await client.post("/posts", json_data=new_post)
+        print(f"\nPOST响应: {response.status_code}")
+        print(response.json())
+
+        # 3. 带查询参数的GET请求
+        response = await client.get("/comments", params={"postId": 1})
+        comments = response.json()
+        print(f"\n评论数量: {len(comments)}")
+
+        # 4. 批量请求
+        requests = [
+            {"method": "GET", "url": "/posts/1"},
+            {"method": "GET", "url": "/posts/2"},
+            {"method": "GET", "url": "/posts/3"},
+        ]
+        responses = await client.batch_request(requests, max_concurrent=3)
+        print(f"\n批量请求完成，共 {len(responses)} 个响应")
+
+        # 5. 添加请求拦截器
+        async def log_request(request):
+            print(f"拦截到请求: {request.method} {request.url}")
+            return request
+
+        client.add_request_interceptor(log_request)
+
+        # 6. 添加响应拦截器
+        async def log_response(response):
+            print(f"拦截到响应: {response.status_code}")
+            return response
+
+        client.add_response_interceptor(log_response)
+
+        # 使用拦截器的请求
+        response = await client.get("/posts/4")
+        print(f"\n带拦截器的请求完成，状态码: {response.status_code}")
+
+
+# 高级用法示例：自定义重试策略和错误处理
+async def example_usage2():
+    # 自定义错误处理
+    async def error_handler(error, context):
+        print(f"自定义错误处理: {context['method']} {context['url']} - {str(error)}")
+        # 可以在这里发送告警、记录到数据库等
+
+    # 创建客户端
+    client = (AsyncHTTPClientLib(
+        base_url="https://api.example.com",
+        timeout=5.0,
+        max_retries=3,
+        retry_status_codes=[408, 429, 500, 502, 503, 504],
+        pool_limits={
+            'max_connections': 50,
+            'max_keepalive_connections': 10
+        },
+        headers={
+            'Authorization': 'Bearer your-token-here',
+            'X-Custom-Header': 'custom-value'
+        }
+    ))
+
+    client.add_error_handler(error_handler)
+
+    try:
+        # 发送请求
+        response = await client.get("/users/1")
+        if response.status_code == 200:
+            user_data = response.json()
+            print(f"用户数据: {user_data}")
+        else:
+            print(f"请求失败: {response.status_code}")
+
+    except Exception as e:
+        print(f"最终错误: {e}")
+
+    finally:
+        await client.close()
+
+
+# 运行示例
+if __name__ == "__main__":
+    asyncio.run(example_usage1())
+    # asyncio.run(example_usage2())
+
 design:
 
 reference urls:
@@ -163,7 +267,7 @@ class AsyncHTTPClientLib:
             except Exception as e:
                 if self.log: LOG.error(f"错误处理器执行失败: {e}")
 
-    def _build_url(self, url: str) -> str:
+    def __build_url(self, url: str) -> str:
         """构建完整URL"""
         if url.startswith(('http://', 'https://')):
             return url
@@ -194,7 +298,7 @@ class AsyncHTTPClientLib:
         Raises:
             Exception: 请求失败且超过重试次数
         """
-        full_url = self._build_url(url)
+        full_url = self.__build_url(url)
         retries = retries if retries is not None else self.max_retries
         delay = retry_delay if retry_delay is not None else self.retry_delay
 
@@ -216,7 +320,6 @@ class AsyncHTTPClientLib:
             request_kwargs['json'] = json_data
         elif data is not None:
             request_kwargs['data'] = data
-
         if timeout:
             request_kwargs['timeout'] = timeout
 
@@ -391,112 +494,3 @@ class AsyncHTTPClientLib:
 
         tasks = [_limited_request(req.copy()) for req in requests]
         return await asyncio.gather(*tasks, return_exceptions=True)
-
-
-# 使用示例
-async def example_usage1():
-    """示例：展示如何使用AsyncHTTPClient"""
-
-    # 创建客户端实例
-    async with AsyncHTTPClientLib(
-            base_url="https://jsonplaceholder.typicode.com",
-            timeout=10.0,
-            max_retries=2,
-            http2=True,
-            log=False
-    ) as client:
-        # 1. 简单的GET请求
-        response = await client.get("/posts/1")
-        print(f"GET响应: {response.status_code}")
-        print(response.json())
-
-        # 2. POST请求
-        new_post = {
-            "title": "测试文章",
-            "body": "这是文章内容",
-            "userId": 1
-        }
-        response = await client.post("/posts", json_data=new_post)
-        print(f"\nPOST响应: {response.status_code}")
-        print(response.json())
-
-        # 3. 带查询参数的GET请求
-        response = await client.get("/comments", params={"postId": 1})
-        comments = response.json()
-        print(f"\n评论数量: {len(comments)}")
-
-        # 4. 批量请求
-        requests = [
-            {"method": "GET", "url": "/posts/1"},
-            {"method": "GET", "url": "/posts/2"},
-            {"method": "GET", "url": "/posts/3"},
-        ]
-        responses = await client.batch_request(requests, max_concurrent=3)
-        print(f"\n批量请求完成，共 {len(responses)} 个响应")
-
-        # 5. 添加请求拦截器
-        async def log_request(request):
-            print(f"拦截到请求: {request.method} {request.url}")
-            return request
-
-        client.add_request_interceptor(log_request)
-
-        # 6. 添加响应拦截器
-        async def log_response(response):
-            print(f"拦截到响应: {response.status_code}")
-            return response
-
-        client.add_response_interceptor(log_response)
-
-        # 使用拦截器的请求
-        response = await client.get("/posts/4")
-        print(f"\n带拦截器的请求完成，状态码: {response.status_code}")
-
-
-# 高级用法示例：自定义重试策略和错误处理
-async def example_usage2():
-    """高级用法示例"""
-
-    # 自定义错误处理
-    async def error_handler(error, context):
-        print(f"自定义错误处理: {context['method']} {context['url']} - {str(error)}")
-        # 可以在这里发送告警、记录到数据库等
-
-    # 创建客户端
-    client = AsyncHTTPClientLib(
-        base_url="https://api.example.com",
-        timeout=5.0,
-        max_retries=3,
-        retry_status_codes=[408, 429, 500, 502, 503, 504],
-        pool_limits={
-            'max_connections': 50,
-            'max_keepalive_connections': 10
-        },
-        headers={
-            'Authorization': 'Bearer your-token-here',
-            'X-Custom-Header': 'custom-value'
-        }
-    )
-
-    client.add_error_handler(error_handler)
-
-    try:
-        # 发送请求
-        response = await client.get("/users/1")
-        if response.status_code == 200:
-            user_data = response.json()
-            print(f"用户数据: {user_data}")
-        else:
-            print(f"请求失败: {response.status_code}")
-
-    except Exception as e:
-        print(f"最终错误: {e}")
-
-    finally:
-        await client.close()
-
-
-# 运行示例
-if __name__ == "__main__":
-    asyncio.run(example_usage1())
-    # asyncio.run(example_usage2())
