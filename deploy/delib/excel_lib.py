@@ -51,36 +51,36 @@ from deploy.config import store_cache
 from deploy.utils.status_value import StatusMsg as status_msg
 
 
-_STORE_CACHE = store_cache
+_STORE_CACHE: str = store_cache
 # Excel拆分枚举
-EXCEL_SPLIT_STORE = ['1', '2']
+EXCEL_SPLIT_STORE: List = ['1', '2']
 # 行列
-EXCEL_NUM = ['1', '2']
+EXCEL_NUM: List = ['1', '2']
 # bool枚举
-BOOL = ['0', '1']
+BOOL: List = ['0', '1']
 
 
 class ExcelLib:
 
-    DEFAULT_PREFIX = '.xlsx'
-    DEFAULT_OLD_V_PREFIX = '.xls'
-    DEFAULT_NEW_V_PREFIX = '.xlsx'
-    DEFAULT_SHEET_NAME = 'Sheet1'
-    DEFAULT_ZIP_PREFIX = '.zip'
-    DEFAULT_AUTO_ID = '9999'
+    DEFAULT_PREFIX: str = '.xlsx'
+    DEFAULT_OLD_V_PREFIX: str = '.xls'
+    DEFAULT_NEW_V_PREFIX: str = '.xlsx'
+    DEFAULT_SHEET_NAME: str = 'Sheet1'
+    DEFAULT_ZIP_PREFIX: str = '.zip'
+    DEFAULT_AUTO_ID: str = '9999'
 
     def __init__(self, blank=0) -> None:
         """
         :param blank: blank row number, default is 0
         """
-        self.prefix_list = ['.xlsx', '.xls']
-        self.prefix_zip_list = ['.zip']
-        self.blank = 0  # 0行
+        self.prefix_list: List = ['.xlsx', '.xls']
+        self.prefix_zip_list: List = ['.zip']
+        self.blank: int = 0  # 0行
 
-    def __str__(self):
-        return "ExcelLib Class."
+    def __str__(self) -> str:
+        return "ExcelLib Class: use to excel operations."
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     @staticmethod

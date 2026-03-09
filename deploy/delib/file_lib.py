@@ -42,9 +42,10 @@ from deploy.utils.utils import filename2md5, \
 from deploy.config import store_cache
 from deploy.utils.status_value import StatusMsg as status_msg, StatusEnum as status_enum
 from deploy.utils.enumeration import FileTypeEnum
+from deploy.utils.logger import logger as LOG
 
 
-_STORE_CACHE = store_cache
+_STORE_CACHE: str = store_cache
 
 
 class FileLib:
@@ -100,10 +101,10 @@ class FileLib:
         """
         self.default_doc_prefix: str = '.docx'
         self.cpu_count: int = self._get_cpu_count()
-        self.default_store_cache = _STORE_CACHE
+        self.default_store_cache: str = _STORE_CACHE
 
     def __str__(self) -> str:
-        return "FileLib Class."
+        return f"[FileLib] Class: cpu count{self.cpu_count}"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -148,7 +149,7 @@ class FileLib:
 
         return True if (os.path.splitext(filename)[1]).lower() in allow_suffix else False
 
-    def store_file(self, file, is_md5_store_name: bool = False, compress: bool = False):
+    def store_file(self, file, is_md5_store_name: bool = False, compress: bool = False) -> Dict:
         """
         file lib class main function, to store file at local
 
@@ -206,7 +207,9 @@ class FileLib:
                 data = _data
             )
         except Exception as error:
-            return self.visual_value(code=456, message=f"文件本地存储失败：{error}")
+            _message: str = f"[FileLib]文件本地存储失败：{error}"
+            LOG.error(_message)
+            return self.visual_value(code=456, message=_message)
 
     def _pdf2word(self, cmd5: str,
                   pdf_file: str, word_name: str,

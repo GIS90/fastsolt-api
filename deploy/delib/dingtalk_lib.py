@@ -55,8 +55,8 @@ from alibabacloud_tea_util import models as util_models
 # from alibabacloud_tea_util.client import Client as UtilClient
 
 
-_DINGTALK_BASE_URL = ding_base
-_DINGTALK_TOKEN_API_URL = ding_token_api
+_DINGTALK_BASE_URL: str = ding_base
+_DINGTALK_TOKEN_API_URL: str = ding_token_api
 
 
 class DingtalkLib:

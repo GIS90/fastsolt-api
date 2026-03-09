@@ -35,6 +35,8 @@ import redis
 from typing import Optional
 from contextlib import contextmanager
 
+from deploy.utils.logger import logger as LOG
+
 
 class RedisClientLib:
     """
@@ -80,7 +82,7 @@ class RedisClientLib:
                     decode_responses=self.decode_responses
                 )
             except redis.RedisError as e:
-                print(f"RedisClientLib create connect failed: {e}")
+                LOG.error(f"[RedisClientLib] create connect failed: {e}")
 
         return self._connection
 
@@ -95,7 +97,7 @@ class RedisClientLib:
             yield self.connection
         finally:
             # 如果需要，可以在这里进行清理工作，不过对于 Redis 连接通常不需要
-            pass
+            self.close()
 
     def set_key(self, key, value, ex=None, px=None, nx=False, xx=False):
         """Set the value at key ``name`` to ``value``"""

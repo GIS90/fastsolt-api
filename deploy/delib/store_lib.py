@@ -31,7 +31,7 @@ base_info:
 
 usage:
      if __name__ == '__main__':
-        image_store = StoreLib(space_url=STORE_BASE_URL, space_name=STORE_SPACE_NAME)
+        image_store = QiNiuStoreLib(space_url=STORE_BASE_URL, space_name=STORE_SPACE_NAME)
         # 上传本地文件/图片
         result = image_store.upload(store_name='pygp2域名.jpg', local_file='/Users/gaomingliang/Pictures/_pygo2.top.certificate.jpg')
         print(result)
@@ -83,7 +83,9 @@ from typing import Dict, Optional, List
 from qiniu import Auth, put_file, BucketManager
 from deploy.config import store_yun_access, store_yun_secret, store_yun_base, store_yun_space
 from datetime import datetime
+
 from deploy.utils.status_value import StatusMsg as status_msg, StatusEnum as status_enum
+from deploy.utils.logger import logger as LOG
 
 
 _YUN_ACCESS_KEY = store_yun_access
@@ -92,12 +94,12 @@ _YUN_BASE = store_yun_base      # 配置默认值
 _YUN_SPACE = store_yun_space
 
 
-class StoreLib:
+class QiNiuStoreLib:
     """
     单密钥
     多空间
     """
-    def __init__(self, space_url: Optional[str], space_name: Optional[str]):
+    def __init__(self, space_url: Optional[str], space_name: Optional[str]) -> None:
         self.access_key: str = _YUN_ACCESS_KEY
         self.secret_key: str = _YUN_SECRET_KEY
         self.space_url: str = space_url or _YUN_BASE
@@ -105,10 +107,10 @@ class StoreLib:
         self.conn = self.__init_auth() or False
         self.manager = self.__init_bucket_manager() or False
 
-    def __str__(self):
-        return f"StoreLib Class: [Space-url: {self.space_url}] [Space-name: {self.space_name}]"
+    def __str__(self) -> str:
+        return f"QiNiuStoreLib Class: [Space-url: {self.space_url}] [Space-name: {self.space_name}]"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     @staticmethod
@@ -197,7 +199,7 @@ class StoreLib:
         version：断点续传的默认方法，默认为v2版本
         timeout：token存在时间，以秒为单位，默认3600s（1h）
 
-        存储对象名称：带上目录/，qiniu存储的对象会自动创建对应目录
+        存储对象名称：带上目录/，Qiniu存储的对象会自动创建对应目录
         """
         if not store_name:
             store_name = self.generate_new_store_name(v=self.get_now())
@@ -230,8 +232,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]上传文件失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]上传文件异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]上传文件异常：%s' % str(error), {})
+                902, _message, {})
 
     def scrapy(self, space_name: str = None, store_name: str = None, remote_url: str = None) -> Dict:
         """
@@ -265,8 +269,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]上传网络文件失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]上传网络文件异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]上传网络文件异常：%s' % error, {})
+                902, _message, {})
 
     def open_download_url(self, space_url: str = None, store_name: str = None) -> Optional[str]:
         bucket_url = space_url if space_url \
@@ -298,8 +304,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]公开空间下载文件失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]公开空间下载文件异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]公开空间下载文件异常：%s' % str(error), {})
+                902, _message, {})
 
     def private_download(self, space_url: str = None, store_name: str = None, timeout: int = 120) -> Dict:
         """
@@ -329,8 +337,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]私有空间下载文件失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]私有空间下载文件异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]私有空间下载文件异常：%s' % error, {})
+                902, _message, {})
 
     def delete(self, space_name: str = None, store_name: str = None) -> Dict:
         """
@@ -355,8 +365,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]删除文件失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]删除文件异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]删除文件异常：%s' % str(error), {})
+                902, _message, {})
 
     def get_file_info(self, space_name: str = None, store_name: str = None) -> Dict:
         """
@@ -382,8 +394,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]获取文件信息失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]获取文件信息异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]获取文件信息异常：%s' % str(error), {})
+                902, _message, {})
 
     def move(self, src_space_name: str = None, src_store_name: str = None,
              tar_space_name: str = None, tar_store_name: str = None,
@@ -421,8 +435,10 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]对象移动失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]对象移动异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]对象移动异常：%s' % str(error), {})
+                902, _message, {})
 
     def copy(self, src_space_name: str = None, src_store_name: str = None,
              tar_space_name: str = None, tar_store_name: str = None) -> Dict:
@@ -459,6 +475,8 @@ class StoreLib:
                 return self.visual_value(
                     902, '[七牛云存储]对象复制失败：%s' % str(response.error), {})
         except Exception as error:
+            _message: str = '[七牛云存储]对象复制异常：%s' % str(error)
+            LOG.error(_message)
             return self.visual_value(
-                902, '[七牛云存储]对象复制异常：%s' % str(error), {})
+                902, _message, {})
 

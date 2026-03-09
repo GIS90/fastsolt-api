@@ -38,6 +38,7 @@ from deploy.utils.utils import filename2md5, \
     get_now, mk_dirs
 from deploy.config import store_cache, image_quality, image_width
 from deploy.utils.status_value import StatusMsg as status_msg, StatusEnum as status_enum
+from deploy.utils.logger import logger as LOG
 
 
 _STORE_CACHE: str = store_cache
@@ -47,7 +48,7 @@ _IMAGE_WIDTH: int = image_width or 700
 
 class ImageLib:
 
-    ALLOWED_EXTENSIONS = [
+    ALLOWED_EXTENSIONS: List = [
             '.png',
             '.jpg',
             '.bmp',
@@ -62,12 +63,12 @@ class ImageLib:
         初始化参数
         暂无实例化参数，都从配置文件中进行获取
         """
-        self.cache = _STORE_CACHE
-        self.quality = quality
-        self.width = width
+        self.cache: str = _STORE_CACHE
+        self.quality: int = quality
+        self.width: int = width
 
     def __str__(self) -> str:
-        return f"ImageLib Class: quality[{self.quality}] width[{self.width}]"
+        return f"[ImageLib] Class: quality[{self.quality}] width[{self.width}]"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -148,7 +149,9 @@ class ImageLib:
                     data={'name': store_name_md5, 'file': os.path.join(real_store_dir, store_name_md5)}
                    )
         except Exception as error:
-            return self.visual_value(456, '图片存储失败：%s' % str(error))
+            _message: str = '[ImageLib]图片存储失败：%s' % str(error)
+            LOG.error(_message)
+            return self.visual_value(456, _message, {})
 
     def update_size(self, image_file: str, length: int = 280, width: int = 280) -> Dict:
         """
@@ -172,6 +175,7 @@ class ImageLib:
                 message=status_enum.SUCCESS.value,
                 data={'md5': out_file_md5, 'name': out_file_name})
         except Exception as error:
-            return self.visual_value(
-                999, '图片更新大小失败：%s' % str(error))
+            _message: str = '[ImageLib]图片更新大小失败：%s' % str(error)
+            LOG.error(_message)
+            return self.visual_value(999, _message, {})
 

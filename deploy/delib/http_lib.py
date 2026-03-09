@@ -61,7 +61,7 @@ class HttpLibApi:
         self.timeout: int = timeout
 
     def __str__(self) -> str:
-        return "HttpLibApi Class."
+        return f"[HttpLibApi] Class: base on requests, synchronization method."
 
     def __repr__(self) -> str:
         return self.__str__()

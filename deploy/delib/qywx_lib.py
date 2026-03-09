@@ -18,13 +18,13 @@ base_info:
     __file_name__ = qywx_lib.py
 
 usage:
- qywx_lib = QYWXLib(corp_id=企业号标识, secret=管理组凭证密钥, agent_id=机器人应用ID)
-    qywx_lib.send_to_user_by_markdown(to_user, message)
+qywx_lib = QYWXMessageLib(corp_id=企业号标识, secret=管理组凭证密钥, agent_id=机器人应用ID)
+qywx_lib.send_to_user_by_markdown(to_user, message)
 
-    初始化必须的参数：
-        - corp_id: 企业号标识
-        - secret: 管理组凭证密钥
-        - agent_id: 机器人应用ID
+初始化必须的参数：
+    - corp_id: 企业号标识
+    - secret: 管理组凭证密钥
+    - agent_id: 机器人应用ID
 
 design:
     运用requests模拟API请求，这里主要实现了2大请求：
@@ -109,9 +109,9 @@ QYWX_TEMP_UPLOAD: str = qywx_upload_api
 QYWX_TEMP_GET: str = qywx_temp_api
 
 
-class QYWXLib:
+class QYWXMessageLib:
 
-    types = [
+    types: List = [
         'text',         # 文本
         'image',        # 图片消息
         'voice',        # 语音消息
@@ -129,7 +129,7 @@ class QYWXLib:
         'template_card@multiple_interaction',     # 模板卡片消息 > 多项选择型
     ]
 
-    safe_kwagrs_types = [
+    safe_kwagrs_types: List = [
         'text',   # 文本
         'image',  # 图片消息
         'video',  # 视频消息
@@ -137,7 +137,7 @@ class QYWXLib:
         'mpnews'  # 图文消息
     ]
 
-    enable_id_trans_kwagrs_types = [
+    enable_id_trans_kwagrs_types: List = [
         'text',         # 文本
         'textcard',     # 文本卡片消息
         'news',         # 图文消息
@@ -150,19 +150,19 @@ class QYWXLib:
         'template_card@multiple_interaction',     # 模板卡片消息 > 多项选择型
     ]
 
-    content_types = [
+    content_types: List = [
         'text',  # 文本
         'markdown'  # markdown消息
     ]
 
-    temp_upload_types = [
+    temp_upload_types: List = [
         'image',     # 图片
         'voice',     # 语音
         'video',     # 视频
         'file',      # 普通文件
     ]
 
-    temp_upload_types_verify = {
+    temp_upload_types_verify: Dict = {
         'image': {
             'suffix': ['.jpg', '.jpeg', '.png'],
             'size': 10 * 1024 * 1024
@@ -203,7 +203,7 @@ class QYWXLib:
         self.token: str = self.__init_token()   # 每次实例化调用初始化access token
 
     def __str__(self) -> str:
-        return f"QYWXLib Class: [corp_id: {self.CORP_ID}, agent_id: {self.AGENT_ID}]"
+        return f"[QYWXMessageLib] Class: corp_id: {self.CORP_ID}, agent_id: {self.AGENT_ID}"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -321,17 +321,17 @@ class QYWXLib:
         """ --------------------- parameters check --------------------- """
         if not self.token:
             return FailureStatus(
-                903, '[企业微信]TOKEN初始化失败', {}).json()
+                903, '[QYWXMessageLib]TOKEN初始化失败', {}).json()
 
         if not any([to_user, to_party, to_tag]):
             return FailureStatus(
-                400, '[企业微信]缺少接收用户/部门列表', {}).json()
+                400, '[QYWXMessageLib]缺少接收用户/部门列表', {}).json()
         if not content:
             return FailureStatus(
-                400, '[企业微信]缺少消息内容', {}).json()
+                400, '[QYWXMessageLib]缺少消息内容', {}).json()
         if stype not in self.types:
             return FailureStatus(
-                404, '[企业微信]消息类型错误', {}).json()
+                404, '[QYWXMessageLib]消息类型错误', {}).json()
         """ ================== 默认参数 ================== """
         # 表示是否是保密消息，0表示可对外分享，1表示不能分享且内容显示水印，2表示仅限在企业内分享，默认为0；注意仅mpnews类型的消息支持safe值为2，其他消息类型不支持
         safe = 0         # 默认值
@@ -339,33 +339,33 @@ class QYWXLib:
             safe = kwargs.get('safe')
             if safe not in (0, 1):
                 return FailureStatus(
-                    404, '[企业微信]safe参数值不合法，只允许0或者1', {}).json()
+                    404, '[QYWXMessageLib]safe参数值不合法，只允许0或者1', {}).json()
         # 表示是否开启id转译，0表示否，1表示是，默认0。仅第三方应用需要用到，企业自建应用可以忽略
         enable_id_trans = 0  # 默认值
         if kwargs.get('enable_id_trans'):
             enable_id_trans = kwargs.get('enable_id_trans')
             if enable_id_trans not in (0, 1):
                 return FailureStatus(
-                    404, '[企业微信]enable_id_trans参数值不合法，只允许0或者1', {}).json()
+                    404, '[QYWXMessageLib]enable_id_trans参数值不合法，只允许0或者1', {}).json()
         # 表示是否开启重复消息检查，0表示否，1表示是，默认0
         enable_duplicate_check = 0  # 默认值
         if kwargs.get('enable_duplicate_check'):
             enable_duplicate_check = kwargs.get('enable_duplicate_check')
             if enable_duplicate_check not in (0, 1):
                 return FailureStatus(
-                    404, '[企业微信]enable_duplicate_check参数值不合法，只允许0或者1', {}).json()
+                    404, '[QYWXMessageLib]enable_duplicate_check参数值不合法，只允许0或者1', {}).json()
         # 表示是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
         duplicate_check_interval = 1800  # 默认值
         if kwargs.get('duplicate_check_interval'):
             duplicate_check_interval = kwargs.get('duplicate_check_interval')
             if duplicate_check_interval < 1 or duplicate_check_interval > 4 * 60 * 60:
                 return FailureStatus(
-                    404, '[企业微信]duplicate_check_interval参数值不合法，只允许1秒至4小时之间', {}).json()
+                    404, '[QYWXMessageLib]duplicate_check_interval参数值不合法，只允许1秒至4小时之间', {}).json()
         # 参数 >>>>> 基础data对象参数
         format_content = self.format_content(ftype=stype, content=content)
         if not format_content:
             return FailureStatus(
-                404, '[企业微信]格式化的消息体为空', {}).json()
+                404, '[QYWXMessageLib]格式化的消息体为空', {}).json()
         # 发送的数据
         data = {
             "agentid": self.AGENT_ID,
@@ -403,8 +403,8 @@ class QYWXLib:
                 return FailureStatus(
                     902, response.get('errmsg'), response).json()
         except Exception as error:
-            LOG.error("[QYWXLib]send message occur exception：%s" % error)
-            return FailureStatus(902, "[企业微信]发送消息异常，请稍后重试", {}).json()
+            LOG.error("[QYWXMessageLib]send message occur exception：%s" % error)
+            return FailureStatus(902, "[QYWXMessageLib]发送消息异常，请稍后重试", {}).json()
 
     def sendback(self, message_id: str) -> Status:
         """
@@ -423,10 +423,10 @@ class QYWXLib:
         """ --------------------- parameters check --------------------- """
         if not self.token:
             return FailureStatus(
-                903, '[企业微信]TOKEN初始化失败', {}).json()
+                903, '[QYWXMessageLib]TOKEN初始化失败', {}).json()
         if not message_id:
             return FailureStatus(
-                400, '[企业微信]缺少message_id参数', {}).json()
+                400, '[QYWXMessageLib]缺少message_id参数', {}).json()
 
         # 发送的数据
         data = {
@@ -445,8 +445,8 @@ class QYWXLib:
                 return FailureStatus(
                     902, response.get('errmsg'), response).json()
         except Exception as error:
-            LOG.error("[QYWXLib]sendback message occur exception：%s" % error)
-            return FailureStatus(902, "[企业微信]撤回消息异常，请稍后重试", {}).json()
+            LOG.error("[QYWXMessageLib]sendback message occur exception：%s" % error)
+            return FailureStatus(902, "[QYWXMessageLib]撤回消息异常，请稍后重试", {}).json()
 
     def _verify_temp_upload_file(self, upload_type: str, upload_name: str, upload_file: str):
         """
@@ -510,18 +510,18 @@ class QYWXLib:
         """ --------------------- parameters check --------------------- """
         if not self.token:
             return FailureStatus(
-                903, '[企业微信]TOKEN初始化失败', {}).json()
+                903, '[QYWXMessageLib]TOKEN初始化失败', {}).json()
         if not upload_type:
             return FailureStatus(
-                400,  '[企业微信]缺少upload_type参数', {}).json()
+                400,  '[QYWXMessageLib]缺少upload_type参数', {}).json()
         if upload_type not in self.temp_upload_types:
             return FailureStatus(
-                404,  '[企业微信]upload_type参数不支持请求类型', {}).json()
+                404,  '[QYWXMessageLib]upload_type参数不支持请求类型', {}).json()
         if not upload_file \
                 or not os.path.exists(upload_file) \
                 or not os.path.isfile(upload_file):
             return FailureStatus(
-                450, '[企业微信]缺少上传文件', {}).json()
+                450, '[QYWXMessageLib]缺少上传文件', {}).json()
         # 无传入文件名称，自动获取上传文件的文件名称
         if not upload_name:
             upload_name = os.path.split(upload_file)[-1]
@@ -557,6 +557,6 @@ class QYWXLib:
                 return Status(
                     902, response.get('errmsg'), response).json()
         except Exception as error:
-            LOG.error("[QYWXLib]temp upload message occur exception：%s" % error)
-            return FailureStatus(902, "[企业微信]文件上传异常，请稍后重试", {}).json()
+            LOG.error("[QYWXMessageLib]temp upload message occur exception：%s" % error)
+            return FailureStatus(902, "[QYWXMessageLib]文件上传异常，请稍后重试", {}).json()
 
