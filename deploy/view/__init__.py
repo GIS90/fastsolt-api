@@ -42,7 +42,7 @@ from deploy.view.depend import router as depend_router
 from deploy.view.upload import router as upload_router
 from deploy.view.error import router as error_router
 
-from deploy.view.xtb_sysuser import router as xtb_sysuser_router
+from deploy.view.xtb_user import router as xtb_user_router
 
 
 """
@@ -79,5 +79,5 @@ add_routers = [
     error_router,
     api_router,
     access_router,
-    xtb_sysuser_router,
+    xtb_user_router,
 ]

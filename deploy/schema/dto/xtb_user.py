@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    xtb_sysuser
+    xtb_user parameters
 
 base_info:
     __author__ = PyGo
@@ -51,7 +51,7 @@ Life is short, I use python.
 from deploy.utils.enumeration import FieldTypeEnum as ft
 
 
-xtb_sysuser_list_fields = [
+xtb_user_list_fields = [
     {"key": "id", "type": ft.INT, "name": "id"},
     {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
     {"key": "md5_id", "type": ft.STR, "name": "md5Id"},
@@ -69,7 +69,7 @@ xtb_sysuser_list_fields = [
 ]
 
 
-xtb_sysuser_detail_fields = [
+xtb_user_detail_fields = [
     {"key": "id"},
     {"key": "rtx_id", "type": ft.STR, "name": "rtxId"},
     {"key": "name"},

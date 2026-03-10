@@ -43,14 +43,14 @@ from deploy.config import redis_host, redis_port, redis_db, redis_password, jwt_
 from deploy.utils.token import encode_access_token
 from deploy.delib.redis_lib import RedisClientLib
 from deploy.utils.depend import __get_token_rtx
-from deploy.service.xtb_sysuser import XtbSysUserService
+from deploy.service.xtb_user import XtbUserService
 
 
 # view
 router = APIRouter(prefix="/access", tags=["系统登录、退出"])
 # service
-def get_xtb_sysuser_service(db: AsyncSession = Depends(get_session)):
-    return XtbSysUserService(db_connection=db)
+def get_xtb_user_service(db: AsyncSession = Depends(get_session)):
+    return XtbUserService(db_connection=db)
 # redis-cli
 redis_cli = RedisClientLib(host=redis_host, port=redis_port, db=redis_db, password=redis_password)
 __JWT_TOKEN_EXPIRE_MINUTES = jwt_expire
@@ -70,11 +70,11 @@ APIs：
 async def login(
         body_data: O2LUserLogin,
         request: Request,
-        xtb_sysuser_service: XtbSysUserService = Depends(get_xtb_sysuser_service)
+        xtb_user_service: XtbUserService = Depends(get_xtb_user_service)
 ) -> Status:
     """
     [ACCESS]Login登录
-    :param xtb_sysuser_service: service
+    :param xtb_user_service: service
     :param body_data: [dict]查询请求参数
     :param request: Request
     :return: JSONResponse
@@ -91,7 +91,7 @@ async def login(
     # 用户信息核对
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     username = username.strip()     # 去空格
-    user: Dict = await xtb_sysuser_service.get_login_by_rtx_id(rtx_id=username)
+    user: Dict = await xtb_user_service.get_login_by_rtx_id(rtx_id=username)
     # >>> 不用不存在
     if not user:
         return FailureStatus(

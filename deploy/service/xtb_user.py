@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    xtb_sysuser service
+    xtb_user service
 
 base_info:
     __author__ = PyGo
@@ -32,28 +32,28 @@ Life is short, I use python.
 """
 from typing import Dict, List, Tuple, Literal, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from deploy.curd.xtb_sysuser import XtbSysUserCurd
+from deploy.curd.xtb_user import XtbUserCurd
 from deploy.utils.status import Status, SuccessStatus, FailureStatus
 from deploy.utils.status_value import (StatusCode as status_code,
                                        StatusMsg as status_msg)
 from deploy.utils.converter import model_converter_dict
-from deploy.schema.dto.xtb_sysuser import xtb_sysuser_list_fields, xtb_sysuser_detail_fields
+from deploy.schema.dto.xtb_user import xtb_user_list_fields, xtb_user_detail_fields
 from deploy.utils.utils import get_now, random_string, md5 as generator_md5
 
 
-class XtbSysUserService:
+class XtbUserService:
 
     DEFAULT_AVATAR = "http://pygo2.top/images/article_github.jpg"
 
     def __init__(self, db_connection: AsyncSession):
         """
-        XtbSysUserService class initialize
+        XtbUserService class initialize
         """
         self.db: AsyncSession = db_connection
-        self.xtb_sysuser_curd = XtbSysUserCurd()
+        self.xtb_user_curd = XtbUserCurd()
 
     def __str__(self):
-        print("XtbSysUserService class.")
+        print("XtbUserService class.")
 
     def __repr__(self):
         self.__str__()
@@ -70,18 +70,18 @@ class XtbSysUserService:
                 code=status_code.CODE_400_REQUEST_PARAMETER_MISS,
                 message="缺少md5参数" if user_type == "md5" else "缺少rtx参数")
 
-        user = await self.xtb_sysuser_curd.get_by_md5_id(db=self.db, md5_id=user_id) if user_type == "md5" \
-            else await self.xtb_sysuser_curd.get_by_rtx_id(db=self.db, rtx_id=user_id)
+        user = await self.xtb_user_curd.get_by_md5_id(db=self.db, md5_id=user_id) if user_type == "md5" \
+            else await self.xtb_user_curd.get_by_rtx_id(db=self.db, rtx_id=user_id)
         if not user:
             return False, FailureStatus(code=status_code.CODE_501_DATA_NOT_EXIST)
         if status_check and getattr(user, "status", None):
             return False, FailureStatus(code=status_code.CODE_503_DATA_DELETE_NOT_EDIT)
 
         return (True, user if response_type == "model"
-                        else await model_converter_dict(model=user, fields=xtb_sysuser_detail_fields, default_value="****"))
+                        else await model_converter_dict(model=user, fields=xtb_user_detail_fields, default_value="****"))
 
     async def user_list(self, rtx_id: str, params: Dict) -> Status:
-        users = await self.xtb_sysuser_curd.get_pagination(
+        users = await self.xtb_user_curd.get_pagination(
             db=self.db,
             offset=params.get("offset"),
             limit=params.get("limit")
@@ -93,12 +93,12 @@ class XtbSysUserService:
         data.extend(
             filter(
                 lambda x: x is not None and x is not {},
-                [await model_converter_dict(model=u, fields=xtb_sysuser_list_fields) for u in users if u]
+                [await model_converter_dict(model=u, fields=xtb_user_list_fields) for u in users if u]
             )
         )
         result: Dict = {
             "list": data,
-            "total": await self.xtb_sysuser_curd.get_count(self.db)
+            "total": await self.xtb_user_curd.get_count(self.db)
         }
         return SuccessStatus(data=result)
 
@@ -115,7 +115,7 @@ class XtbSysUserService:
         return SuccessStatus(data=data) if __flag else data
 
     async def user_add(self, rtx_id: str, model: Dict) -> Status:
-        new_user = await self.xtb_sysuser_curd.new_model()
+        new_user = await self.xtb_user_curd.new_model()
         __now = get_now()
         __password: str = random_string()
         __salt: str = random_string()
@@ -129,7 +129,7 @@ class XtbSysUserService:
         new_user.password = generator_md5(v=f"{__password}{__salt}")
         for k, v in model.items():
             setattr(new_user, k, v)
-        await self.xtb_sysuser_curd.add(db=self.db, model=new_user)
+        await self.xtb_user_curd.add(db=self.db, model=new_user)
         return SuccessStatus(data={"password": __password})
 
     async def user_update(self, rtx_id: str, model: Dict) -> Status:
@@ -146,7 +146,7 @@ class XtbSysUserService:
         model["update_time"] = get_now()
         for k, v in model.items():
             setattr(data, k, v)
-        await self.xtb_sysuser_curd.update(db=self.db, model=data)
+        await self.xtb_user_curd.update(db=self.db, model=data)
         return SuccessStatus()
 
     async def user_delete_hard(self, rtx_id: str, md5_id: str) -> Status:
@@ -155,7 +155,7 @@ class XtbSysUserService:
         )
         if not __flag: return data
 
-        await self.xtb_sysuser_curd.delete(db=self.db, model=data)
+        await self.xtb_user_curd.delete(db=self.db, model=data)
         return SuccessStatus()
 
 
@@ -168,14 +168,14 @@ class XtbSysUserService:
         setattr(data, "status", True)
         setattr(data, "delete_rtx", rtx_id)
         setattr(data, "delete_time", get_now())
-        await self.xtb_sysuser_curd.update(db=self.db, model=data)
+        await self.xtb_user_curd.update(db=self.db, model=data)
         return SuccessStatus()
 
     async def user_batch_delete_hard(self, rtx_id: str, md5_id: List) -> Status:
-        await self.xtb_sysuser_curd.batch_delete(db=self.db, md5_id=md5_id)
+        await self.xtb_user_curd.batch_delete(db=self.db, md5_id=md5_id)
         return SuccessStatus()
 
 
     async def user_batch_delete_soft(self, rtx_id: str, md5_id: List) -> Status:
-        await self.xtb_sysuser_curd.batch_soft_delete_update(db=self.db, md5_id=md5_id, rtx_id=rtx_id)
+        await self.xtb_user_curd.batch_soft_delete_update(db=self.db, md5_id=md5_id, rtx_id=rtx_id)
         return SuccessStatus()

@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    common field
+    common field of base model
 
 base_info:
     __author__ = PyGo
@@ -43,7 +43,7 @@ from sqlalchemy import (
 
 
 class RtxIdField:
-    rtx_id: Mapped[str] = mapped_column(String(35), name="rtx_id", nullable=False, comment="用户RTX-ID唯一标识")
+    rtx_id: Mapped[str] = mapped_column(String(35), name="rtx_id", nullable=False, comment="RTX-ID唯一标识，有英文+数字组成")
 
 
 class Md5Field:
@@ -51,12 +51,12 @@ class Md5Field:
 
 
 class CUDField:
+    create_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="create_rtx", nullable=False, comment="创建用户RTX-ID")
     create_time: Mapped[datetime] = mapped_column(DateTime(), name="create_time", nullable=False, comment="创建时间")
-    create_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="create_rtx", nullable=False, comment="创建用户")
+    update_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="update_rtx", comment="更新用户RTX-ID")
     update_time: Mapped[Optional[datetime]] = mapped_column(DateTime(), name="update_time", comment="更新时间")
-    update_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="update_rtx", comment="更新用户")
+    delete_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="delete_rtx", comment="删除用户RTX-ID")
     delete_time: Mapped[Optional[datetime]] = mapped_column(DateTime(), name="delete_time", comment="删除时间")
-    delete_rtx: Mapped[Optional[str]] = mapped_column(String(35), name="delete_rtx", comment="删除用户")
 
 
 class StatusField:
