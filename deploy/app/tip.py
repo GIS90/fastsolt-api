@@ -68,6 +68,8 @@ def __print_colored_ascii_art(text: str, color: str) -> None:
     返回值:
         None: 该函数不返回任何值，仅执行打印操作
     """
+    if not text: return 
+
     try:
         ascii_art = pyfiglet.figlet_format(
             text,
