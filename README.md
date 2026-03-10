@@ -1,4 +1,4 @@
-## 项目架构
+> ## 项目架构
 
 基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架，备具Restful API、JWT验证、Utils、Delib（第三方工具包封装）等功能，技术栈列表：
 - Python：开发语言，基于python3.12版本开发
@@ -111,54 +111,10 @@ https://github.com/GIS90/open2lui/issues
 
 
 ### 数据库
-初始化SQL语句
-```
--- 创建数据库 用户 授权
-create database fastapi-q default character set utf8 collate utf8_general_ci;
-create user 'fastapi-q'@'%' IDENTIFIED BY '3d829dd6151b80e9351261164abae1e3';
-grant all on fastapi-q.* to 'fastapi-q';
-flush  privileges;
+详情见db.sql。
 
 
--- 系统表-用户信息表
-DROP TABLES IF EXISTS `xtb_sysuser`;
-CREATE TABLE `xtb_sysuser` (
-    `id` int NOT NULL AUTO_INCREMENT COMMENT '主键，自增ID',
-    `rtx_id` varchar(35) not null COMMENT '用户RTX-ID唯一标识',
-    `md5_id` varchar(55) not null COMMENT '数据唯一标识：MD5-ID',
-    `name` varchar(30) not null COMMENT '用户名称',
-    `password` varchar(120) not null COMMENT '用户密码[md5加密]',
-    `salt` varchar(55) COMMENT '密码盐值',
-    `sex` varchar(2) COMMENT '用户性别',
-    `email` varchar(55) COMMENT '用户邮箱',
-    `phone` varchar(15) COMMENT '用户电话',
-    `avatar` varchar(120) COMMENT '用户头像地址',
-    `introduction` text COMMENT '用户描述',
-    `role` varchar(120) COMMENT '用户角色engname值，关联role表，多角色用;分割',
-    `department` varchar(55) COMMENT '用户部门md5-id值，关联department表',
-    `create_rtx` varchar(35) COMMENT '创建用户',
-    `create_time` datetime default CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_rtx` varchar(35) COMMENT '更新用户',
-    `update_time` datetime COMMENT '更新时间',
-    `delete_rtx` varchar(35) COMMENT '删除用户',
-    `delete_time` datetime COMMENT '删除时间',
-    `status` bool default False COMMENT '状态：1注销/删除；0启用/正常（默认）',
-
-    PRIMARY KEY (`id`)
-) COMMENT='系统表-用户信息表';
-
--- create index
-CREATE UNIQUE INDEX xtb_sysuser_rtx_id_index ON xtb_sysuser (`rtx_id`);
-
--- insert default admin
-insert into
-xtb_sysuser(rtx_id, md5_id, name, `password`, salt, sex, email , phone, avatar, introduction, role, create_rtx, status)
-VALUES
-('admin', '21232f297a57a5a743894a0e4a801fc3', 'ADMIN系统管理员', 'e10adc3949ba59abbe56e057f20f883e', '101010', 'M', 'gaoming971366@163.com', '13051355646',
-'http://pygo2.top/images/article_github.jpg', 'SUPER_ADMIN系统管理员', 'ADMIN', 'admin', FALSE);
-```
-
-## 其他
+> ## 其他
 
 ### supervisor
 管理项目进程的启动、停止、重启等操作
@@ -193,7 +149,7 @@ _config = {
 原因是服务器带宽不够导致上传超时。
 
 
-## 联系方式
+> ## 联系方式
 
 * ***Github:*** https://github.com/GIS90
 * ***Email:*** gaoming971366@163.com
