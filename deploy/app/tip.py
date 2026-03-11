@@ -38,6 +38,8 @@ import pyfiglet
 from deploy.utils.enumeration import (fontForeColor as ffc,
                                       fontBackColor as fbc)
 from colorama import init
+
+# 初始化 colorama 库，设置自动重置颜色属性，确保每次打印后颜色恢复默认
 init(autoreset=True)
 
 
@@ -55,7 +57,7 @@ __SHUTDOWN_ASCII : Final[str]= """Shutdown"""
 # 字体配置
 __FONT = "Slant"        # 字体
 __JUSTIFY = "center"    # 对齐方式：auto left center right
-___DIRECTION = "auto"   # 方向：auto left-to-right right-to-left
+__DIRECTION = "auto"   # 方向：auto left-to-right right-to-left
 
 def __print_colored_ascii_art(text: str, color: str) -> None:
     """
@@ -68,13 +70,13 @@ def __print_colored_ascii_art(text: str, color: str) -> None:
     返回值:
         None: 该函数不返回任何值，仅执行打印操作
     """
-    if not text: return 
+    if not text: return
 
     try:
         ascii_art = pyfiglet.figlet_format(
             text,
             font=__FONT,
-            direction=___DIRECTION,
+            direction=__DIRECTION,
             justify=__JUSTIFY
         )
         print(color + ascii_art)
