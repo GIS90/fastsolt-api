@@ -52,7 +52,6 @@ openpyxl==3.1.5
 passlib==1.7.4
 pdf2docx==0.5.8
 pillow==12.0.0
-pip @ file:///croot/pip_1756710021410/work
 propcache==0.4.1
 pyasn1==0.6.1
 pycparser==2.23
