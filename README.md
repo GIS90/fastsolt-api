@@ -1,8 +1,8 @@
 > ## 项目架构
 
 基于Python语言研发，使用FastAPI、Pydantic、异步数据库搭建的后端APIs脚手架，备具Restful API、JWT验证、Utils、Delib（第三方工具包封装）等功能，技术栈列表：
-- Python：开发语言，基于python3.12版本开发
-- FastAPI：python语言使用的web框架
+- Python：开发语言，基于3.12版本开发
+- FastAPI：脚手架开发语言使用的web框架
 - Pydantic：数据验证库
 - Mysql：数据库
 - Uvicorn：web服务与应用app之间的管理
@@ -98,8 +98,14 @@
 
 > ## 开发特定点
 
+### 项目启动startup、shutdown提示
+文件：deploy/app/tip.py
+
+- 配置__STARTUP_ASCII、__SHUTDOWN_ASCII变量进行项目启动、关闭提示。
+- tip_color_startup、tip_color_shutdown配置tip颜色
+
 ### Excel合并与拆分
-1、文件：deploy/delib/excel_lib.py
+文件：deploy/delib/excel_lib.py
 
 在开发Excel功能上，使用了openpyxl、xlwt && xlrd，但是都一些小问题，如下：
 - openpyxl: 不支持.xls（老版本excel）
@@ -123,7 +129,7 @@ https://github.com/GIS90/open2lui/issues
 项目root根目录下有supervisord.conf文件，用来配置supervisord，放在/etc/supervisord.d目录下。
 
 ### uvicorn
-负责web项目进程、服务，安装：pip install uvicorn
+负责web项目进程、服务，安装：pip install uvicorn，具体用法请uvicorn --help查看。
 
 ### qiniu对象存储
 官网开发手册Python API：https://developer.qiniu.com/kodo/1242/python
