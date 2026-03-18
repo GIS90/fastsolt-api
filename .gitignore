@@ -215,4 +215,4 @@ log/
 .idea/
 
 # 静态资源
-deploy/static
+# deploy/static
