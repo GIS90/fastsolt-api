@@ -41,3 +41,5 @@ xtb_user(rtx_id, md5_id, name, `password`, email , phone, avatar, introduction, 
 VALUES
 ('admin', '21232f297a57a5a743894a0e4a801fc3', 'ADMIN系统管理员', 'e10adc3949ba59abbe56e057f20f883e', 'gaoming971366@163.com', '13051355646',
 'http://pygo2.top/images/article_github.jpg', 'SUPER_ADMIN系统管理员', 'ADMIN', 'admin', FALSE);
+
+-- ---------------------------------------------------------------------------------------------------------------
