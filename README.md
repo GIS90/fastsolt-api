@@ -95,6 +95,13 @@
 - utils.py 工具方法，任何Python（version：3）项目都适合使用
 - token.py Token
 
+### crontab配置
+- 日志清理：crontab/auto_clear_logs.sh
+配置log_dir日志目录、keep_day保留天数
+
+- 数据库备份：crontab/mysql_backup.task.sh
+需要配置db_user、db_passwd、db_backup_dir、db_names数据库相关变量
+
 
 > ## 开发特定点
 
