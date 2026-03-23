@@ -18,7 +18,7 @@
 - Centos7.5系统服务器一台
 - Python3、Mysql、Supervisor等基础配套的环境安装
 - 安装好数据库之后，执行README.md文件中的数据库初始化模块，里面配置数据库名称、用户名、密码等（根据需求改成项目需要的）
-- 安装requirements.txt需要的包，命令pip install -r requirements.txt 或者 uv sync，建议用uv管理Python版本环境
+- 安装requirements.txt需要的包，命令pip install -r requirements.txt 或者 uv sync，建议用**conda/uv**管理Python版本环境
 - 更新.env配置与对应的web配置文件：etc/prod.yaml（线上）、etc/dev.yaml（测试），根据不同需求进行配置更改
 - 启动项目（cd 项目目录）：
   - Uvicorn方式：uvicorn deploy:app --reload --host 127.0.0.1 --port 8000
@@ -119,10 +119,6 @@
 - openpyxl: 不支持.xls（老版本excel）
 - xlwt、xlrd: 表格行数限制65535
 只好，根据操作Excel数据文件的格式进行判断，去执行指定的方法，如果操作的数据文件包含一个.xls文件，就用xlwt、xlrd去处理，否则就用openpyxl。
-
-### Github Issues
-https://github.com/GIS90/open2lui/issues
-
 
 ### 数据库
 详情见db.sql。
