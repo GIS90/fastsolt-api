@@ -4,7 +4,7 @@
 ------------------------------------------------
 
 describe: 
-    xtb_sysuser view
+    xtb_user view
 
 base_info:
     __author__ = PyGo

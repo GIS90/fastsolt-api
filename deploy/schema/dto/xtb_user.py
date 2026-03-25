@@ -13,7 +13,7 @@ base_info:
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo.space
     __project__ = fastslot-api
-    __file_name__ = xtb_sysuser.py
+    __file_name__ = xtb_user.py
 
 usage:
   

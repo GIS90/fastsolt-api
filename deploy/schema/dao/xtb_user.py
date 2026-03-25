@@ -13,7 +13,7 @@ base_info:
     __mail__ = gaoming971366@163.com
     __blog__ = www.pygo.space
     __project__ = fastslot-api
-    __file_name__ = xtb_sysuser.py
+    __file_name__ = xtb_user.py
 
 usage:
     
@@ -43,12 +43,12 @@ from .common_field import RtxIdField, Md5Field, CUDField, StatusField
 from typing import Optional
 
 
-__all__ = ("XtbUserModel")
+__all__ = ["XtbUserModel"]
 
 
 class XtbUserModel(baseModel, RtxIdField, Md5Field, CUDField, StatusField):
     __tablename__ = 'xtb_user'
-    __table_args__ = ({'comment': '系统表-系统表'})
+    __table_args__ = ({'comment': '系统表-用户表'})
 
     id: Mapped[int] = mapped_column(Integer, name="id", autoincrement="auto", primary_key=True, comment="主键，自增ID")
     name: Mapped[str] = mapped_column(String(30), name="name", nullable=False, comment="名称")

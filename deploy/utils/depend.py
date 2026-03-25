@@ -88,7 +88,7 @@ def depend_token_rtx_valid(
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # TODO 用户数据验证
-    # user_model = xtb_sysuser_bo.get_user_by_rtx_id(token_rtx_id)
+    # user_model = xtb_user_bo.get_user_by_rtx_id(token_rtx_id)
     # # 数据不存在
     # if not user_model:
     #     raise UserInvalidException("用户不存在")
