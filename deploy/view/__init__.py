@@ -64,7 +64,7 @@ View根据系统设计的api进行模块划分，其中有3个比较特殊（不
 
 
 实例模块
-- xtb_sysuser：系统用户增删改查
+- xtb_user：系统用户增删改查
 """
 __all__ = ["add_routers"]
 
