@@ -37,11 +37,11 @@ from typing import Optional
 
 
 class XtbUserBaseModel(baseModel):
-    rtx_id: str = Field(..., min_length=1, max_length=35, description="用户RTX-ID", alias="rtxId")
-    name: str = Field(..., min_length=1, max_length=30, description="用户昵称")
-    sex: str = Field(..., min_length=1, max_length=2, description="用户性别")
-    email: str = Field(..., min_length=1, max_length=55, description="用户邮箱")
-    phone: str = Field(..., min_length=11, max_length=11, description="用户电话")
+    rtx_id: str = Field(..., min_length=1, max_length=35, description="用户RTX-ID（唯一标识）", alias="rtxId")
+    name: str = Field(..., min_length=1, max_length=30, description="昵称")
+    sex: str = Field(..., min_length=1, max_length=2, description="性别")
+    email: str = Field(..., min_length=1, max_length=80, description="邮箱")
+    phone: str = Field(..., min_length=11, max_length=11, description="电话")
     introduction: Optional[str] = Field(..., max_length=255, description="个性签名")
 
     model_config = {
@@ -58,13 +58,17 @@ class XtbUserBaseModel(baseModel):
     }
 
 
-class XtbUserUpdateModel(XtbUserBaseModel):
-    md5_id: str = Field(..., min_length=1, max_length=55, description="数据MD5", alias="md5Id")
+class XtbUserUpdateModel(baseModel):
+    md5_id: str = Field(..., min_length=1, max_length=64, description="数据MD5", alias="md5Id")
+    name: str = Field(..., min_length=1, max_length=30, description="昵称")
+    sex: str = Field(..., min_length=1, max_length=2, description="性别")
+    email: str = Field(..., min_length=1, max_length=80, description="邮箱")
+    phone: str = Field(..., min_length=11, max_length=11, description="电话")
+    introduction: Optional[str] = Field(..., max_length=255, description="个性化签名")
 
     model_config = {
         "json_schema_extra": {
             "example": {
-                "rtxId": "adc",
                 "md5Id": "AAAAAAAAAA",
                 "name": "adc",
                 "sex": "M",
@@ -74,5 +78,3 @@ class XtbUserUpdateModel(XtbUserBaseModel):
             }
         }
     }
-
-

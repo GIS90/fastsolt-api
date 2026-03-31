@@ -73,7 +73,7 @@ JWT Token APIs[JWT]:
 """
 
 
-def encode_access_token(
+async def encode_access_token(
         rtx_id: str = ...,
         token_time: int = __TOKEN_EXPIRE_MINUTE
 ) -> str | None:
@@ -125,7 +125,7 @@ def encode_access_token(
     return encoded_jwt_token
 
 
-def decode_access_token(
+async def decode_access_token(
         token: str
 ) -> Dict:
     """
@@ -155,7 +155,7 @@ def decode_access_token(
         raise JwtCredentialsException(f"Jwt Token [decode] error, [{e}].")
 
 
-def decode_access_token_rtx(
+async def decode_access_token_rtx(
         token: str
 ) -> Optional[str]:
     """
@@ -165,10 +165,10 @@ def decode_access_token_rtx(
     """
     if not token:
         return None
-    return decode_access_token(token).get('rtx_id')
+    return await decode_access_token(token).get('rtx_id')
 
 
-def verify_access_token(
+async def verify_access_token(
         token: str,
         x_rtx_id: str
 ) -> bool:
@@ -183,13 +183,13 @@ def verify_access_token(
         return False
 
     try:
-        claims = decode_access_token(token)
+        claims = await decode_access_token(token)
         return claims.get('rtx_id') == x_rtx_id if claims else False
     except:
         return False
 
 
-def read_token_header(
+async def read_token_header(
         token: str
 ) -> Dict:
     """
@@ -217,7 +217,7 @@ JWT Token APIs[Redis]:
 """
 
 
-def __verify_access_token_expire_jwt(
+async def __verify_access_token_expire_jwt(
         token: str
 ) -> str | None:
     """
@@ -229,7 +229,7 @@ def __verify_access_token_expire_jwt(
         return None
 
     try:
-        claims = decode_access_token(token)
+        claims = await decode_access_token(token)
         if not claims:
             return None
 
@@ -248,7 +248,7 @@ def __verify_access_token_expire_jwt(
         raise Exception(f"Jwt Token [expire] error, [{e}].")
 
 
-def verify_access_token_expire(
+async def verify_access_token_expire(
         x_token: str
 ) -> Tuple[bool, Optional[str]]:
     """
@@ -268,7 +268,7 @@ def verify_access_token_expire(
 
     if not token_rtx_id:
         try:
-            token_rtx_id = __verify_access_token_expire_jwt(x_token)
+            token_rtx_id = await __verify_access_token_expire_jwt(x_token)
         except Exception as e:
             return True, None
 

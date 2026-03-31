@@ -34,11 +34,13 @@ from fastapi import Header, Query
 from typing import Optional, Dict
 
 from deploy.utils.token import decode_access_token_rtx
-from deploy.utils.exception import JwtCredentialsException
+from deploy.utils.exception import JwtCredentialsException, UserInvalidException
 from deploy.delib.redis_lib import RedisClientLib
 from deploy.config import redis_host, redis_port, redis_db, redis_password
 from deploy.schema.po.x import PageListModel, DownloadFileModel
 from deploy.schema.po.menu import MenuBaseModel, MenuEditModel
+from deploy.curd.database import get_session_context
+from deploy.service.xtb_user import XtbUserService
 
 
 # redis-cli
@@ -56,7 +58,7 @@ Token-Rtx-ID依赖
 """
 
 
-def __get_token_rtx(token: str) -> str:
+async def __get_token_rtx(token: str) -> str:
     token_rtx_id = None
     # >>>>> 优先redis
     try:
@@ -67,35 +69,38 @@ def __get_token_rtx(token: str) -> str:
 
     # >>>>> jwt解码token
     if not token_rtx_id:
-        token_rtx_id = decode_access_token_rtx(token)
+        token_rtx_id = await decode_access_token_rtx(token)
         if not token_rtx_id:
             raise JwtCredentialsException("无效X-Token")
 
     return token_rtx_id
 
 
-def depend_token_rtx(
+async def depend_token_rtx(
     x_token: str = Header(..., min_length=MIN_LENGTH, max_length=MAX_LENGTH, convert_underscores=True, description="X-Token")
 ) -> str:
-    return __get_token_rtx(token=x_token)
+    return await __get_token_rtx(token=x_token)
 
 
-def depend_token_rtx_valid(
+async def depend_token_rtx_valid(
     x_token: str = Header(..., min_length=MIN_LENGTH, max_length=MAX_LENGTH, convert_underscores=True, description="X-Token")
 ) -> str:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    token_rtx_id = __get_token_rtx(token=x_token)
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # TODO 用户数据验证
-    # user_model = xtb_user_bo.get_user_by_rtx_id(token_rtx_id)
-    # # 数据不存在
-    # if not user_model:
-    #     raise UserInvalidException("用户不存在")
-    # # 数据已删除
-    # if getattr(user_model, "is_del"):
-    #     raise UserInvalidException("用户已注销")
-    ...
+    token_rtx_id = await __get_token_rtx(token=x_token)
+    # 用户数据验证
+    async with get_session_context() as db:
+        try:
+            service = XtbUserService(db_connection=db)
+            # 调用 add 方法
+            model = await service.depend_user_by_rtx_id(rtx_id=token_rtx_id)
+            # 数据不存在
+            if not model:
+                raise UserInvalidException("用户不存在")
+            # 数据已删除
+            if not model.get("status"):
+                raise UserInvalidException("用户已注销")
+        except Exception as e:
+            raise UserInvalidException("用户信息异常")
 
     return token_rtx_id
 
@@ -110,14 +115,14 @@ Pageable-Params依赖
 """
 
 
-def pageable_params(
+async def pageable_params(
     page: int = Query(default=1, ge=MIN_LENGTH, description="页码"),
     pageSize: int = Query(default=15, ge=MIN_LENGTH, description="条数"),
 ) -> Dict:
     return {"page": page, "limit": pageSize, "offset": (page - 1) * pageSize}
 
 
-def pageable_query_params(
+async def pageable_query_params(
     page: int = Query(default=1, ge=MIN_LENGTH, description="页码"),
     pageSize: int = Query(default=15, ge=MIN_LENGTH, description="条数"),
     content: str | None = Query(default=None, max_length=MAX_LENGTH, description="非模糊查询"),
@@ -125,7 +130,7 @@ def pageable_query_params(
     return {"page": page, "limit": pageSize, "offset": (page - 1) * pageSize, "content": content}
 
 
-def pageable_like_params(
+async def pageable_like_params(
     page: int = Query(default=1, ge=MIN_LENGTH, description="页码"),
     pageSize: int = Query(default=15, ge=MIN_LENGTH, description="条数"),
     content: Optional[str] = Query(default=None, max_length=MAX_LENGTH, description="模糊查询参数"),
@@ -133,7 +138,7 @@ def pageable_like_params(
     return {"page": page, "limit": pageSize, "offset": (page - 1) * pageSize, "content": f"%{content}%"}
 
 
-def pageable_model_params(
+async def pageable_model_params(
     params: PageListModel
 ) -> Dict:
     page, pageSize, content = params.page, params.pageSize, params.content
@@ -153,7 +158,7 @@ X->Download依赖
 """
 
 
-def download_params(params: DownloadFileModel) -> Dict:
+async def download_params(params: DownloadFileModel) -> Dict:
     # TODO 自定义处理
     file_name = params.name
     ...
@@ -166,7 +171,7 @@ Menu菜单依赖
 """
 
 
-def __menu_params(params: Dict) -> Dict:
+async def __menu_params(params: Dict) -> Dict:
     new_params: Dict = {}
     for key, value in params.items():
         if key == "isKeepAlive":
@@ -182,9 +187,9 @@ def __menu_params(params: Dict) -> Dict:
     return new_params
 
 
-def menu_edit_params(params: MenuEditModel) -> Dict:
-    return __menu_params(params=params.model_dump())
+async def menu_edit_params(params: MenuEditModel) -> Dict:
+    return await __menu_params(params=params.model_dump())
 
 
-def menu_add_params(params: MenuBaseModel) -> Dict:
-    return __menu_params(params=params.model_dump())
+async def menu_add_params(params: MenuBaseModel) -> Dict:
+    return await __menu_params(params=params.model_dump())

@@ -117,7 +117,7 @@ async def login(
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # = = = = = = = = = = = = = = = = start token = = = = = = = = = = = = = = = =
-    token = encode_access_token(
+    token = await encode_access_token(
         rtx_id=username,
         token_time=24 * 60 if t24 else __JWT_TOKEN_EXPIRE_MINUTES
     )

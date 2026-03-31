@@ -114,6 +114,12 @@ class XtbUserService:
         )
         return SuccessStatus(data=data) if __flag else data
 
+    async def depend_user_by_rtx_id(self, rtx_id: str) -> Dict:
+        __flag, data = await self.__valid_user_by_md5_or_rtx(
+            user_id=rtx_id, status_check=False, response_type="dict", user_type="rtx"
+        )
+        return data if __flag else {}
+
     async def add(self, rtx_id: str, model: Dict) -> Status:
         new_model = await self.xtb_user_curd.new_model()
         __now = get_now()

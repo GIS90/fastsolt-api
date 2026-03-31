@@ -34,6 +34,7 @@ import sys
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from typing import Final
+from contextlib import asynccontextmanager
 
 from deploy.config import env, db_link
 from deploy.utils.printer import printer_error
@@ -65,6 +66,7 @@ AsyncSessionLocal = sessionmaker(
     autocommit=False
 )
 
+
 # 依赖注入：获取数据库会话
 async def get_session():
     """
@@ -89,3 +91,33 @@ async def get_session():
         finally:
             await session.close()
 
+# 用于中间件（使用上下文管理器）
+@asynccontextmanager
+async def get_session_context():
+    """
+    异步上下文管理器，用于获取数据库会话并管理其生命周期。
+
+    该函数创建一个异步数据库会话上下文，自动处理会话的提交、回滚和关闭操作。
+    在正常执行时提交事务，发生异常时回滚事务，并确保最终关闭会话。
+
+    Yields:
+        session: 异步数据库会话对象，用于执行数据库操作
+
+    Raises:
+        SQLDBHandleException: 当数据库操作失败时，抛出此异常并包含原始错误信息
+    """
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+            await session.commit()
+        except SQLDBHandleException as db_exec:
+            await session.rollback()
+            raise SQLDBHandleException(f"数据库操作异常[Context]：{db_exec.__str__()}")
+        finally:
+            await session.close()
+
+# 用于中间件（使用上下文管理器），手动处理提交与异常处理
+@asynccontextmanager
+async def get_session_context_manual():
+    async with AsyncSessionLocal() as session:
+        yield session

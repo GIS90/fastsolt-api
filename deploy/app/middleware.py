@@ -187,7 +187,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
                     media_type=MediaType.APPJson.value
                 )
             # Token expire
-            expire, __token_rtx_id = verify_access_token_expire(x_token=request_token)
+            expire, __token_rtx_id = await verify_access_token_expire(x_token=request_token)
             if expire:
                 content = FailureStatus(
                     code=status_code.CODE_253_TOKEN_EXPIRE.value,
