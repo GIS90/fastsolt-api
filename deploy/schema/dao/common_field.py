@@ -47,11 +47,11 @@ class IDField:
 
 
 class RtxIdField:
-    rtx_id: Mapped[str] = mapped_column(name="rtx_id", type_=String(35), nullable=False, comment="RTX-ID唯一标识，有英文+数字组成")
+    rtx_id: Mapped[str] = mapped_column(name="rtx_id", type_=String(35), unique=True, nullable=False, comment="RTX-ID唯一标识，有英文+数字组成")
 
 
 class Md5Field:
-    md5_id: Mapped[str] = mapped_column(name="md5_id", type_=String(64), nullable=False, comment="数据唯一标识：MD5-ID")
+    md5_id: Mapped[str] = mapped_column(name="md5_id", type_=String(64), unique=True, nullable=False, comment="数据唯一标识：MD5-ID")
 
 
 class CUDField:
