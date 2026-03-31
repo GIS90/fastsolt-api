@@ -80,7 +80,7 @@ class XtbUserService:
         return (True, user if response_type == "model"
                         else await model_converter_dict(model=user, fields=xtb_user_detail_fields, default_value="****"))
 
-    async def user_list(self, rtx_id: str, params: Dict) -> Status:
+    async def list(self, rtx_id: str, params: Dict) -> Status:
         users = await self.xtb_user_curd.get_pagination(
             db=self.db,
             offset=params.get("offset"),
@@ -114,25 +114,25 @@ class XtbUserService:
         )
         return SuccessStatus(data=data) if __flag else data
 
-    async def user_add(self, rtx_id: str, model: Dict) -> Status:
-        new_user = await self.xtb_user_curd.new_model()
+    async def add(self, rtx_id: str, model: Dict) -> Status:
+        new_model = await self.xtb_user_curd.new_model()
         __now = get_now()
         __password: str = random_string()
         __salt: str = random_string()
         # TODO 用户默认的头像、密码可以放在数据库中
-        new_user.md5_id = generator_md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
-        new_user.avatar = self.DEFAULT_AVATAR
-        new_user.status = False
-        new_user.salt = __salt
-        new_user.create_time = __now
-        new_user.create_rtx = rtx_id
-        new_user.password = generator_md5(v=f"{__password}{__salt}")
+        new_model.md5_id = generator_md5(v=f"{model.get('rtx_id')}-{__now}-{__password}")
+        new_model.avatar = self.DEFAULT_AVATAR
+        new_model.status = False
+        new_model.salt = __salt
+        new_model.create_time = __now
+        new_model.create_rtx = rtx_id
+        new_model.password = generator_md5(v=f"{__password}{__salt}")
         for k, v in model.items():
-            setattr(new_user, k, v)
-        await self.xtb_user_curd.add(db=self.db, model=new_user)
+            setattr(new_model, k, v)
+        await self.xtb_user_curd.add(db=self.db, model=new_model)
         return SuccessStatus(data={"password": __password})
 
-    async def user_update(self, rtx_id: str, model: Dict) -> Status:
+    async def update(self, rtx_id: str, model: Dict) -> Status:
         _md5 = model.get("md5_id")
         __flag, data = await self.__valid_user_by_md5_or_rtx(
             user_id=_md5, status_check=True, response_type="model"
@@ -149,7 +149,7 @@ class XtbUserService:
         await self.xtb_user_curd.update(db=self.db, model=data)
         return SuccessStatus()
 
-    async def user_delete_hard(self, rtx_id: str, md5_id: str) -> Status:
+    async def delete_hard(self, rtx_id: str, md5_id: str) -> Status:
         __flag, data = await self.__valid_user_by_md5_or_rtx(
             user_id=md5_id, status_check=True, response_type="model", user_type="md5"
         )
@@ -159,7 +159,7 @@ class XtbUserService:
         return SuccessStatus()
 
 
-    async def user_delete_soft(self, rtx_id: str, md5_id: str) -> Status:
+    async def delete_soft(self, rtx_id: str, md5_id: str) -> Status:
         __flag, data = await self.__valid_user_by_md5_or_rtx(
             user_id=md5_id, status_check=True, response_type="model", user_type="md5"
         )
@@ -171,11 +171,11 @@ class XtbUserService:
         await self.xtb_user_curd.update(db=self.db, model=data)
         return SuccessStatus()
 
-    async def user_batch_delete_hard(self, rtx_id: str, md5_id: List) -> Status:
+    async def batch_delete_hard(self, rtx_id: str, md5_id: List) -> Status:
         await self.xtb_user_curd.batch_delete(db=self.db, md5_id=md5_id)
         return SuccessStatus()
 
 
-    async def user_batch_delete_soft(self, rtx_id: str, md5_id: List) -> Status:
+    async def batch_delete_soft(self, rtx_id: str, md5_id: List) -> Status:
         await self.xtb_user_curd.batch_soft_delete_update(db=self.db, md5_id=md5_id, rtx_id=rtx_id)
         return SuccessStatus()

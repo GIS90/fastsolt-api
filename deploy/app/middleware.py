@@ -16,7 +16,7 @@ base_info:
     __file_name__ = middleware.py
 
 usage:
-    
+
 design:
 
 reference urls:
@@ -47,14 +47,15 @@ from deploy.config import (app_secret_key, app_allow_host, app_cors_origin, app_
                            app_session_max_age, app_request_method, app_gzip_size, app_gzip_level,
                            jwt_token_verify)
 from deploy.utils.token import verify_access_token_expire
+from deploy.service.xtb_request import XtbRequestService
+from deploy.curd.database import AsyncSessionLocal
 
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 __APP_SECRET_KEY: str = app_secret_key
 __APP_ALLOW_HOST: List[str] = app_allow_host
 __APP_CORS_ORIGIN: List[str] = app_cors_origin or ["*"]  # 全部：["*"]
 __APP_BAN_ROUTER: List[str] = app_ban_router
-__APP_SESSION_MAX_AGE: int = app_session_max_age or 24 * 60 * 60    # 单位：秒
+__APP_SESSION_MAX_AGE: int = app_session_max_age or 24 * 60 * 60  # 单位：秒
 __APP_REQUEST_METHOD: List[str] = app_request_method
 __APP_GZIP_SIZE: int = app_gzip_size
 __APP_GZIP_LEVEL: int = app_gzip_level
@@ -64,7 +65,9 @@ __APP_GZIP_LEVEL: int = app_gzip_level
 [Dev：False Prod：True]
 """
 __JWT_TOKEN_VERIFY: bool = jwt_token_verify
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 def register_app_middleware(app: FastAPI, app_headers: Dict):
@@ -98,9 +101,9 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
         返回值:
             Response: 处理后的HTTP响应对象。
         """
-        LOG.debug(">>>>> App middleware C-Middleware request")
+        LOG.debug(">>>>> App middleware C-Middleware start")
         __is_verify_token = __JWT_TOKEN_VERIFY  # 是否验证Jwt Token有效性
-        __token_rtx_id = None     # 用户token-rtx-id
+        __token_rtx_id = None  # 用户token-rtx-id
 
         # - - - - - - - - - - - - - - - - 请求代码块 - - - - - - - - - - - - - - - -
         # [** 访问IP检查 **]
@@ -198,31 +201,37 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
                 )
         # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-        LOG.debug(">>>>> App middleware C-Middleware response")
         # + + + + + + + + + + + + + + + + 响应代码块 + + + + + + + + + + + + + + + +
         # [API Watcher执行时间]
         start = time.time()
         response = await call_next(request)
         end = time.time()
         cost = end - start
+        # + + + + + + + + + + + + + + + + 响应代码块 + + + + + + + + + + + + + + + +
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
         """ 
-        [watcher]
-        > [ 在CM中对有Token请求的进行了watcher request ]
-        > access在方法中直接调用user_service.request
-        > APIs做成装饰器进行watcher request
+        [watcher]CM中对所有请求进行watcher request
+        [代码写入方式]
+            方式一：直接使用Session，手动try...except AsyncSessionLocal()
+            方式二：上下文管理器 get_session_context_manual()
+        在CM中选择方式一，首先直接使用Session，保证了效率的问题；其次，可以在代码中进行手动的异常处理，因为在CM的request是系统请求日志记录，
+        属于没必要功能，所以在except中只进行了回滚处理，不做其他系统异常抛出动作，保证了系统的正常运转
         """
-        if __is_verify_token:
-            pass
-            # 验证用户可用性
-            '''
-            from deploy.service.user import UserService
-            user_service = UserService()
-            await user_service.request(rtx_id=__token_rtx_id, request_body=request, cost=cost)
-            '''
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+        async with AsyncSessionLocal() as db:
+            try:
+                xtb_request_service = XtbRequestService(db_connection=db)
+                # 调用 add 方法
+                await xtb_request_service.add(
+                    rtx_id=__token_rtx_id or request.headers.get('X-Token'),
+                    request_body=request,
+                    cost=cost
+                )
+                # 提交事务
+                await db.commit()
+            except Exception as e:
+                await db.rollback()
+                LOG.error(f"App middleware C-Middleware watcher error: {e}")
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 
         response.headers["X-App-CM-Timer"] = str(cost)
@@ -231,8 +240,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
             if not _k: continue
             response.headers[_k] = _v
 
-        LOG.debug("<<<<< App middleware C-Middleware response")
-        LOG.debug("<<<<< App middleware C-Middleware request")
+        LOG.debug("<<<<< App middleware C-Middleware end")
 
         return response
 
@@ -241,8 +249,8 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
         CORSMiddleware,
         allow_origins=__APP_CORS_ORIGIN,
         allow_credentials=True,  # 认证
-        allow_methods=__APP_REQUEST_METHOD,     # 方法
-        allow_headers=["*"]      # Headers信息
+        allow_methods=__APP_REQUEST_METHOD,  # 方法
+        allow_headers=["*"]  # Headers信息
     )
 
     # 中间件 > SESSION会话管理
@@ -261,7 +269,7 @@ def register_app_middleware(app: FastAPI, app_headers: Dict):
     # 中间件 > GZip
     app.add_middleware(
         GZipMiddleware,
-        minimum_size=__APP_GZIP_SIZE,   # default 500byte
+        minimum_size=__APP_GZIP_SIZE,  # default 500byte
         compresslevel=__APP_GZIP_LEVEL  # default 9
     )
     # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

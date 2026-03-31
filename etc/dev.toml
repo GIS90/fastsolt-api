@@ -22,7 +22,7 @@ static = "static"  # 静态资源目录名称，并且固定在deploy目录下
 
 # 数据库
 [db]
-link = "mysql+asyncmy://fastsolt-q:1f3c7628c5502f2638fe1b06faeeacfb@110.40.141.32:3306/fastsolt-q"
+link = "mysql+asyncmy://fastslot-q:1f3c7628c5502f2638fe1b06faeeacfb@110.40.141.32:3306/fastslot-q"
 
 # Redis
 [redis]
